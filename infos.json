@@ -1,0 +1,18 @@
+{
+  "name": "news",
+  "name_menu": "Actualités",
+  "name_menu_en": "News",
+  "icon_menu": "fas fa-newspaper",
+  "url_menu": "",
+  "urls_submenu": {
+    "Liste":"news/list",
+    "Ajouter":"news/add"
+  },
+  "urls_submenu_en": {
+    "List":"news/list",
+    "Add":"news/add"
+  },
+  "description": "Gérer les actualités de votre site !",
+  "version": "1.0.0",
+  "author": "CraftMyWebsite Team"
+}

@@ -1,0 +1,128 @@
+<?php
+
+namespace CMW\Entity\News;
+
+use CMW\Entity\Users\UserEntity;
+
+class NewsEntity
+{
+    private int $newsId;
+    private string $title;
+    private string $description;
+    private bool $commentsStatus;
+    private bool $likesStatus;
+    private string $content;
+    private string $slug;
+    private ?UserEntity $author;
+    private string $imageName;
+    private string $dateCreated;
+
+    /**
+     * @param int $newsId
+     * @param string $title
+     * @param string $description
+     * @param bool $commentsStatus
+     * @param bool $likesStatus
+     * @param string $content
+     * @param string $slug
+     * @param ?\CMW\Entity\Users\UserEntity $author
+     * @param string $imageName
+     * @param string $dateCreated
+     */
+    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $slug, ?UserEntity $author, string $imageName, string $dateCreated)
+    {
+        $this->newsId = $newsId;
+        $this->title = $title;
+        $this->description = $description;
+        $this->commentsStatus = $commentsStatus;
+        $this->likesStatus = $likesStatus;
+        $this->content = $content;
+        $this->slug = $slug;
+        $this->author = $author;
+        $this->imageName = $imageName;
+        $this->dateCreated = $dateCreated;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNewsId(): int
+    {
+        return $this->newsId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCommentsStatus(): bool
+    {
+        return $this->commentsStatus;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLikesStatus(): bool
+    {
+        return $this->likesStatus;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @return ?\CMW\Entity\Users\UserEntity
+     */
+    public function getAuthor(): ?UserEntity
+    {
+        return $this->author;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImageName(): string
+    {
+        return $this->imageName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateCreated(): string
+    {
+        return $this->dateCreated;
+    }
+
+
+
+}
