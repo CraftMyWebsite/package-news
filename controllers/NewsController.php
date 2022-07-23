@@ -6,7 +6,9 @@ use CMW\Controller\CoreController;
 use CMW\Controller\Users\UsersController;
 use CMW\Model\Faq\NewsModel;
 use CMW\Model\Users\UsersModel;
+use CMW\Router\Link;
 use CMW\Utils\Utils;
+use CMW\Utils\View;
 
 /**
  * Class: @NewsController
@@ -27,27 +29,20 @@ class NewsController extends CoreController
         $this->newsModel = new NewsModel();
     }
 
+
+    #[Link(path: "/", method: Link::GET, scope: "/cmw-admin/news")]
+    #[Link("/add", Link::GET, [], "/cmw-admin/news")]
     public function addNews(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
 
-        $includes = array(
-            "scripts" => [
-                "before" => [
-                    "admin/resources/vendors/summernote/summernote.min.js",
-                    "admin/resources/vendors/summernote/summernote-bs4.min.js",
-                    "app/package/wiki/views/assets/js/summernoteInit.js"
-                ]
-            ],
-            "styles" => [
-                "admin/resources/vendors/summernote/summernote-bs4.min.css",
-                "admin/resources/vendors/summernote/summernote.min.css"
-            ]
-        );
-
-        view('news', 'add.admin', [], 'admin', $includes);
+        View::createAdminView('news', 'add')
+            ->addScriptBefore("admin/resources/vendors/summernote/summernote.min.js", "admin/resources/vendors/summernote/summernote-bs4.min.js", "app/package/wiki/views/assets/js/summernoteInit.js")
+            ->addStyle(  "admin/resources/vendors/summernote/summernote-bs4.min.css", "admin/resources/vendors/summernote/summernote.min.css")
+            ->view();
     }
 
+    #[Link("/add", Link::POST, [], "/cmw-admin/news")]
     public function addNewsPost(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
@@ -66,41 +61,39 @@ class NewsController extends CoreController
 
         $this->newsModel->createNews($title, $desc, $comm, $likes, $content, $slug, $authorId, $image);
 
-        header("location: ../../list");
+        header("location: ../list");
     }
 
+    #[Link("/list", Link::GET, [], "/cmw-admin/news")]
     public function listNews(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.list");
 
         $newsList = $this->newsModel->getNews();
 
-        view('news', 'list.admin', ["newsList" => $newsList], 'admin', []);
+        View::createAdminView('news', 'list')
+            ->addVariableList(["newsList" => $newsList])
+            ->view();
     }
 
+    #[Link("/edit/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
     public function editNews(int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
 
-        $includes = array(
-            "scripts" => [
-                "before" => [
-                    "admin/resources/vendors/summernote/summernote.min.js",
-                    "admin/resources/vendors/summernote/summernote-bs4.min.js",
-                    "app/package/wiki/views/assets/js/summernoteInit.js"
-                ]
-            ],
-            "styles" => [
-                "admin/resources/vendors/summernote/summernote-bs4.min.css",
-                "admin/resources/vendors/summernote/summernote.min.css"
-            ]
-        );
-
         $news = $this->newsModel->getNewsById($id);
 
-        view('news', 'edit.admin', ["news" => $news], 'admin', $includes);
+        View::createAdminView('news', 'edit')
+            ->addScriptBefore("admin/resources/vendors/summernote/summernote.min.js",
+                "admin/resources/vendors/summernote/summernote-bs4.min.js",
+                "app/package/wiki/views/assets/js/summernoteInit.js")
+            ->addStyle("admin/resources/vendors/summernote/summernote-bs4.min.css",
+                "admin/resources/vendors/summernote/summernote.min.css")
+            ->addVariableList(["news" => $news])
+            ->view();
     }
 
+    #[Link("/edit/:id", Link::POST, ["id" => "[0-9]+"], "/cmw-admin/news")]
     public function editNewsPost(int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
@@ -116,14 +109,15 @@ class NewsController extends CoreController
         $this->newsModel->updateNews($id, $title, $desc, $comm, $likes, $content, $slug,
             ($_FILES['image']['size'] == 0 && $_FILES['image']['error'] == 0 ? null : $_FILES['image']));
 
-        header("location: ../../../list");
+        header("location: ../list");
     }
 
+    #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
     public function deleteNews(int $id): void
     {
         $this->newsModel->deleteNews($id);
 
-        header("location: ../../list");
+        header("location: ../list");
     }
 
 }
