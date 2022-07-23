@@ -5,6 +5,7 @@ namespace CMW\Model\Faq;
 use CMW\Entity\News\NewsEntity;
 use CMW\Model\Manager;
 use CMW\Model\Users\UsersModel;
+use CMW\Utils\Images;
 use CMW\Utils\Utils;
 
 
@@ -21,7 +22,7 @@ class NewsModel extends Manager
     {
 
         //Upload image
-        $imageName = Utils::uploadImage($image, "news");
+        $imageName = Images::upload($image, "news");
 
         $var = array(
             'title' => $title,
@@ -131,7 +132,7 @@ class NewsModel extends Manager
             unlink(getenv("dir") . "public/uploads/news/" . self::getNewsById($newsId)->getImageName());
 
             //Upload the new image
-            $imageName = Utils::uploadImage($image, "news");
+            $imageName = Images::upload($image, "news");
 
             //Add the image to the var
             $var += array("imageName" => $imageName);
@@ -161,7 +162,6 @@ class NewsModel extends Manager
         $db = Manager::dbConnect();
         $req = $db->prepare($sql);
         $req->execute(array("news_id" => $newsId));
-
     }
 
 }
