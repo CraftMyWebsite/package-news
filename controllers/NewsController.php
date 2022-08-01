@@ -2,7 +2,7 @@
 
 namespace CMW\Controller\News;
 
-use CMW\Controller\CoreController;
+use CMW\Controller\Core\CoreController;
 use CMW\Controller\Users\UsersController;
 use CMW\Model\Faq\NewsModel;
 use CMW\Model\Users\UsersModel;
