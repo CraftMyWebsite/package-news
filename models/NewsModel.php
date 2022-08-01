@@ -52,7 +52,7 @@ class NewsModel extends DatabaseManager
         return null;
     }
 
-    public function getNewsById($newsId): ?NewsEntity
+    public function getNewsById(int $newsId): ?NewsEntity
     {
 
         $sql = "SELECT news_id, news_title, news_desc, news_comments_status, news_likes_status, news_content, 
@@ -65,6 +65,40 @@ class NewsModel extends DatabaseManager
 
 
         if (!$res->execute(array("news_id" => $newsId))) {
+            return null;
+        }
+
+        $res = $res->fetch();
+
+        $author = (new UsersModel())->getUserById($res["news_author"]);
+
+        return new NewsEntity(
+            $res['news_id'],
+            $res['news_title'],
+            $res['news_desc'],
+            $res['news_comments_status'],
+            $res['news_likes_status'],
+            $res['news_content'],
+            $res['news_slug'],
+            $author,
+            $res['news_image_name'],
+            $res['news_date_created']
+        );
+    }
+
+    public function getNewsBySlug(string $newsSlug): ?NewsEntity
+    {
+
+        $sql = "SELECT news_id, news_title, news_desc, news_comments_status, news_likes_status, news_content, 
+                news_slug, news_author, news_image_name, 
+                DATE_FORMAT(news_date_created, '%d/%m/%Y à %H:%i:%s') AS 'news_date_created' 
+                FROM cmw_news WHERE news_slug=:news_slug";
+
+        $db = self::getInstance();
+        $res = $db->prepare($sql);
+
+
+        if (!$res->execute(array("news_slug" => $newsSlug))) {
             return null;
         }
 

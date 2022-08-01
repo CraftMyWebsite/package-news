@@ -3,6 +3,7 @@
 namespace CMW\Controller\News;
 
 use CMW\Controller\Core\CoreController;
+use CMW\Controller\Menus\MenusController;
 use CMW\Controller\Users\UsersController;
 use CMW\Model\News\NewsModel;
 use CMW\Model\Users\UsersModel;
@@ -118,6 +119,40 @@ class NewsController extends CoreController
         $this->newsModel->deleteNews($id);
 
         header("location: ../list");
+    }
+
+
+
+
+    //////// PUBLIC AREA \\\\\\\\
+
+
+    /**
+     * @throws \CMW\Router\RouterException
+     */
+    #[Link("/news", Link::GET)]
+    public function publicListNews(): void
+    {
+        $newsList = $this->newsModel->getNews();
+
+        //Include the public view file ("public/themes/$themePath/views/news/list.view.php")
+        $view = new View('news', 'list');
+        $view->addVariableList(["newsList" => $newsList]);
+        $view->view();
+    }
+
+    /**
+     * @throws \CMW\Router\RouterException
+     */
+    #[Link("/news/:slug", Link::GET, ["slug" => ".*?"])]
+    public function publicIndividualNews(string $slug): void
+    {
+        $news = $this->newsModel->getNewsBySlug($slug);
+
+        //Include the public view file ("public/themes/$themePath/views/news/individual.view.php")
+        $view = new View('news', 'individual');
+        $view->addVariableList(["news" => $news]);
+        $view->view();
     }
 
 }
