@@ -39,7 +39,7 @@ class NewsModel extends DatabaseManager
                 news_slug, news_author, news_image_name) 
                 VALUES (:title, :desc, :comm, :likes, :content, :slug, :authorId, :imageName)";
 
-        $db = DatabaseManager::dbConnect();
+        $db = self::getInstance();
         $req = $db->prepare($sql);
 
         debugR($var);
@@ -60,7 +60,7 @@ class NewsModel extends DatabaseManager
                 DATE_FORMAT(news_date_created, '%d/%m/%Y à %H:%i:%s') AS 'news_date_created' 
                 FROM cmw_news WHERE news_id=:news_id";
 
-        $db = DatabaseManager::dbConnect();
+        $db = self::getInstance();
         $res = $db->prepare($sql);
 
 
@@ -93,7 +93,7 @@ class NewsModel extends DatabaseManager
     public function getNews(): array
     {
         $sql = "SELECT news_id FROM cmw_news";
-        $db = DatabaseManager::dbConnect();
+        $db = self::getInstance();
 
         $res = $db->prepare($sql);
 
@@ -143,7 +143,7 @@ class NewsModel extends DatabaseManager
         }
 
 
-        $db = DatabaseManager::dbConnect();
+        $db = self::getInstance();
         $req = $db->prepare($sql);
         if ($req->execute($var)) {
             return $this->getNewsById($newsId);
@@ -159,7 +159,7 @@ class NewsModel extends DatabaseManager
 
         $sql = "DELETE FROM cmw_news WHERE news_id=:news_id";
 
-        $db = DatabaseManager::dbConnect();
+        $db = self::getInstance();
         $req = $db->prepare($sql);
         $req->execute(array("news_id" => $newsId));
     }
