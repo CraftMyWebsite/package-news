@@ -4,7 +4,7 @@ namespace CMW\Controller\News;
 
 use CMW\Controller\Core\CoreController;
 use CMW\Controller\Users\UsersController;
-use CMW\Model\Faq\NewsModel;
+use CMW\Model\News\NewsModel;
 use CMW\Model\Users\UsersModel;
 use CMW\Router\Link;
 use CMW\Utils\Utils;

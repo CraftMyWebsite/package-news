@@ -1,9 +1,9 @@
 <?php
 
-namespace CMW\Model\Faq;
+namespace CMW\Model\News;
 
 use CMW\Entity\News\NewsEntity;
-use CMW\Model\Manager;
+use CMW\Manager\Database\DatabaseManager;
 use CMW\Model\Users\UsersModel;
 use CMW\Utils\Images;
 use CMW\Utils\Utils;
@@ -15,7 +15,7 @@ use CMW\Utils\Utils;
  * @author Teyir
  * @version 1.0
  */
-class NewsModel extends Manager
+class NewsModel extends DatabaseManager
 {
 
     public function createNews(string $title, string $desc, int $comm, int $likes, string $content, string $slug, int $authorId, array $image): ?NewsEntity
@@ -39,7 +39,7 @@ class NewsModel extends Manager
                 news_slug, news_author, news_image_name) 
                 VALUES (:title, :desc, :comm, :likes, :content, :slug, :authorId, :imageName)";
 
-        $db = Manager::dbConnect();
+        $db = DatabaseManager::dbConnect();
         $req = $db->prepare($sql);
 
         debugR($var);
@@ -60,7 +60,7 @@ class NewsModel extends Manager
                 DATE_FORMAT(news_date_created, '%d/%m/%Y à %H:%i:%s') AS 'news_date_created' 
                 FROM cmw_news WHERE news_id=:news_id";
 
-        $db = Manager::dbConnect();
+        $db = DatabaseManager::dbConnect();
         $res = $db->prepare($sql);
 
 
@@ -93,7 +93,7 @@ class NewsModel extends Manager
     public function getNews(): array
     {
         $sql = "SELECT news_id FROM cmw_news";
-        $db = Manager::dbConnect();
+        $db = DatabaseManager::dbConnect();
 
         $res = $db->prepare($sql);
 
@@ -143,7 +143,7 @@ class NewsModel extends Manager
         }
 
 
-        $db = Manager::dbConnect();
+        $db = DatabaseManager::dbConnect();
         $req = $db->prepare($sql);
         if ($req->execute($var)) {
             return $this->getNewsById($newsId);
@@ -159,7 +159,7 @@ class NewsModel extends Manager
 
         $sql = "DELETE FROM cmw_news WHERE news_id=:news_id";
 
-        $db = Manager::dbConnect();
+        $db = DatabaseManager::dbConnect();
         $req = $db->prepare($sql);
         $req->execute(array("news_id" => $newsId));
     }
