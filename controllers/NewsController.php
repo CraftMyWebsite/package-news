@@ -62,7 +62,7 @@ class NewsController extends CoreController
 
         $this->newsModel->createNews($title, $desc, $comm, $likes, $content, $slug, $authorId, $image);
 
-        header("location: ../list");
+        header("location: ../news/list");
     }
 
     #[Link("/list", Link::GET, [], "/cmw-admin/news")]

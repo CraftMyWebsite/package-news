@@ -42,7 +42,6 @@ class NewsModel extends DatabaseManager
         $db = self::getInstance();
         $req = $db->prepare($sql);
 
-        debugR($var);
 
         if ($req->execute($var)) {
             $id = $db->lastInsertId();
