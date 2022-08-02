@@ -5,9 +5,11 @@ namespace CMW\Controller\News;
 use CMW\Controller\Core\CoreController;
 use CMW\Controller\Menus\MenusController;
 use CMW\Controller\Users\UsersController;
+use CMW\Model\News\NewsLikesModel;
 use CMW\Model\News\NewsModel;
 use CMW\Model\Users\UsersModel;
 use CMW\Router\Link;
+use CMW\Utils\Response;
 use CMW\Utils\Utils;
 use CMW\Utils\View;
 
@@ -22,12 +24,14 @@ class NewsController extends CoreController
     public static string $themePath;
     private UsersModel $usersModel;
     private NewsModel $newsModel;
+    private NewsLikesModel $newsLikesModel;
 
     public function __construct($themePath = null)
     {
         parent::__construct($themePath);
         $this->usersModel = new UsersModel();
         $this->newsModel = new NewsModel();
+        $this->newsLikesModel = new NewsLikesModel();
     }
 
 
@@ -119,6 +123,28 @@ class NewsController extends CoreController
         $this->newsModel->deleteNews($id);
 
         header("location: ../list");
+    }
+
+
+    #[Link("/news/like/:id", Link::GET, ["id" => "[0-9]+"])]
+    public function likeNews(int $newsId)
+    {
+        $user = $this->usersModel->getCurrentUser();
+        $news = $this->newsModel->getNewsById($newsId);
+
+        //First check if the news is likeable
+        if(!$news->isLikesStatus()) {
+            header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
+        }
+
+        //We check if the player has already like this news, and we store the like
+        if($this->newsLikesModel->userCanLike($newsId, $user->getId())) {
+            $this->newsLikesModel->storeLike($newsId, $user->getId());
+        }
+
+        //Response::sendAlert("error", "Erreur", "Vous avez déjà liké cette actualité");
+
+       header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
     }
 
 

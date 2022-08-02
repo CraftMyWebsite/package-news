@@ -15,7 +15,9 @@ class NewsEntity
     private string $slug;
     private ?UserEntity $author;
     private string $imageName;
+    private string $imageLink;
     private string $dateCreated;
+    private ?NewsLikesEntity $likes;
 
     /**
      * @param int $newsId
@@ -28,8 +30,9 @@ class NewsEntity
      * @param ?\CMW\Entity\Users\UserEntity $author
      * @param string $imageName
      * @param string $dateCreated
+     * @param ?\CMW\Entity\News\NewsLikesEntity $likes
      */
-    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $slug, ?UserEntity $author, string $imageName, string $dateCreated)
+    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $slug, ?UserEntity $author, string $imageName, string $dateCreated, ?NewsLikesEntity $likes)
     {
         $this->newsId = $newsId;
         $this->title = $title;
@@ -41,6 +44,7 @@ class NewsEntity
         $this->author = $author;
         $this->imageName = $imageName;
         $this->dateCreated = $dateCreated;
+        $this->likes = $likes;
     }
 
     /**
@@ -123,6 +127,20 @@ class NewsEntity
         return $this->dateCreated;
     }
 
+    /**
+     * @return ?\CMW\Entity\News\NewsLikesEntity
+     */
+    public function getLikes(): ?NewsLikesEntity
+    {
+        return $this->likes;
+    }
 
+    /**
+     * @return string
+     */
+    public function getImageLink(): string
+    {
+        return "/public/uploads/news/" . $this->imageName;
+    }
 
 }
