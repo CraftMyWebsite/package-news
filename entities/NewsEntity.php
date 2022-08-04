@@ -18,6 +18,8 @@ class NewsEntity
     private string $imageLink;
     private string $dateCreated;
     private ?NewsLikesEntity $likes;
+    /** @var \CMW\Entity\News\NewsCommentsEntity|\CMW\Entity\News\NewsCommentsEntity[] $comments */
+    private ?array $comments;
 
     /**
      * @param int $newsId
@@ -31,8 +33,9 @@ class NewsEntity
      * @param string $imageName
      * @param string $dateCreated
      * @param ?\CMW\Entity\News\NewsLikesEntity $likes
+     * @param \CMW\Entity\News\NewsCommentsEntity[]|null $comments
      */
-    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $slug, ?UserEntity $author, string $imageName, string $dateCreated, ?NewsLikesEntity $likes)
+    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $slug, ?UserEntity $author, string $imageName, string $dateCreated, ?NewsLikesEntity $likes, ?array $comments)
     {
         $this->newsId = $newsId;
         $this->title = $title;
@@ -45,6 +48,7 @@ class NewsEntity
         $this->imageName = $imageName;
         $this->dateCreated = $dateCreated;
         $this->likes = $likes;
+        $this->comments = $comments;
     }
 
     /**
@@ -136,11 +140,24 @@ class NewsEntity
     }
 
     /**
+     * @return \CMW\Entity\News\NewsCommentsEntity[]|null
+     */
+    public function getComments(): ?array
+    {
+        return $this->comments;
+    }
+
+    /**
      * @return string
      */
     public function getImageLink(): string
     {
         return "/public/uploads/news/" . $this->imageName;
+    }
+
+    public function sendComments(): string
+    {
+        return getenv("PATH_SUBFOLDER") . "news/comments/" . $this->newsId;
     }
 
 }

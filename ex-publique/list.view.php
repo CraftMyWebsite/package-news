@@ -2,6 +2,8 @@
 $title = "News";
 $description = "Affichage de toutes vos news";
 /* @var \CMW\Entity\News\NewsEntity[] $newsList */
+
+
 ?>
 
 <main>
@@ -14,13 +16,29 @@ $description = "Affichage de toutes vos news";
             <p><?= $news->getContent() ?></p>
             <p>- <?= $news->getAuthor()->getUsername() ?></p>
             <p>Nombre de likes: <?= $news->getLikes()->getTotal() ?></p>
+
             <?php if ($news->getLikes()->isLike()): ?>
                 <a href="#">Vous avez déjà liké cet article</a>
             <?php else: ?>
                 <a href="<?= $news->getLikes()->getSendLike() ?>">Liker l'article</a>
             <?php endif; ?>
+
             <br>
             <small>Lire la news en cliquant <a href="news/<?= $news->getSlug() ?>">ici</a></small>
+
+            <h5>-- Commenter --</h5>
+            <form method="post" action="<?= $news->sendComments() ?>">
+                <textarea name="comments"></textarea>
+                <button type="submit">Envoyer</button>
+            </form>
+
+            <h6>Liste des commentaires: </h6>
+            <?php foreach ($news->getComments() as $comment): ?>
+
+                <p><?= $comment->getContent() ?></p>
+
+            <?php endforeach; ?>
+
         </div>
         <hr>
     <?php endforeach; ?>

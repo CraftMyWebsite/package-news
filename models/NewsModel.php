@@ -83,7 +83,8 @@ class NewsModel extends DatabaseManager
             $author,
             $res['news_image_name'],
             $res['news_date_created'],
-            $newsLikes
+            $newsLikes,
+            (new NewsCommentsModel())->getCommentsForNews($res['news_id'])
         );
     }
 
@@ -107,6 +108,7 @@ class NewsModel extends DatabaseManager
 
         $author = (new UsersModel())->getUserById($res["news_author"]);
         $newsLikes = (new NewsLikesModel())->getLikesForNews($res['news_id']);
+        $newsComments = (new NewsCommentsModel())->getCommentsForNews($res['news_id']);
 
         return new NewsEntity(
             $res['news_id'],
@@ -119,7 +121,8 @@ class NewsModel extends DatabaseManager
             $author,
             $res['news_image_name'],
             $res['news_date_created'],
-            $newsLikes
+            $newsLikes,
+            $newsComments
         );
     }
 

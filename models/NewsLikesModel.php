@@ -2,7 +2,6 @@
 
 namespace CMW\Model\News;
 
-use CMW\Entity\News\NewsEntity;
 use CMW\Entity\News\NewsLikesEntity;
 use CMW\Manager\Database\DatabaseManager;
 use CMW\Model\Users\UsersModel;

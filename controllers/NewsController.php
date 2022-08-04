@@ -5,6 +5,7 @@ namespace CMW\Controller\News;
 use CMW\Controller\Core\CoreController;
 use CMW\Controller\Menus\MenusController;
 use CMW\Controller\Users\UsersController;
+use CMW\Model\News\NewsCommentsModel;
 use CMW\Model\News\NewsLikesModel;
 use CMW\Model\News\NewsModel;
 use CMW\Model\Users\UsersModel;
@@ -25,6 +26,7 @@ class NewsController extends CoreController
     private UsersModel $usersModel;
     private NewsModel $newsModel;
     private NewsLikesModel $newsLikesModel;
+    private NewsCommentsModel $newsCommentsModel;
 
     public function __construct($themePath = null)
     {
@@ -32,6 +34,7 @@ class NewsController extends CoreController
         $this->usersModel = new UsersModel();
         $this->newsModel = new NewsModel();
         $this->newsLikesModel = new NewsLikesModel();
+        $this->newsCommentsModel = new NewsCommentsModel();
     }
 
 
@@ -145,6 +148,19 @@ class NewsController extends CoreController
         //Response::sendAlert("error", "Erreur", "Vous avez déjà liké cette actualité");
 
        header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
+    }
+
+    #[Link("/news/comments/:id", Link::POST, ["id" => "[0-9]+"])]
+    public function commentsNews(int $newsId)
+    {
+        $user = $this->usersModel->getCurrentUser();
+        $news = $this->newsModel->getNewsById($newsId);
+
+        $content = strip_tags(htmlentities(filter_input(INPUT_POST,'comments')));
+
+        $this->newsCommentsModel->storeComments($newsId, $user->getId(), $content);
+
+        header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
     }
 
 

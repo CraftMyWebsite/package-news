@@ -1,3 +1,4 @@
+/* NEWS */
 CREATE TABLE IF NOT EXISTS `cmw_news`
 (
     `news_id`              INT          NOT NULL AUTO_INCREMENT,
@@ -19,9 +20,12 @@ CREATE TABLE IF NOT EXISTS `cmw_news`
   CHARSET utf8mb4;
 
 ALTER TABLE `cmw_news`
-    ADD CONSTRAINT `cmw_news_ibfk_1` FOREIGN KEY (`news_author`) REFERENCES `cmw_users` (`user_id`) ON DELETE SET NULL ON UPDATE SET NULL;
+    ADD CONSTRAINT `cmw_news_ibfk_1` FOREIGN KEY (`news_author`)
+        REFERENCES `cmw_users` (`user_id`) ON DELETE SET NULL ON UPDATE SET NULL;
 COMMIT;
 
+
+/* NEWS LIKES */
 CREATE TABLE IF NOT EXISTS `cmw_news_likes`
 (
     `news_like_id`      int(11)   NOT NULL,
@@ -40,6 +44,35 @@ ALTER TABLE `cmw_news_likes`
     MODIFY `news_like_id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `cmw_news_likes`
-    ADD CONSTRAINT `cmw_news_likes_ibfk_1` FOREIGN KEY (`news_like_user_id`) REFERENCES `cmw_users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    ADD CONSTRAINT `cmw_news_likes_ibfk_2` FOREIGN KEY (`news_like_news_id`) REFERENCES `cmw_news` (`news_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+    ADD CONSTRAINT `cmw_news_likes_ibfk_1` FOREIGN KEY (`news_like_user_id`)
+        REFERENCES `cmw_users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD CONSTRAINT `cmw_news_likes_ibfk_2` FOREIGN KEY (`news_like_news_id`)
+        REFERENCES `cmw_news` (`news_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
+
+
+/* NEWS COMMENTS */
+CREATE TABLE IF NOT EXISTS `cmw_news_comments`
+(
+    `news_comments_id`      int(11)   NOT NULL,
+    `news_comments_news_id` int(11)   NOT NULL,
+    `news_comments_user_id` int(11)   NOT NULL,
+    `news_comments_content` text      NOT NULL,
+    `news_comments_date`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+ALTER TABLE `cmw_news_comments`
+    ADD PRIMARY KEY (`news_comments_id`),
+    ADD KEY `news_comments_news_id` (`news_comments_news_id`),
+    ADD KEY `news_comments_user_id` (`news_comments_user_id`);
+
+ALTER TABLE `cmw_news_comments`
+    MODIFY `news_comments_id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `cmw_news_comments`
+    ADD CONSTRAINT `cmw_news_comments_ibfk_1` FOREIGN KEY (`news_comments_news_id`)
+        REFERENCES `cmw_news` (`news_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD CONSTRAINT `cmw_news_comments_ibfk_2` FOREIGN KEY (`news_comments_user_id`)
+        REFERENCES `cmw_users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
