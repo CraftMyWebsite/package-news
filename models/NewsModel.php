@@ -7,6 +7,7 @@ use CMW\Manager\Database\DatabaseManager;
 use CMW\Model\Users\UsersModel;
 use CMW\Utils\Images;
 use CMW\Utils\Utils;
+use JetBrains\PhpStorm\ExpectedValues;
 
 
 /**
@@ -138,6 +139,29 @@ class NewsModel extends DatabaseManager
         $res = $db->prepare($sql);
 
         if (!$res->execute()) {
+            return array();
+        }
+
+        $toReturn = array();
+
+        while ($news = $res->fetch()) {
+            $toReturn[] = $this->getNewsById($news["news_id"]);
+        }
+
+        return $toReturn;
+    }
+
+    public function getSomeNews(int $limit, #[ExpectedValues (values: ['DESC', 'ASC'])] string $order = "DESC"): array
+    {
+
+        $order === "ASC" ? $sql = "SELECT news_id FROM cmw_news ORDER BY `cmw_news`.`news_id` ASC LIMIT :limit"
+            : $sql = "SELECT news_id FROM cmw_news ORDER BY `cmw_news`.`news_id` DESC LIMIT :limit";
+
+        $db = self::getInstance();
+
+        $res = $db->prepare($sql);
+
+        if (!$res->execute(array("limit" => $limit))) {
             return array();
         }
 

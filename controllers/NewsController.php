@@ -194,10 +194,11 @@ class NewsController extends CoreController
     public function publicListNews(): void
     {
         $newsList = $this->newsModel->getNews();
+        $newsModel = $this->newsModel;
 
         //Include the public view file ("public/themes/$themePath/views/news/list.view.php")
         $view = new View('news', 'list');
-        $view->addVariableList(["newsList" => $newsList]);
+        $view->addVariableList(["newsList" => $newsList, "newsModel" => $newsModel]);
         $view->view();
     }
 
