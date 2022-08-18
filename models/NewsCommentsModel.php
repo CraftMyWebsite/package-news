@@ -3,6 +3,7 @@
 namespace CMW\Model\News;
 
 use CMW\Entity\News\NewsCommentsEntity;
+use CMW\Entity\News\NewsCommentsLikesEntity;
 use CMW\Manager\Database\DatabaseManager;
 use CMW\Model\Users\UsersModel;
 
@@ -65,7 +66,8 @@ class NewsCommentsModel extends DatabaseManager
             $res['news_comments_news_id'],
             $user,
             $res['news_comments_content'],
-            $res['news_comments_date']
+            $res['news_comments_date'],
+            (new NewsCommentsLikesModel())->getLikesForComments($res['news_comments_id'])
         );
     }
 

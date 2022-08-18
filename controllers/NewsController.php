@@ -5,6 +5,7 @@ namespace CMW\Controller\News;
 use CMW\Controller\Core\CoreController;
 use CMW\Controller\Menus\MenusController;
 use CMW\Controller\Users\UsersController;
+use CMW\Model\News\NewsCommentsLikesModel;
 use CMW\Model\News\NewsCommentsModel;
 use CMW\Model\News\NewsLikesModel;
 use CMW\Model\News\NewsModel;
@@ -27,6 +28,7 @@ class NewsController extends CoreController
     private NewsModel $newsModel;
     private NewsLikesModel $newsLikesModel;
     private NewsCommentsModel $newsCommentsModel;
+    private NewsCommentsLikesModel $newsCommentsLikesModel;
 
     public function __construct($themePath = null)
     {
@@ -35,6 +37,7 @@ class NewsController extends CoreController
         $this->newsModel = new NewsModel();
         $this->newsLikesModel = new NewsLikesModel();
         $this->newsCommentsModel = new NewsCommentsModel();
+        $this->newsCommentsLikesModel = new NewsCommentsLikesModel();
     }
 
 
@@ -128,6 +131,21 @@ class NewsController extends CoreController
         header("location: ../list");
     }
 
+    #[Link("/news/like/comment/:id", Link::GET, ["id" => "[0-9]+"])]
+    public function likeCommentsNews(int $commentsId)
+    {
+        $user = $this->usersModel->getCurrentUser();
+
+
+        //We check if the player has already like this comments, and we store the like
+        if($this->newsCommentsLikesModel->userCanLike($commentsId, $user->getId())) {
+            $this->newsCommentsLikesModel->storeLike($commentsId, $user->getId());
+        }
+
+        //Response::sendAlert("error", "Erreur", "Vous avez déjà liké ce commentaire");
+
+        header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
+    }
 
     #[Link("/news/like/:id", Link::GET, ["id" => "[0-9]+"])]
     public function likeNews(int $newsId)

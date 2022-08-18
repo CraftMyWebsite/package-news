@@ -17,7 +17,7 @@ $description = "Affichage de toutes vos news";
             <p>- <?= $news->getAuthor()->getUsername() ?></p>
             <p>Nombre de likes: <?= $news->getLikes()->getTotal() ?></p>
 
-            <?php if ($news->getLikes()->isLike()): ?>
+            <?php if ($news->getLikes()->userCanLike()): ?>
                 <a href="#">Vous avez déjà liké cet article</a>
             <?php else: ?>
                 <a href="<?= $news->getLikes()->getSendLike() ?>">Liker l'article</a>
@@ -36,6 +36,18 @@ $description = "Affichage de toutes vos news";
             <?php foreach ($news->getComments() as $comment): ?>
 
                 <p><?= $comment->getContent() ?></p>
+
+                <?php if ($comment->userCanLike()): ?>
+                    <a href="#">Vous avez déjà liké ce commentaire</a>
+                <?php else: ?>
+                    <a href="<?= $comment->getSendLike() ?>">Liker ce commentaire</a>
+                <?php endif; ?>
+
+
+
+                <p>Likes: <?= $comment->getLikes()->getTotal() ?></p>
+
+
 
             <?php endforeach; ?>
 

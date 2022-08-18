@@ -3,52 +3,56 @@
 namespace CMW\Entity\News;
 
 use CMW\Entity\Users\UserEntity;
-use CMW\Model\News\NewsLikesModel;
-use CMW\Model\Users\UsersModel;
 
-class NewsLikesEntity
+
+class NewsCommentsLikesEntity
 {
-
-    private ?int $likeId;
+    private ?int $likesId;
+    private ?int $commentsId;
     private ?UserEntity $user;
     private ?string $date;
 
-    //Utils
-    private int $newsId;
+    //UTILS
     private int $total;
     private string $sendLike;
     private bool $isLike;
 
-
     /**
-     * @param int|null $likeId
+     * @param int|null $likesId
+     * @param int|null $commentsId
      * @param \CMW\Entity\Users\UserEntity|null $user
      * @param string|null $date
      * @param int $total
-     * @param int $newsId
      */
-    public function __construct(?int $likeId, ?UserEntity $user, ?string $date, int $total, int $newsId)
+    public function __construct(?int $likesId, ?int $commentsId, ?UserEntity $user, ?string $date, int $total)
     {
-        $this->likeId = $likeId;
+        $this->likesId = $likesId;
+        $this->commentsId = $commentsId;
         $this->user = $user;
         $this->date = $date;
         $this->total = $total;
-        $this->newsId = $newsId;
     }
 
     /**
      * @return int|null
      */
-    public function getLikeId(): ?int
+    public function getLikesId(): ?int
     {
-        return $this->likeId;
+        return $this->likesId;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getCommentsId(): ?int
+    {
+        return $this->commentsId;
+    }
 
     /**
-     * @return \CMW\Entity\Users\UserEntity
+     * @return \CMW\Entity\Users\UserEntity|null
      */
-    public function getUser(): UserEntity
+    public function getUser(): ?UserEntity
     {
         return $this->user;
     }
@@ -74,15 +78,8 @@ class NewsLikesEntity
      */
     public function getSendLike(): string
     {
-        return getenv("PATH_SUBFOLDER") . "news/like/" . $this->newsId;
+        return getenv("PATH_SUBFOLDER") . "news/comments/like/" . $this->commentsId;
     }
 
-    /**
-     * @return bool
-     */
-    public function userCanLike(): bool
-    {
-        return !(new NewsLikesModel())->userCanLike($this->newsId, (new UsersModel())->getCurrentUser()->getId());
-    }
 
 }
