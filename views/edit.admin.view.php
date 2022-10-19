@@ -1,4 +1,7 @@
 <?php
+
+use CMW\Utils\SecurityService;
+
 $title = NEWS_DASHBOARD_TITLE_EDIT;
 $description = NEWS_DASHBOARD_DESC;
 
@@ -10,6 +13,7 @@ $description = NEWS_DASHBOARD_DESC;
         <div class="row">
             <div class="col-12">
                 <form action="" method="post" enctype="multipart/form-data">
+                    <?php (new SecurityService())->insertHiddenToken() ?>
                     <div class="card card-primary">
 
                         <div class="card-header">
