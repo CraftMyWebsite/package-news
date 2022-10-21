@@ -53,7 +53,7 @@ class NewsCommentsLikesModel extends DatabaseManager
 
         $res->execute(array("comments_id" => $commentsId, "user_id" => $userId));
 
-        return count($res->fetchAll()) == 0;
+        return count($res->fetchAll()) === 0;
     }
 
     /**
@@ -101,7 +101,7 @@ class NewsCommentsLikesModel extends DatabaseManager
             $res['news_comments_likes_comments_id'],
             $user,
             $res['news_comments_likes_date'],
-            (new NewsCommentsLikesModel())->getTotalLikesForComments($res['news_comments_likes_id'])
+            $this->getTotalLikesForComments($res['news_comments_likes_id'])
         );
     }
 
@@ -145,7 +145,7 @@ class NewsCommentsLikesModel extends DatabaseManager
 
         $res = $res->fetch();
 
-        $totalLikes = self::getTotalLikesForComments($commentsId);
+        $totalLikes = $this->getTotalLikesForComments($commentsId);
 
         if ($res) {
             $user = (new UsersModel())->getUserById($res["news_comments_likes_user_id"]);

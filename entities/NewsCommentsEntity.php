@@ -43,6 +43,14 @@ class NewsCommentsEntity
         return $this->commentsId;
     }
 
+    /**
+     * @return int
+     */
+    public function getNewsId(): int
+    {
+        return $this->newsId;
+    }
+
 
     /**
      * @return \CMW\Entity\Users\UserEntity|null
@@ -92,7 +100,7 @@ class NewsCommentsEntity
      */
     public function userCanLike(): bool
     {
-        return !(new NewsCommentsLikesModel())->userCanLike($this->commentsId, (new UsersModel())->getCurrentUser()->getId());
+        return !(new NewsCommentsLikesModel())->userCanLike($this->commentsId, (new UsersModel())::getCurrentUser()?->getId());
     }
 
 }

@@ -82,7 +82,7 @@ class NewsLikesEntity
      */
     public function userCanLike(): bool
     {
-        return !(new NewsLikesModel())->userCanLike($this->newsId, (new UsersModel())->getCurrentUser()->getId());
+        return !(new NewsLikesModel())->userCanLike($this->newsId, (new UsersModel())::getCurrentUser()?->getId());
     }
 
 }

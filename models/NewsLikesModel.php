@@ -37,7 +37,7 @@ class NewsLikesModel extends DatabaseManager
         $res = $res->fetch();
 
 
-        $totalLikes = self::getTotalLikesForNews($newsId);
+        $totalLikes = $this->getTotalLikesForNews($newsId);
 
         if($res) {
             $user = (new UsersModel())->getUserById($res["news_like_user_id"]);
@@ -104,7 +104,7 @@ class NewsLikesModel extends DatabaseManager
 
        $res->execute(array("news_id" => $newsId, "user_id" => $userId));
 
-        return count($res->fetchAll()) == 0;
+        return count($res->fetchAll()) === 0;
     }
 
     public function storeLike(int $newsId, int $userId): ?NewsLikesEntity

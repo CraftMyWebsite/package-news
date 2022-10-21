@@ -66,7 +66,7 @@ class NewsController extends CoreController
         $slug = Utils::normalizeForSlug($title);
 
         $userEntity = $this->usersModel->getUserById($_SESSION['cmwUserId']);
-        $authorId = $userEntity->getId();
+        $authorId = $userEntity?->getId();
 
         $image = $_FILES['image'];
 
@@ -118,7 +118,7 @@ class NewsController extends CoreController
 
 
         $this->newsModel->updateNews($id, $title, $desc, $comm, $likes, $content, $slug,
-            ($_FILES['image']['size'] == 0 && $_FILES['image']['error'] == 0 ? null : $_FILES['image']));
+            ($_FILES['image']['size'] === 0 && $_FILES['image']['error'] === 0 ? null : $_FILES['image']));
 
         header("location: ../list");
     }
@@ -132,14 +132,14 @@ class NewsController extends CoreController
     }
 
     #[Link("/news/like/comment/:id", Link::GET, ["id" => "[0-9]+"])]
-    public function likeCommentsNews(int $commentsId)
+    public function likeCommentsNews(int $commentsId): void
     {
-        $user = $this->usersModel->getCurrentUser();
+        $user = $this->usersModel::getCurrentUser();
 
 
         //We check if the player has already like this comments, and we store the like
-        if($this->newsCommentsLikesModel->userCanLike($commentsId, $user->getId())) {
-            $this->newsCommentsLikesModel->storeLike($commentsId, $user->getId());
+        if($this->newsCommentsLikesModel->userCanLike($commentsId, $user?->getId())) {
+            $this->newsCommentsLikesModel->storeLike($commentsId, $user?->getId());
         }
 
         //Response::sendAlert("error", "Erreur", "Vous avez déjà liké ce commentaire");
@@ -148,19 +148,19 @@ class NewsController extends CoreController
     }
 
     #[Link("/news/like/:id", Link::GET, ["id" => "[0-9]+"])]
-    public function likeNews(int $newsId)
+    public function likeNews(int $newsId): void
     {
-        $user = $this->usersModel->getCurrentUser();
+        $user = $this->usersModel::getCurrentUser();
         $news = $this->newsModel->getNewsById($newsId);
 
         //First check if the news is likeable
-        if(!$news->isLikesStatus()) {
+        if(!$news?->isLikesStatus()) {
             header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
         }
 
         //We check if the player has already like this news, and we store the like
-        if($this->newsLikesModel->userCanLike($newsId, $user->getId())) {
-            $this->newsLikesModel->storeLike($newsId, $user->getId());
+        if($this->newsLikesModel->userCanLike($newsId, $user?->getId())) {
+            $this->newsLikesModel->storeLike($newsId, $user?->getId());
         }
 
         //Response::sendAlert("error", "Erreur", "Vous avez déjà liké cette actualité");
@@ -169,14 +169,14 @@ class NewsController extends CoreController
     }
 
     #[Link("/news/comments/:id", Link::POST, ["id" => "[0-9]+"])]
-    public function commentsNews(int $newsId)
+    public function commentsNews(int $newsId): void
     {
-        $user = $this->usersModel->getCurrentUser();
+        $user = $this->usersModel::getCurrentUser();
         $news = $this->newsModel->getNewsById($newsId);
 
         $content = strip_tags(htmlentities(filter_input(INPUT_POST,'comments')));
 
-        $this->newsCommentsModel->storeComments($newsId, $user->getId(), $content);
+        $this->newsCommentsModel->storeComments($newsId, $user?->getId(), $content);
 
         header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
     }

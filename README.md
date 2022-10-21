@@ -110,7 +110,7 @@ $description = "Affichage de la news " . $news->getTitle();
 </main>
 ```
 
-Pour accéder à votre page qui liste toutes les news → ``monsite.fr/news/NOM-DE-LA-NEWS``
+Pour accéder à votre page qui affiche une news spécifique → ``monsite.fr/news/NOM-DE-LA-NEWS``
 
 
 > Version: `V1.0`

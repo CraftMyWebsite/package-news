@@ -6,8 +6,8 @@ use CMW\Entity\News\NewsEntity;
 use CMW\Manager\Database\DatabaseManager;
 use CMW\Model\Users\UsersModel;
 use CMW\Utils\Images;
-use CMW\Utils\Utils;
 use JetBrains\PhpStorm\ExpectedValues;
+use JsonException;
 
 
 /**
@@ -23,30 +23,32 @@ class NewsModel extends DatabaseManager
     {
 
         //Upload image
-        $imageName = Images::upload($image, "news");
+        try {
+            $imageName = Images::upload($image, "news");
+            $var = array(
+                'title' => $title,
+                'desc' => $desc,
+                'comm' => $comm,
+                'likes' => $likes,
+                'content' => $content,
+                'slug' => $slug,
+                'authorId' => $authorId,
+                'imageName' => $imageName
+            );
 
-        $var = array(
-            'title' => $title,
-            'desc' => $desc,
-            'comm' => $comm,
-            'likes' => $likes,
-            'content' => $content,
-            'slug' => $slug,
-            'authorId' => $authorId,
-            'imageName' => $imageName
-        );
-
-        $sql = "INSERT INTO cmw_news (news_title, news_desc, news_comments_status, news_likes_status, news_content, 
+            $sql = "INSERT INTO cmw_news (news_title, news_desc, news_comments_status, news_likes_status, news_content, 
                 news_slug, news_author, news_image_name) 
                 VALUES (:title, :desc, :comm, :likes, :content, :slug, :authorId, :imageName)";
 
-        $db = self::getInstance();
-        $req = $db->prepare($sql);
+            $db = self::getInstance();
+            $req = $db->prepare($sql);
 
 
-        if ($req->execute($var)) {
-            $id = $db->lastInsertId();
-            return $this->getNewsById($id);
+            if ($req->execute($var)) {
+                $id = $db->lastInsertId();
+                return $this->getNewsById($id);
+            }
+        } catch (JsonException) {
         }
 
         return null;
@@ -191,9 +193,9 @@ class NewsModel extends DatabaseManager
                     news_likes_status = :likes, news_content = :content, news_slug = :slug WHERE news_id = :newsId";
 
         //Detect if we update the image
-        if(!empty($image['name'])){
+        if (!empty($image['name'])) {
             //Delete the old image
-            unlink(getenv("dir") . "public/uploads/news/" . self::getNewsById($newsId)->getImageName());
+            unlink(getenv("dir") . "public/uploads/news/" . $this->getNewsById($newsId)?->getImageName());
 
             //Upload the new image
             $imageName = Images::upload($image, "news");
@@ -219,7 +221,7 @@ class NewsModel extends DatabaseManager
     public function deleteNews(int $newsId): void
     {
         //Delete the image file
-        unlink(getenv("dir") . "public/uploads/news/" . self::getNewsById($newsId)->getImageName());
+        unlink(getenv("dir") . "public/uploads/news/" . $this->getNewsById($newsId)?->getImageName());
 
         $sql = "DELETE FROM cmw_news WHERE news_id=:news_id";
 
