@@ -9,14 +9,15 @@ return [
 	],
 	"list" => [
 		"list" => "Liste des actualités",
+        "table" => [
+            "title" => "Titre",
+            "description" => "Description",
+            "author" => "Auteur",
+            "creation_date" => "Date de création",
+            "edit" => "Modifications",
+        ],
 	],
-	"table" => [
-		"title" => "Titre",
-		"description" => "Description",
-		"author" => "Auteur",
-		"creation_date" => "Date de création",
-		"edit" => "Modifications",
-	],
+
 	"add" => [
 		"title" => "Titre de l'actualité",
 		"title_placeholder" => "Titre",

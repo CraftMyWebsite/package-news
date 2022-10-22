@@ -9,13 +9,13 @@ return [
 	],
 	"list" => [
 		"list" => "List of news",
-	],
-	"table" => [
-		"title" => "Title",
-		"description" => "Description",
-		"author" => "Author",
-		"creation_date" => "creation date",
-		"edit" => "Edit",
+        "table" => [
+            "title" => "Title",
+            "description" => "Description",
+            "author" => "Author",
+            "creation_date" => "creation date",
+            "edit" => "Edit",
+        ],
 	],
 	"add" => [
 		"title" => "News Title",

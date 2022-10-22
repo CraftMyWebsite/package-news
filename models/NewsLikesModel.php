@@ -17,6 +17,55 @@ class NewsLikesModel extends DatabaseManager
 {
 
     /**
+     * @return int
+     * @desc Get all the likes for all the news
+     */
+    public function getTotalLikes(): int
+    {
+        $sql = "SELECT news_like_news_id FROM cmw_news_likes";
+
+        $db = self::getInstance();
+        $req = $db->prepare($sql);
+        $res = $req->execute();
+
+        if ($res) {
+            $lines = $req->fetchAll();
+
+            return count($lines);
+        }
+
+        return 0;
+    }
+
+    public function userCanLike(int $newsId, int $userId): bool
+    {
+        $sql = "SELECT news_like_id FROM `cmw_news_likes` WHERE news_like_news_id = :news_id AND news_like_user_id = :user_id";
+
+        $db = self::getInstance();
+        $res = $db->prepare($sql);
+
+        $res->execute(array("news_id" => $newsId, "user_id" => $userId));
+
+        return count($res->fetchAll()) === 0;
+    }
+
+    public function storeLike(int $newsId, int $userId): ?NewsLikesEntity
+    {
+        $sql = "INSERT INTO cmw_news_likes (news_like_news_id, news_like_user_id) VALUES (:news_id, :user_id)";
+
+        $db = self::getInstance();
+        $res = $db->prepare($sql);
+
+
+        if ($res->execute(array("news_id" => $newsId, "user_id" => $userId))) {
+            $id = $db->lastInsertId();
+            return $this->getLikesForNews($id);
+        }
+
+        return null;
+    }
+
+    /**
      * @param int $newsId
      * @return \CMW\Entity\News\NewsLikesEntity|null
      * @desc Get the likesEntity
@@ -39,7 +88,7 @@ class NewsLikesModel extends DatabaseManager
 
         $totalLikes = $this->getTotalLikesForNews($newsId);
 
-        if($res) {
+        if ($res) {
             $user = (new UsersModel())->getUserById($res["news_like_user_id"]);
         }
 
@@ -72,55 +121,6 @@ class NewsLikesModel extends DatabaseManager
         }
 
         return 0;
-    }
-
-    /**
-     * @return int
-     * @desc Get all the likes for all the news
-     */
-    public function getTotalLikes(): int
-    {
-        $sql = "SELECT news_like_news_id FROM cmw_news_likes";
-
-        $db = self::getInstance();
-        $req = $db->prepare($sql);
-        $res = $req->execute();
-
-        if ($res) {
-            $lines = $req->fetchAll();
-
-            return count($lines);
-        }
-
-        return 0;
-    }
-
-    public function userCanLike(int $newsId, int $userId): bool
-    {
-        $sql = "SELECT news_like_id FROM `cmw_news_likes` WHERE news_like_news_id = :news_id AND news_like_user_id = :user_id";
-
-        $db = self::getInstance();
-        $res = $db->prepare($sql);
-
-       $res->execute(array("news_id" => $newsId, "user_id" => $userId));
-
-        return count($res->fetchAll()) === 0;
-    }
-
-    public function storeLike(int $newsId, int $userId): ?NewsLikesEntity
-    {
-        $sql = "INSERT INTO cmw_news_likes (news_like_news_id, news_like_user_id) VALUES (:news_id, :user_id)";
-
-        $db = self::getInstance();
-        $res = $db->prepare($sql);
-
-
-        if ($res->execute(array("news_id" => $newsId, "user_id" => $userId))){
-            $id = $db->lastInsertId();
-            return $this->getLikesForNews($id);
-        }
-
-        return null;
     }
 
 }

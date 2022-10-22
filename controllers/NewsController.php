@@ -3,7 +3,6 @@
 namespace CMW\Controller\News;
 
 use CMW\Controller\Core\CoreController;
-use CMW\Controller\Menus\MenusController;
 use CMW\Controller\Users\UsersController;
 use CMW\Model\News\NewsCommentsLikesModel;
 use CMW\Model\News\NewsCommentsModel;
@@ -11,7 +10,6 @@ use CMW\Model\News\NewsLikesModel;
 use CMW\Model\News\NewsModel;
 use CMW\Model\Users\UsersModel;
 use CMW\Router\Link;
-use CMW\Utils\Response;
 use CMW\Utils\Utils;
 use CMW\Utils\View;
 
@@ -49,7 +47,7 @@ class NewsController extends CoreController
 
         View::createAdminView('news', 'add')
             ->addScriptBefore("admin/resources/vendors/summernote/summernote.min.js", "admin/resources/vendors/summernote/summernote-bs4.min.js", "app/package/wiki/views/assets/js/summernoteInit.js")
-            ->addStyle(  "admin/resources/vendors/summernote/summernote-bs4.min.css", "admin/resources/vendors/summernote/summernote.min.css")
+            ->addStyle("admin/resources/vendors/summernote/summernote-bs4.min.css", "admin/resources/vendors/summernote/summernote.min.css")
             ->view();
     }
 
@@ -138,7 +136,7 @@ class NewsController extends CoreController
 
 
         //We check if the player has already like this comments, and we store the like
-        if($this->newsCommentsLikesModel->userCanLike($commentsId, $user?->getId())) {
+        if ($this->newsCommentsLikesModel->userCanLike($commentsId, $user?->getId())) {
             $this->newsCommentsLikesModel->storeLike($commentsId, $user?->getId());
         }
 
@@ -154,18 +152,18 @@ class NewsController extends CoreController
         $news = $this->newsModel->getNewsById($newsId);
 
         //First check if the news is likeable
-        if(!$news?->isLikesStatus()) {
+        if (!$news?->isLikesStatus()) {
             header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
         }
 
         //We check if the player has already like this news, and we store the like
-        if($this->newsLikesModel->userCanLike($newsId, $user?->getId())) {
+        if ($this->newsLikesModel->userCanLike($newsId, $user?->getId())) {
             $this->newsLikesModel->storeLike($newsId, $user?->getId());
         }
 
         //Response::sendAlert("error", "Erreur", "Vous avez déjà liké cette actualité");
 
-       header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
+        header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
     }
 
     #[Link("/news/comments/:id", Link::POST, ["id" => "[0-9]+"])]
@@ -174,7 +172,7 @@ class NewsController extends CoreController
         $user = $this->usersModel::getCurrentUser();
         $news = $this->newsModel->getNewsById($newsId);
 
-        $content = strip_tags(htmlentities(filter_input(INPUT_POST,'comments')));
+        $content = strip_tags(htmlentities(filter_input(INPUT_POST, 'comments')));
 
         $this->newsCommentsModel->storeComments($newsId, $user?->getId(), $content);
 

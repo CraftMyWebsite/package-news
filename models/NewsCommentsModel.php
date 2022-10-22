@@ -87,14 +87,13 @@ class NewsCommentsModel extends DatabaseManager
         $res = $db->prepare($sql);
 
 
-        if ($res->execute(array("news_id" => $newsId, "user_id" => $userId, "content" => $content))){
+        if ($res->execute(array("news_id" => $newsId, "user_id" => $userId, "content" => $content))) {
             $id = $db->lastInsertId();
             return $this->getCommentsById($id);
         }
 
         return null;
     }
-
 
 
 }
