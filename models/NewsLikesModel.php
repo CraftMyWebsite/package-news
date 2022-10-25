@@ -37,8 +37,12 @@ class NewsLikesModel extends DatabaseManager
         return 0;
     }
 
-    public function userCanLike(int $newsId, int $userId): bool
+    public function userCanLike(int $newsId, ?int $userId): bool
     {
+        if ($userId === null){
+            return  false;
+        }
+
         $sql = "SELECT news_like_id FROM `cmw_news_likes` WHERE news_like_news_id = :news_id AND news_like_user_id = :user_id";
 
         $db = self::getInstance();
