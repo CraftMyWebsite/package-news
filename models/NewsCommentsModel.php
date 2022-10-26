@@ -105,7 +105,6 @@ class NewsCommentsModel extends DatabaseManager
             return false;
         }
 
-
         $sql = "SELECT news_id FROM `cmw_news` 
                               WHERE news_id = :news_id AND news_comments_status = 1";
 
@@ -114,7 +113,7 @@ class NewsCommentsModel extends DatabaseManager
 
         $res->execute(array("news_id" => $newsId));
 
-        return count($res->fetchAll()) === 0;
+        return count($res->fetchAll()) === 1;
     }
 
 
