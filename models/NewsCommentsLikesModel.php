@@ -39,11 +39,15 @@ class NewsCommentsLikesModel extends DatabaseManager
 
     /**
      * @param int $commentsId
-     * @param int $userId
+     * @param ?int $userId
      * @return bool
      */
-    public function userCanLike(int $commentsId, int $userId): bool
+    public function userCanLike(int $commentsId, ?int $userId): bool
     {
+        if ($userId === null){
+            return  false;
+        }
+
         $sql = "SELECT news_comments_likes_comments_id FROM `cmw_news_comments_likes`
                                        WHERE news_comments_likes_comments_id = :comments_id
                                          AND news_comments_likes_user_id = :user_id";
