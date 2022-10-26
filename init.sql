@@ -101,3 +101,21 @@ ALTER TABLE `cmw_news_comments_likes`
     ADD CONSTRAINT `news_cmw_news_comments_likes_ibfk_2` FOREIGN KEY (`news_comments_likes_comments_id`)
         REFERENCES `cmw_news_comments` (`news_comments_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
+
+
+CREATE TABLE IF NOT EXISTS `cmw_news_banned_players`
+(
+    `news_banned_players_id`        INT       NOT NULL AUTO_INCREMENT,
+    `news_banned_players_player_id` INT       NOT NULL,
+    `news_banned_players_author_id` INT       NULL,
+    `news_banned_players_date`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`news_banned_players_id`),
+    INDEX (`news_banned_players_author_id`),
+    UNIQUE (`news_banned_players_player_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+ALTER TABLE `cmw_news_banned_players`
+    ADD FOREIGN KEY (`news_banned_players_player_id`) REFERENCES `cmw_users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `cmw_news_banned_players`
+    ADD FOREIGN KEY (`news_banned_players_author_id`) REFERENCES `cmw_users` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE;

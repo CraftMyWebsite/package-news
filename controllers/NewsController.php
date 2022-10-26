@@ -170,11 +170,13 @@ class NewsController extends CoreController
     public function commentsNews(int $newsId): void
     {
         $user = $this->usersModel::getCurrentUser();
-        $news = $this->newsModel->getNewsById($newsId);
 
         $content = strip_tags(htmlentities(filter_input(INPUT_POST, 'comments')));
 
-        $this->newsCommentsModel->storeComments($newsId, $user?->getId(), $content);
+        if((new NewsCommentsModel())->userCanComment($newsId, $user?->getId()))
+        {
+            $this->newsCommentsModel->storeComments($newsId, $user?->getId(), $content);
+        }
 
         header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
     }

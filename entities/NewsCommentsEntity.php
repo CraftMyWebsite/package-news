@@ -4,6 +4,7 @@ namespace CMW\Entity\News;
 
 use CMW\Entity\Users\UserEntity;
 use CMW\Model\News\NewsCommentsLikesModel;
+use CMW\Model\News\NewsCommentsModel;
 use CMW\Model\Users\UsersModel;
 
 class NewsCommentsEntity
@@ -101,6 +102,14 @@ class NewsCommentsEntity
     public function userCanLike(): bool
     {
         return !(new NewsCommentsLikesModel())->userCanLike($this->commentsId, (new UsersModel())::getCurrentUser()?->getId());
+    }
+
+    /**
+     * @return bool
+     */
+    public function userCanComment(): bool
+    {
+        return (new NewsCommentsModel())->userCanComment($this->newsId, (new UsersModel())::getCurrentUser()?->getId());
     }
 
 }

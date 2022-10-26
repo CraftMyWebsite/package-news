@@ -2,6 +2,7 @@
 
 namespace CMW\Model\News;
 
+use CMW\Entity\News\NewsBannedPlayersEntity;
 use CMW\Entity\News\NewsEntity;
 use CMW\Manager\Database\DatabaseManager;
 use CMW\Model\Users\UsersModel;
@@ -228,6 +229,90 @@ class NewsModel extends DatabaseManager
         $db = self::getInstance();
         $req = $db->prepare($sql);
         $req->execute(array("news_id" => $newsId));
+    }
+
+    public function getBannedUsers(): array
+    {
+
+        $sql = "SELECT news_banned_players_player_id FROM cmw_news_banned_players";
+        $db = self::getInstance();
+
+        $res = $db->prepare($sql);
+
+        if (!$res->execute()) {
+            return array();
+        }
+
+        $toReturn = array();
+
+        while ($player = $res->fetch()) {
+            $toReturn[] = $this->getBannedUser($player["news_banned_players_player_id"]);
+        }
+
+        return $toReturn;
+    }
+
+    public function getBannedUser(int $userId): ?NewsBannedPlayersEntity
+    {
+
+        $sql = "SELECT news_banned_players_id, news_banned_players_player_id, news_banned_players_author_id,
+                DATE_FORMAT(news_banned_players_date, '%d/%m/%Y à %H:%i:%s') AS 'news_banned_players_date' 
+                FROM cmw_news_banned_players WHERE news_banned_players_player_id = :userId";
+
+        $db = self::getInstance();
+        $res = $db->prepare($sql);
+
+
+        if (!$res->execute(array("userId" => $userId))) {
+            return null;
+        }
+
+        $res = $res->fetch();
+
+        $player = (new UsersModel())->getUserById($userId);
+        $author = (new UsersModel())->getUserById($res['news_banned_players_author_id']);
+
+        return new NewsBannedPlayersEntity(
+            $res['news_banned_players_id'],
+            $player,
+            $author,
+            $res['news_banned_players_date']
+        );
+    }
+
+    public function banPlayer(int $userId): ?NewsBannedPlayersEntity
+    {
+        if (!$this->isUserBanned($userId)) {
+            $var = array(
+                "userId" => $userId,
+                "authorId" => UsersModel::getCurrentUser()?->getId()
+            );
+
+            $sql = "INSERT INTO cmw_news_banned_players (news_banned_players_player_id, news_banned_players_author_id) 
+                    VALUES (:userId, :authorId)";
+
+            $db = self::getInstance();
+
+            $res = $db->prepare($sql);
+
+            if ($res->execute($var)) {
+                return $this->getBannedUser($userId);
+            }
+        }
+        return null;
+    }
+
+    public function isUserBanned(int $userId): bool
+    {
+        $sql = "SELECT news_banned_players_id FROM `cmw_news_banned_players` 
+                              WHERE news_banned_players_player_id = :user_id";
+
+        $db = self::getInstance();
+        $res = $db->prepare($sql);
+
+        $res->execute(array("user_id" => $userId));
+
+        return count($res->fetchAll()) !== 0;
     }
 
 }

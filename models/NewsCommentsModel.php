@@ -95,5 +95,27 @@ class NewsCommentsModel extends DatabaseManager
         return null;
     }
 
+    public function userCanComment(int $newsId, ?int $userId): bool
+    {
+        if ($userId === null){
+            return  false;
+        }
+
+        if((new NewsModel())->isUserBanned($userId)){
+            return false;
+        }
+
+
+        $sql = "SELECT news_id FROM `cmw_news` 
+                              WHERE news_id = :news_id AND news_comments_status = 1";
+
+        $db = self::getInstance();
+        $res = $db->prepare($sql);
+
+        $res->execute(array("news_id" => $newsId));
+
+        return count($res->fetchAll()) === 0;
+    }
+
 
 }
