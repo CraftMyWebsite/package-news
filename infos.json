@@ -2,11 +2,11 @@
   "name": "news",
   "menus": [
     {
-      "name_menu": "Actualités",
+      "name_menu_fr": "Actualités",
       "name_menu_en": "News",
       "icon_menu": "fas fa-newspaper",
       "url_menu": "",
-      "urls_submenu": {
+      "urls_submenu_fr": {
         "Liste": "news/list",
         "Ajouter": "news/add"
       },
@@ -16,7 +16,17 @@
       }
     }
   ],
-  "description": "Gérer les actualités de votre site !",
+
+  "description": [
+    {
+      "fr": "Gérer les actualités de votre site !",
+      "en": "Manage your website news"
+    }
+  ],
+
   "version": "1.0.0",
-  "author": "Teyir"
+  "author": "Teyir",
+
+  "isGame": false,
+  "isCore": false
 }
