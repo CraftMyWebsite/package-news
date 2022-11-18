@@ -142,7 +142,7 @@ class NewsController extends CoreController
 
         //Response::sendAlert("error", "Erreur", "Vous avez déjà liké ce commentaire");
 
-        header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
+        header("location: " . $_SERVER['HTTP_REFERER']);
     }
 
     #[Link("/news/like/:id", Link::GET, ["id" => "[0-9]+"])]
@@ -163,7 +163,7 @@ class NewsController extends CoreController
 
         //Response::sendAlert("error", "Erreur", "Vous avez déjà liké cette actualité");
 
-        header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
+        header("location: " . $_SERVER['HTTP_REFERER']);
     }
 
     #[Link("/news/comments/:id", Link::POST, ["id" => "[0-9]+"])]
@@ -178,7 +178,7 @@ class NewsController extends CoreController
             $this->newsCommentsModel->storeComments($newsId, $user?->getId(), $content);
         }
 
-        header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
+        header("location: " . $_SERVER['HTTP_REFERER']);
     }
 
 
