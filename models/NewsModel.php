@@ -59,8 +59,7 @@ class NewsModel extends DatabaseManager
     {
 
         $sql = "SELECT news_id, news_title, news_desc, news_comments_status, news_likes_status, news_content, 
-                news_slug, news_author, news_image_name, 
-                DATE_FORMAT(news_date_created, '%d/%m/%Y à %H:%i:%s') AS 'news_date_created' 
+                news_slug, news_author, news_image_name, news_date_created
                 FROM cmw_news WHERE news_id=:news_id";
 
         $db = self::getInstance();
@@ -96,8 +95,7 @@ class NewsModel extends DatabaseManager
     {
 
         $sql = "SELECT news_id, news_title, news_desc, news_comments_status, news_likes_status, news_content, 
-                news_slug, news_author, news_image_name, 
-                DATE_FORMAT(news_date_created, '%d/%m/%Y à %H:%i:%s') AS 'news_date_created' 
+                news_slug, news_author, news_image_name, news_date_created
                 FROM cmw_news WHERE news_slug=:news_slug";
 
         $db = self::getInstance();
@@ -255,8 +253,7 @@ class NewsModel extends DatabaseManager
     public function getBannedUser(int $userId): ?NewsBannedPlayersEntity
     {
 
-        $sql = "SELECT news_banned_players_id, news_banned_players_player_id, news_banned_players_author_id,
-                DATE_FORMAT(news_banned_players_date, '%d/%m/%Y à %H:%i:%s') AS 'news_banned_players_date' 
+        $sql = "SELECT news_banned_players_id, news_banned_players_player_id, news_banned_players_author_id, news_banned_players_date
                 FROM cmw_news_banned_players WHERE news_banned_players_player_id = :userId";
 
         $db = self::getInstance();

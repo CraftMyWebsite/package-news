@@ -45,8 +45,7 @@ class NewsCommentsModel extends DatabaseManager
     public function getCommentsById(int $commentsId): ?NewsCommentsEntity
     {
 
-        $sql = "SELECT news_comments_id, news_comments_news_id, news_comments_content, news_comments_user_id,
-                    DATE_FORMAT(news_comments_date, '%d/%m/%Y à %H:%i:%s') AS 'news_comments_date'
+        $sql = "SELECT news_comments_id, news_comments_news_id, news_comments_content, news_comments_user_id, news_comments_date
                     FROM cmw_news_comments WHERE news_comments_id =:id";
 
         $db = self::getInstance();

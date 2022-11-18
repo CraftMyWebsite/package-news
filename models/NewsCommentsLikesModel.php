@@ -86,8 +86,7 @@ class NewsCommentsLikesModel extends DatabaseManager
     {
 
         $sql = "SELECT news_comments_likes_id, 	news_comments_likes_comments_id , news_comments_likes_user_id,
-                    DATE_FORMAT(news_comments_likes_date, '%d/%m/%Y à %H:%i:%s') AS 'news_comments_likes_date'
-                    FROM cmw_news_comments_likes WHERE news_comments_likes_id =:id";
+                news_comments_likes_date FROM cmw_news_comments_likes WHERE news_comments_likes_id =:id";
 
         $db = self::getInstance();
         $res = $db->prepare($sql);
