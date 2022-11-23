@@ -9,90 +9,61 @@ $description = LangManager::translate("news.dashboard.desc");
 /* @var \CMW\Entity\News\NewsEntity $news */
 ?>
 
-<div class="content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <form action="" method="post" enctype="multipart/form-data">
+<div class="d-flex flex-wrap justify-content-between">
+    <h3><i class="fa-solid fa-newspaper"></i> <span class="m-lg-auto"><?= LangManager::translate("news.dashboard.title") ?></span></h3>
+</div>
+
+<section>
+    <div class="card">
+        <div class="card-header">
+            <h4><?= LangManager::translate("news.dashboard.title_edit") ?></h4>
+        </div>
+        <div class="card-body">
+            <form action="" method="post" enctype="multipart/form-data">
                     <?php (new SecurityService())->insertHiddenToken() ?>
-                    <div class="card card-primary">
-
-                        <div class="card-header">
-                            <h3 class="card-title"><?= LangManager::translate("news.dashboard.title_edit") ?> :</h3>
-                        </div>
-
-                        <div class="card-body">
-
-                            <label for="title"><?= LangManager::translate("news.add.title") ?></label>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-heading"></i></span>
-                                </div>
-                                <input type="text" name="title" class="form-control" value="<?= $news->getTitle() ?>"
-                                       placeholder="<?= LangManager::translate("news.add.title_placeholder") ?>"
-                                       maxlength="255" required>
-                            </div>
-
-                            <label for="desc"><?= LangManager::translate("news.add.desc") ?></label>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-text-width"></i></span>
-                                </div>
-                                <input type="text" name="desc" class="form-control"
-                                       value="<?= $news->getDescription() ?>"
-                                       placeholder="<?= LangManager::translate("news.add.desc_placeholder") ?>"
-                                       maxlength="255" required>
-                            </div>
-
-                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success input-group mb-3">
-                                <input type="checkbox" name="comm" value="true"
-                                       class="custom-control-input" <?= ($news->isCommentsStatus() ? "checked" : "") ?>
-                                       id="comm" checked required>
-                                <label class="custom-control-label"
-                                       for="comm"><?= LangManager::translate("news.add.enable_comm") ?></label>
-                            </div>
-
-                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success input-group mb-3">
-                                <input type="checkbox" name="likes" value="true"
-                                       class="custom-control-input" <?= ($news->isLikesStatus() ? "checked" : "") ?>
-                                       id="likes" checked required>
-                                <label class="custom-control-label"
-                                       for="likes"><?= LangManager::translate("news.add.enable_likes") ?></label>
-                            </div>
-
-
-                            <div class="form-group">
-
-                                <span><?= LangManager::translate("news.add.image") ?></span>
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="image" name="image"
-                                           accept=".png, .jpg, .jpeg, .webp, .gif">
-                                    <label class="custom-file-label"
-                                           for="image"><?= LangManager::translate("news.add.select_image") ?></label>
+                    <div class="row">
+                        <div class="col-12 col-lg-6">
+                            <h6><?= LangManager::translate("news.add.title") ?> :</h6>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" class="form-control" name="title" required placeholder="<?= LangManager::translate("news.add.title_placeholder") ?>" maxlength="255" value="<?= $news->getTitle() ?>">
+                                <div class="form-control-icon">
+                                    <i class="fas fa-heading"></i>
                                 </div>
                             </div>
-
-
-                            <label for="content"
-                                   class="mt-3"><?= LangManager::translate("news.add.content") ?></label>
-                            <div class="input-group mb-3">
-                                <textarea id="summernote" name="content" class="form-control" required>
-                                <?= $news->getContent() ?>
-                                </textarea>
-
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <h6><?= LangManager::translate("news.add.desc") ?> :</h6>
+                            <div class="form-group position-relative has-icon-left">
+                                <input type="text" class="form-control" name="desc" required placeholder="<?= LangManager::translate("news.add.desc_placeholder") ?>" maxlength="255" value="<?= $news->getDescription() ?>">
+                                <div class="form-control-icon">
+                                    <i class="fas fa-text-width"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <h6><?= LangManager::translate("news.add.image") ?> :</h6>
+                            <input class="mt-2 form-control form-control-sm" type="file" id="image" name="image" accept="png,jpg,jpeg,webp,svg,gif">
+                            <span><?= LangManager::translate("news.add.allow_files") ?></span>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" value="1" id="comm" name="comm" <?= ($news->isCommentsStatus() ? "checked" : "") ?>>
+                                <label class="form-check-label" for="comm"><h6><?= LangManager::translate("news.add.enable_comm") ?></h6></label>
                             </div>
 
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" value="1" id="likes" name="likes" <?= ($news->isLikesStatus() ? "checked" : "") ?>>
+                                <label class="form-check-label" for="likes"><h6><?= LangManager::translate("news.add.enable_likes") ?></h6></label>
+                            </div>
                         </div>
+                </div>
+                <h6><?= LangManager::translate("news.add.content") ?> :</h6>
+                <textarea name="content" id="summernote-1"><?= $news->getContent() ?></textarea>
 
-
-                        <div class="card-footer">
-                            <button type="submit"
-                                    class="btn btn-primary float-right"><?= LangManager::translate("core.btn.save") ?></button>
-                        </div>
-
-                    </div>
-                </form>
-            </div>
+                <div class="text-center mt-2">
+                    <button type="submit" class="btn btn-primary"><?= LangManager::translate("core.btn.save") ?></button>
+                </div>
+            </form>
         </div>
     </div>
-</div>
+</section>

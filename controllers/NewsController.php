@@ -45,9 +45,9 @@ class NewsController extends CoreController
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
 
-        View::createAdminView('news', 'add')
-            ->addScriptBefore("admin/resources/vendors/summernote/summernote.min.js", "admin/resources/vendors/summernote/summernote-bs4.min.js", "app/package/wiki/views/assets/js/summernoteInit.js")
-            ->addStyle("admin/resources/vendors/summernote/summernote-bs4.min.css", "admin/resources/vendors/summernote/summernote.min.css")
+        View::createAdminView('news', 'add')//Fait gaffe j'ai mis en double tout les appel des include comme sa t'as pas a t'embeter pour les appeler quand tu fera l'appel pour tout afficher dans "manage" le doublon se trouve un peut plus bas ligne 85 par ce que je sais pas lequel tu garde, ligne 99-100 tu peut laisser c'est pour summernote en edit.
+            ->addStyle("admin/resources/vendors/simple-datatables/style.css","admin/resources/assets/css/pages/simple-datatables.css","admin/resources/vendors/summernote/summernote-lite.css","admin/resources/assets/css/pages/summernote.css")
+            ->addScriptAfter("admin/resources/vendors/simple-datatables/umd/simple-datatables.js","admin/resources/assets/js/pages/simple-datatables.js","admin/resources/vendors/jquery/jquery.min.js","admin/resources/vendors/summernote/summernote-lite.min.js","admin/resources/assets/js/pages/summernote.js")
             ->view();
     }
 
@@ -81,6 +81,9 @@ class NewsController extends CoreController
         $newsList = $this->newsModel->getNews();
 
         View::createAdminView('news', 'list')
+        /*El famosso doublon*/
+        ->addStyle("admin/resources/vendors/simple-datatables/style.css","admin/resources/assets/css/pages/simple-datatables.css","admin/resources/vendors/summernote/summernote-lite.css","admin/resources/assets/css/pages/summernote.css")
+        ->addScriptAfter("admin/resources/vendors/simple-datatables/umd/simple-datatables.js","admin/resources/assets/js/pages/simple-datatables.js","admin/resources/vendors/jquery/jquery.min.js","admin/resources/vendors/summernote/summernote-lite.min.js","admin/resources/assets/js/pages/summernote.js")
             ->addVariableList(["newsList" => $newsList])
             ->view();
     }
@@ -93,11 +96,8 @@ class NewsController extends CoreController
         $news = $this->newsModel->getNewsById($id);
 
         View::createAdminView('news', 'edit')
-            ->addScriptBefore("admin/resources/vendors/summernote/summernote.min.js",
-                "admin/resources/vendors/summernote/summernote-bs4.min.js",
-                "app/package/wiki/views/assets/js/summernoteInit.js")
-            ->addStyle("admin/resources/vendors/summernote/summernote-bs4.min.css",
-                "admin/resources/vendors/summernote/summernote.min.css")
+            ->addStyle("admin/resources/vendors/summernote/summernote-lite.css","admin/resources/assets/css/pages/summernote.css")
+            ->addScriptAfter("admin/resources/vendors/jquery/jquery.min.js","admin/resources/vendors/summernote/summernote-lite.min.js","admin/resources/assets/js/pages/summernote.js")
             ->addVariableList(["news" => $news])
             ->view();
     }

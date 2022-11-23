@@ -3,8 +3,8 @@
 return [
 	"dashboard" => [
 		"title" => "News",
-		"title_add" => "News - Add News",
-		"title_edit" => "News - Edit the News",
+		"title_add" => "Add News",
+		"title_edit" => "Edit the News",
 		"desc" => "Manage your site's news",
 	],
 	"list" => [
@@ -24,7 +24,8 @@ return [
 		"desc_placeholder" => "Description",
 		"enable_comm" => "Enable comments",
 		"enable_likes" => "Enable likes",
-		"image" => "Choisissez l'image de couverture",
+		"allow_files" => "Allowed files : png, jpg, jpeg, webp, svg, gif",
+		"image" => "Cover image",
 		"select_image" => "Choose cover image",
 		"content" => "Content",
 	],
