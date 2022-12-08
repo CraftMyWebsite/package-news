@@ -3,8 +3,8 @@
 return [
 	"dashboard" => [
 		"title" => "Actualités",
-		"title_add" => "Actualités - Ajouter une actualités",
-		"title_edit" => "Actualités - Modifier une actualités",
+		"title_add" => "Ajouter une actualités",
+		"title_edit" => "Modifier une actualités",
 		"desc" => "Gérez les actualités de votre site",
 	],
 	"list" => [
@@ -17,7 +17,6 @@ return [
             "edit" => "Modifications",
         ],
 	],
-
 	"add" => [
 		"title" => "Titre de l'actualité",
 		"title_placeholder" => "Titre",
@@ -25,8 +24,22 @@ return [
 		"desc_placeholder" => "Description",
 		"enable_comm" => "Activer les commentaires",
 		"enable_likes" => "Activer les likes",
-		"image" => "Choisissez l'image de couverture",
+		"allow_files" => "Fichiers autorisé : png, jpg, jpeg, webp, svg, gif",
+		"image" => "Image de couverture",
 		"select_image" => "Choisissez une image",
 		"content" => "Contenu",
+        "toasters" => [
+            "success" => "Actualité ajoutée avec succès !"
+        ],
 	],
+    "edit" => [
+        "toasters" => [
+            "success" => "Actualité <b>%actu%</b> mis à jour avec succès !"
+        ],
+    ],
+    "delete" => [
+        "toasters" => [
+            "success" => "Actualité supprimée avec succès !"
+        ],
+    ],
 ];

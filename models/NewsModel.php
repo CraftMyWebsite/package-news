@@ -175,7 +175,7 @@ class NewsModel extends DatabaseManager
         return $toReturn;
     }
 
-    public function updateNews(int $newsId, string $title, string $desc, bool $comm, bool $likes, string $content, string $slug, array|null $image): ?NewsEntity
+    public function updateNews(int $newsId, string $title, string $desc, int $comm, int $likes, string $content, string $slug, array|null $image): ?NewsEntity
     {
 
         $var = array(

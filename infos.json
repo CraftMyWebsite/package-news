@@ -5,15 +5,7 @@
       "name_menu_fr": "Actualités",
       "name_menu_en": "News",
       "icon_menu": "fas fa-newspaper",
-      "url_menu": "",
-      "urls_submenu_fr": {
-        "Liste": "news/list",
-        "Ajouter": "news/add"
-      },
-      "urls_submenu_en": {
-        "List": "news/list",
-        "Add": "news/add"
-      }
+      "url_menu": "news/manage"
     }
   ],
 
