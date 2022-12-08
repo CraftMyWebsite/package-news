@@ -40,7 +40,7 @@ $description = LangManager::translate("news.dashboard.desc");
                         </div>
                         <div class="col-12 col-lg-6">
                             <h6><?= LangManager::translate("news.add.image") ?> :</h6>
-                            <input class="mt-2 form-control form-control-sm" type="file" id="image" name="image" accept="png,jpg,jpeg,webp,svg,gif">
+                            <input class="mt-2 form-control form-control-sm" type="file" id="image" name="image" accept=".png,.jpg,.jpeg,.webp,.svg,.gif">
                             <span><?= LangManager::translate("news.add.allow_files") ?></span>
                         </div>
                         <div class="col-12 col-lg-6">
@@ -56,6 +56,7 @@ $description = LangManager::translate("news.dashboard.desc");
                         </div>
                 </div>
                 <h6><?= LangManager::translate("news.add.content") ?> :</h6>
+
                 <textarea name="content" id="summernote-1"></textarea>
 
                 <div class="text-center mt-2">

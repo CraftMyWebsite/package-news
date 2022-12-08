@@ -4,12 +4,14 @@ namespace CMW\Controller\News;
 
 use CMW\Controller\Core\CoreController;
 use CMW\Controller\Users\UsersController;
+use CMW\Manager\Lang\LangManager;
 use CMW\Model\News\NewsCommentsLikesModel;
 use CMW\Model\News\NewsCommentsModel;
 use CMW\Model\News\NewsLikesModel;
 use CMW\Model\News\NewsModel;
 use CMW\Model\Users\UsersModel;
 use CMW\Router\Link;
+use CMW\Utils\Response;
 use CMW\Utils\Utils;
 use CMW\Utils\View;
 
@@ -51,7 +53,7 @@ class NewsController extends CoreController
             ->view();
     }
 
-    #[Link("/add", Link::POST, [], "/cmw-admin/news")]
+    #[Link("/manage", Link::POST, [], "/cmw-admin/news")]
     public function addNewsPost(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
@@ -70,17 +72,20 @@ class NewsController extends CoreController
 
         $this->newsModel->createNews($title, $desc, $comm, $likes, $content, $slug, $authorId, $image);
 
-        header("location: ../news/list");
+        Response::sendAlert("success", LangManager::translate("core.toaster.success"),
+            LangManager::translate("news.add.toasters.success"));
+
+        header("location: manage");
     }
 
-    #[Link("/list", Link::GET, [], "/cmw-admin/news")]
+    #[Link("/manage", Link::GET, [], "/cmw-admin/news")]
     public function listNews(): void
     {
-        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.list");
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage");
 
         $newsList = $this->newsModel->getNews();
 
-        View::createAdminView('news', 'list')
+        View::createAdminView('news', 'manage')
         /*El famosso doublon*/
         ->addStyle("admin/resources/vendors/simple-datatables/style.css","admin/resources/assets/css/pages/simple-datatables.css","admin/resources/vendors/summernote/summernote-lite.css","admin/resources/assets/css/pages/summernote.css")
         ->addScriptAfter("admin/resources/vendors/simple-datatables/umd/simple-datatables.js","admin/resources/assets/js/pages/simple-datatables.js","admin/resources/vendors/jquery/jquery.min.js","admin/resources/vendors/summernote/summernote-lite.min.js","admin/resources/assets/js/pages/summernote.js")
@@ -109,16 +114,18 @@ class NewsController extends CoreController
 
         [$title, $desc, $content] = Utils::filterInput('title', 'desc', 'content');
 
-        $comm = filter_input(INPUT_POST, "comm") === null ? 0 : 1;
-        $likes = filter_input(INPUT_POST, "likes") === null ? 0 : 1;
+        $comm = is_null(filter_input(INPUT_POST, "comm")) ? 0 : 1;
+        $likes = is_null(filter_input(INPUT_POST, "likes")) ? 0 : 1;
 
         $slug = Utils::normalizeForSlug($title);
-
 
         $this->newsModel->updateNews($id, $title, $desc, $comm, $likes, $content, $slug,
             ($_FILES['image']['size'] === 0 && $_FILES['image']['error'] === 0 ? null : $_FILES['image']));
 
-        header("location: ../list");
+        Response::sendAlert("success", LangManager::translate("core.toaster.success"),
+            LangManager::translate("news.edit.toasters.success", ["actu" => $title]));
+
+        header("location: ../manage");
     }
 
     #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
@@ -126,7 +133,10 @@ class NewsController extends CoreController
     {
         $this->newsModel->deleteNews($id);
 
-        header("location: ../list");
+        Response::sendAlert("success", LangManager::translate("core.toaster.success"),
+            LangManager::translate("news.delete.toasters.success"));
+
+        header("location: ../manage");
     }
 
     #[Link("/news/like/comment/:id", Link::GET, ["id" => "[0-9]+"])]

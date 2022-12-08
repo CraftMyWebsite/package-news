@@ -17,7 +17,6 @@ return [
             "edit" => "Modifications",
         ],
 	],
-
 	"add" => [
 		"title" => "Titre de l'actualité",
 		"title_placeholder" => "Titre",
@@ -29,5 +28,18 @@ return [
 		"image" => "Image de couverture",
 		"select_image" => "Choisissez une image",
 		"content" => "Contenu",
+        "toasters" => [
+            "success" => "Actualité ajoutée avec succès !"
+        ],
 	],
+    "edit" => [
+        "toasters" => [
+            "success" => "Actualité <b>%actu%</b> mis à jour avec succès !"
+        ],
+    ],
+    "delete" => [
+        "toasters" => [
+            "success" => "Actualité supprimée avec succès !"
+        ],
+    ],
 ];
