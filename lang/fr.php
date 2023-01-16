@@ -7,6 +7,10 @@ return [
 		"title_edit" => "Modifier une actualités",
 		"desc" => "Gérez les actualités de votre site",
 	],
+	"modal" => [
+        "delete" => "Supression de :",
+        "deletealert" => "La supression est definitive.",
+        ],
 	"list" => [
 		"list" => "Liste des actualités",
         "table" => [
