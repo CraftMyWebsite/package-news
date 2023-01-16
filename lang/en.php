@@ -7,6 +7,10 @@ return [
         "title_edit" => "Edit the News",
         "desc" => "Manage your site's news",
     ],
+    "modal" => [
+        "delete" => "Delete :",
+        "deletealert" => "The deletion is permanent.",
+    ],
     "list" => [
         "list" => "List of news",
         "table" => [
