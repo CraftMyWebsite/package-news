@@ -1,7 +1,7 @@
 <?php
 
 use CMW\Manager\Lang\LangManager;
-use CMW\Utils\SecurityService;
+use CMW\Manager\Security\SecurityManager;
 
 $title = LangManager::translate("news.dashboard.title_edit");
 $description = LangManager::translate("news.dashboard.desc");
@@ -20,7 +20,7 @@ $description = LangManager::translate("news.dashboard.desc");
         </div>
         <div class="card-body">
             <form action="" method="post" enctype="multipart/form-data">
-                    <?php (new SecurityService())->insertHiddenToken() ?>
+                    <?php (new SecurityManager())->insertHiddenToken() ?>
                     <div class="row">
                         <div class="col-12 col-lg-6">
                             <h6><?= LangManager::translate("news.add.title") ?> :</h6>
