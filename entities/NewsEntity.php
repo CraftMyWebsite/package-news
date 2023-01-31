@@ -14,6 +14,7 @@ class NewsEntity
     private string $content;
     private string $slug;
     private ?UserEntity $author;
+    private int $views;
     private string $imageName;
     private string $imageLink;
     private string $dateCreated;
@@ -30,12 +31,13 @@ class NewsEntity
      * @param string $content
      * @param string $slug
      * @param ?\CMW\Entity\Users\UserEntity $author
+     * @param int $views
      * @param string $imageName
      * @param string $dateCreated
      * @param ?\CMW\Entity\News\NewsLikesEntity $likes
      * @param \CMW\Entity\News\NewsCommentsEntity[]|null $comments
      */
-    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $slug, ?UserEntity $author, string $imageName, string $dateCreated, ?NewsLikesEntity $likes, ?array $comments)
+    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $slug, ?UserEntity $author, int $views, string $imageName, string $dateCreated, ?NewsLikesEntity $likes, ?array $comments)
     {
         $this->newsId = $newsId;
         $this->title = $title;
@@ -45,6 +47,7 @@ class NewsEntity
         $this->content = $content;
         $this->slug = $slug;
         $this->author = $author;
+        $this->views = $views;
         $this->imageName = $imageName;
         $this->dateCreated = $dateCreated;
         $this->likes = $likes;
@@ -113,6 +116,14 @@ class NewsEntity
     public function getAuthor(): ?UserEntity
     {
         return $this->author;
+    }
+
+    /**
+     * @return int
+     */
+    public function getViews(): int
+    {
+        return $this->views;
     }
 
     /**

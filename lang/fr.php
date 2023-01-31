@@ -13,6 +13,7 @@ return [
             "title" => "Titre",
             "description" => "Description",
             "author" => "Auteur",
+            "views" => "Affichages",
             "creation_date" => "Date de création",
             "edit" => "Modifications",
         ],

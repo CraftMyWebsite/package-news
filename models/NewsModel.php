@@ -59,7 +59,7 @@ class NewsModel extends DatabaseManager
     {
 
         $sql = "SELECT news_id, news_title, news_desc, news_comments_status, news_likes_status, news_content, 
-                news_slug, news_author, news_image_name, news_date_created
+                news_slug, news_author, news_views, news_image_name, news_date_created
                 FROM cmw_news WHERE news_id=:news_id";
 
         $db = self::getInstance();
@@ -84,6 +84,7 @@ class NewsModel extends DatabaseManager
             $res['news_content'],
             $res['news_slug'],
             $author,
+            $res['news_views'],
             $res['news_image_name'],
             $res['news_date_created'],
             $newsLikes,
@@ -95,7 +96,7 @@ class NewsModel extends DatabaseManager
     {
 
         $sql = "SELECT news_id, news_title, news_desc, news_comments_status, news_likes_status, news_content, 
-                news_slug, news_author, news_image_name, news_date_created
+                news_slug, news_author, news_views, news_image_name, news_date_created
                 FROM cmw_news WHERE news_slug=:news_slug";
 
         $db = self::getInstance();
@@ -121,6 +122,7 @@ class NewsModel extends DatabaseManager
             $res['news_content'],
             $res['news_slug'],
             $author,
+            $res['news_views'],
             $res['news_image_name'],
             $res['news_date_created'],
             $newsLikes,
@@ -310,6 +312,16 @@ class NewsModel extends DatabaseManager
         $res->execute(array("user_id" => $userId));
 
         return count($res->fetchAll()) !== 0;
+    }
+
+    public function incrementViews(int $newsId): void
+    {
+        $sql = "UPDATE cmw_news SET news_views = news_views + 1 WHERE news_id = :id";
+
+        $db = self::getInstance();
+        $req = $db->prepare($sql);
+
+        $req->execute(array("id" => $newsId));
     }
 
 }

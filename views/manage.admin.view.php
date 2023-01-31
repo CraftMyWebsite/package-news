@@ -79,6 +79,7 @@ $description = LangManager::translate("news.dashboard.desc");
                     <th class="text-center"><?= LangManager::translate("news.list.table.title") ?></th>
                     <th class="text-center"><?= LangManager::translate("news.list.table.description") ?></th>
                     <th class="text-center"><?= LangManager::translate("news.list.table.author") ?></th>
+                    <th class="text-center"><?= LangManager::translate("news.list.table.views") ?></th>
                     <th class="text-center"><?= LangManager::translate("news.list.table.creation_date") ?></th>
                     <th class="text-center"><?= LangManager::translate("core.btn.edit") ?></th>
                 </tr>
@@ -89,6 +90,7 @@ $description = LangManager::translate("news.dashboard.desc");
                         <td><?= $news->getTitle() ?></td>
                         <td><?= $news->getDescription() ?></td>
                         <td><?= $news->getAuthor()->getUsername() ?></td>
+                        <td><?= $news->getViews() ?></td>
                         <td><?= $news->getDateCreated() ?></td>
                         <td>
                             <a href="../news/edit/<?= $news->getNewsId() ?>">
