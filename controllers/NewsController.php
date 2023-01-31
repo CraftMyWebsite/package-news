@@ -220,6 +220,10 @@ class NewsController extends CoreController
     {
         $news = $this->newsModel->getNewsBySlug($slug);
 
+        if (!is_null($news)){
+            $this->newsModel->incrementViews($news->getNewsId());
+        }
+
         //Include the public view file ("public/themes/$themePath/views/news/individual.view.php")
         $view = new View('news', 'individual');
         $view->addVariableList(["news" => $news]);

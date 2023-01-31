@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS `cmw_news`
     `news_content`         LONGTEXT     NOT NULL,
     `news_slug`            VARCHAR(255) NOT NULL,
     `news_author`          INT          NULL,
+    `news_views`           INT          NOT NULL DEFAULT 0,
     `news_image_name`      VARCHAR(255) NOT NULL,
     `news_date_created`    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -28,10 +29,10 @@ COMMIT;
 /* NEWS LIKES */
 CREATE TABLE IF NOT EXISTS `cmw_news_likes`
 (
-    `news_like_id`      int(11)   NOT NULL,
-    `news_like_news_id` int(11)   NOT NULL,
-    `news_like_user_id` int(11)   NOT NULL,
-    `news_like_date`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+    `news_like_id`      INT(11)   NOT NULL,
+    `news_like_news_id` INT(11)   NOT NULL,
+    `news_like_user_id` INT(11)   NOT NULL,
+    `news_like_date`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
@@ -41,7 +42,7 @@ ALTER TABLE `cmw_news_likes`
     ADD KEY `news_like_user_id` (`news_like_user_id`);
 
 ALTER TABLE `cmw_news_likes`
-    MODIFY `news_like_id` int(11) NOT NULL AUTO_INCREMENT;
+    MODIFY `news_like_id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `cmw_news_likes`
     ADD CONSTRAINT `cmw_news_likes_ibfk_1` FOREIGN KEY (`news_like_user_id`)
@@ -54,11 +55,11 @@ COMMIT;
 /* NEWS COMMENTS */
 CREATE TABLE IF NOT EXISTS `cmw_news_comments`
 (
-    `news_comments_id`      int(11)   NOT NULL,
-    `news_comments_news_id` int(11)   NOT NULL,
-    `news_comments_user_id` int(11)   NOT NULL,
-    `news_comments_content` text      NOT NULL,
-    `news_comments_date`    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+    `news_comments_id`      INT(11)   NOT NULL,
+    `news_comments_news_id` INT(11)   NOT NULL,
+    `news_comments_user_id` INT(11)   NOT NULL,
+    `news_comments_content` TEXT      NOT NULL,
+    `news_comments_date`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
@@ -68,7 +69,7 @@ ALTER TABLE `cmw_news_comments`
     ADD KEY `news_comments_user_id` (`news_comments_user_id`);
 
 ALTER TABLE `cmw_news_comments`
-    MODIFY `news_comments_id` int(11) NOT NULL AUTO_INCREMENT;
+    MODIFY `news_comments_id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `cmw_news_comments`
     ADD CONSTRAINT `cmw_news_comments_ibfk_1` FOREIGN KEY (`news_comments_news_id`)
@@ -80,10 +81,10 @@ COMMIT;
 
 CREATE TABLE IF NOT EXISTS `cmw_news_comments_likes`
 (
-    `news_comments_likes_id`          int(11)   NOT NULL,
-    `news_comments_likes_comments_id` int(11)   NOT NULL,
-    `news_comments_likes_user_id`     int(11)   NOT NULL,
-    `news_comments_likes_date`        timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+    `news_comments_likes_id`          INT(11)   NOT NULL,
+    `news_comments_likes_comments_id` INT(11)   NOT NULL,
+    `news_comments_likes_user_id`     INT(11)   NOT NULL,
+    `news_comments_likes_date`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
@@ -93,7 +94,7 @@ ALTER TABLE `cmw_news_comments_likes`
     ADD KEY `news_comments_likes_user_id` (`news_comments_likes_user_id`);
 
 ALTER TABLE `cmw_news_comments_likes`
-    MODIFY `news_comments_likes_id` int(11) NOT NULL AUTO_INCREMENT;
+    MODIFY `news_comments_likes_id` INT(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `cmw_news_comments_likes`
     ADD CONSTRAINT `news_cmw_news_comments_likes_ibfk_1` FOREIGN KEY (`news_comments_likes_user_id`)
