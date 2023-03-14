@@ -5,6 +5,7 @@ namespace CMW\Model\News;
 use CMW\Entity\News\NewsBannedPlayersEntity;
 use CMW\Entity\News\NewsEntity;
 use CMW\Manager\Database\DatabaseManager;
+use CMW\Manager\Uploads\ImagesManager;
 use CMW\Model\Users\UsersModel;
 use CMW\Utils\Images;
 use JetBrains\PhpStorm\ExpectedValues;
@@ -25,7 +26,7 @@ class NewsModel extends DatabaseManager
 
         //Upload image
         try {
-            $imageName = Images::upload($image, "news");
+            $imageName = ImagesManager::upload($image, "news");
             $var = array(
                 'title' => $title,
                 'desc' => $desc,

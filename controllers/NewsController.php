@@ -70,25 +70,23 @@ class NewsController extends CoreController
     #[Link("/add", Link::POST, [], "/cmw-admin/news", secure: false)]
     public function addNewsPost(): void
     {
+        Utils::debugConsole("==========================================================================");
+
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
-        
+
         $user = new UsersModel();
-        
-        $title = filter_input(INPUT_POST, "title");
-        $desc = filter_input(INPUT_POST, "desc");
-        $content = filter_input(INPUT_POST, "content");
-        $comm = filter_input(INPUT_POST, "comm");
-        $likes = filter_input(INPUT_POST, "likes");
+
+        [$title, $desc, $content, $comm, $likes] = Utils::filterInput("title", "desc", "content", "comm", "likes");
+
         $slug = Utils::normalizeForSlug(filter_input(INPUT_POST, "title"));
         $userId = $user::getLoggedUser();
-        $image = filter_input(INPUT_POST, "title");//$_FILES['image']; au cas ou sa fonctionne pas
+        $image = $_FILES['image'];
 
         $this->newsModel->createNews($title, $desc, $comm, $likes, $content, $slug, $userId, $image);
 
         Response::sendAlert("success", LangManager::translate("core.toaster.success"),
             LangManager::translate("news.add.toasters.success"));
 
-        header("location: manage");
     }
 
     #[Link("/manage", Link::GET, [], "/cmw-admin/news")]
