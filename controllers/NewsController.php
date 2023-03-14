@@ -47,30 +47,43 @@ class NewsController extends CoreController
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
 
-        View::createAdminView('news', 'add')//Fait gaffe j'ai mis en double tout les appel des include comme sa t'as pas a t'embeter pour les appeler quand tu fera l'appel pour tout afficher dans "manage" le doublon se trouve un peut plus bas ligne 85 par ce que je sais pas lequel tu garde, ligne 99-100 tu peut laisser c'est pour summernote en edit.
-            ->addStyle("admin/resources/vendors/simple-datatables/style.css","admin/resources/assets/css/pages/simple-datatables.css","admin/resources/vendors/summernote/summernote-lite.css","admin/resources/assets/css/pages/summernote.css")
-            ->addScriptAfter("admin/resources/vendors/simple-datatables/umd/simple-datatables.js","admin/resources/assets/js/pages/simple-datatables.js","admin/resources/vendors/jquery/jquery.min.js","admin/resources/vendors/summernote/summernote-lite.min.js","admin/resources/assets/js/pages/summernote.js")
+        View::createAdminView('news', 'add')
+            ->addScriptBefore("admin/resources/vendors/editorjs/plugins/header.js",
+                "admin/resources/vendors/editorjs/plugins/image.js",
+                "admin/resources/vendors/editorjs/plugins/delimiter.js",
+                "admin/resources/vendors/editorjs/plugins/list.js",
+                "admin/resources/vendors/editorjs/plugins/quote.js",
+                "admin/resources/vendors/editorjs/plugins/editorjs-codeflask.js",
+                "admin/resources/vendors/editorjs/plugins/table.js",
+                "admin/resources/vendors/editorjs/plugins/link.js",
+                "admin/resources/vendors/editorjs/plugins/warning.js",
+                "admin/resources/vendors/editorjs/plugins/embed.js",
+                "admin/resources/vendors/editorjs/plugins/marker.js",
+                "admin/resources/vendors/editorjs/plugins/underline.js",
+                "admin/resources/vendors/editorjs/plugins/drag-drop.js",
+                "admin/resources/vendors/editorjs/plugins/undo.js",
+                "admin/resources/vendors/editorjs/editor.js")
+            ->addScriptAfter("admin/resources/vendors/jquery/jquery.min.js")
             ->view();
     }
 
-    #[Link("/manage", Link::POST, [], "/cmw-admin/news")]
+    #[Link("/add", Link::POST, [], "/cmw-admin/news", secure: false)]
     public function addNewsPost(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
+        
+        $user = new UsersModel();
+        
+        $title = filter_input(INPUT_POST, "title");
+        $desc = filter_input(INPUT_POST, "desc");
+        $content = filter_input(INPUT_POST, "content");
+        $comm = filter_input(INPUT_POST, "comm");
+        $likes = filter_input(INPUT_POST, "likes");
+        $slug = Utils::normalizeForSlug(filter_input(INPUT_POST, "title"));
+        $userId = $user::getLoggedUser();
+        $image = filter_input(INPUT_POST, "title");//$_FILES['image']; au cas ou sa fonctionne pas
 
-        [$title, $desc, $content] = Utils::filterInput('title', 'desc', 'content');
-
-        $comm = filter_input(INPUT_POST, "comm") === null ? 0 : 1;
-        $likes = filter_input(INPUT_POST, "likes") === null ? 0 : 1;
-
-        $slug = Utils::normalizeForSlug($title);
-
-        $userEntity = $this->usersModel->getUserById($_SESSION['cmwUserId']);
-        $authorId = $userEntity?->getId();
-
-        $image = $_FILES['image'];
-
-        $this->newsModel->createNews($title, $desc, $comm, $likes, $content, $slug, $authorId, $image);
+        $this->newsModel->createNews($title, $desc, $comm, $likes, $content, $slug, $userId, $image);
 
         Response::sendAlert("success", LangManager::translate("core.toaster.success"),
             LangManager::translate("news.add.toasters.success"));
