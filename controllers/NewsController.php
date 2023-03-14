@@ -63,7 +63,6 @@ class NewsController extends CoreController
                 "admin/resources/vendors/editorjs/plugins/drag-drop.js",
                 "admin/resources/vendors/editorjs/plugins/undo.js",
                 "admin/resources/vendors/editorjs/editor.js")
-            ->addScriptAfter("admin/resources/vendors/jquery/jquery.min.js")
             ->view();
     }
 
@@ -83,8 +82,7 @@ class NewsController extends CoreController
 
         $this->newsModel->createNews($title, $desc, $comm, $likes, $content, $slug, $userId, $image);
 
-        Response::sendAlert("success", LangManager::translate("core.toaster.success"),
-            LangManager::translate("news.add.toasters.success"));
+        Response::sendAlert("success", LangManager::translate("core.toaster.success"),LangManager::translate("news.add.toasters.success"));
 
     }
 
@@ -111,8 +109,21 @@ class NewsController extends CoreController
         $news = $this->newsModel->getNewsById($id);
 
         View::createAdminView('news', 'edit')
-            ->addStyle("admin/resources/vendors/summernote/summernote-lite.css","admin/resources/assets/css/pages/summernote.css")
-            ->addScriptAfter("admin/resources/vendors/jquery/jquery.min.js","admin/resources/vendors/summernote/summernote-lite.min.js","admin/resources/assets/js/pages/summernote.js")
+            ->addScriptBefore("admin/resources/vendors/editorjs/plugins/header.js",
+                "admin/resources/vendors/editorjs/plugins/image.js",
+                "admin/resources/vendors/editorjs/plugins/delimiter.js",
+                "admin/resources/vendors/editorjs/plugins/list.js",
+                "admin/resources/vendors/editorjs/plugins/quote.js",
+                "admin/resources/vendors/editorjs/plugins/editorjs-codeflask.js",
+                "admin/resources/vendors/editorjs/plugins/table.js",
+                "admin/resources/vendors/editorjs/plugins/link.js",
+                "admin/resources/vendors/editorjs/plugins/warning.js",
+                "admin/resources/vendors/editorjs/plugins/embed.js",
+                "admin/resources/vendors/editorjs/plugins/marker.js",
+                "admin/resources/vendors/editorjs/plugins/underline.js",
+                "admin/resources/vendors/editorjs/plugins/drag-drop.js",
+                "admin/resources/vendors/editorjs/plugins/undo.js",
+                "admin/resources/vendors/editorjs/editor.js")
             ->addVariableList(["news" => $news])
             ->view();
     }
@@ -218,6 +229,8 @@ class NewsController extends CoreController
 
         //Include the public view file ("public/themes/$themePath/views/news/list.view.php")
         $view = new View('news', 'list');
+        $view->addScriptBefore("admin/resources/vendors/highlight/highlight.min.js","admin/resources/vendors/highlight/highlightAll.js");
+        $view->addStyle("admin/resources/vendors/highlight/rainbow.css");//Can be a choice
         $view->addVariableList(["newsList" => $newsList, "newsModel" => $newsModel]);
         $view->view();
     }
@@ -236,6 +249,8 @@ class NewsController extends CoreController
 
         //Include the public view file ("public/themes/$themePath/views/news/individual.view.php")
         $view = new View('news', 'individual');
+        $view->addScriptBefore("admin/resources/vendors/highlight/highlight.min.js","admin/resources/vendors/highlight/highlightAll.js");
+        $view->addStyle("admin/resources/vendors/highlight/rainbow.css");//Can be a choice
         $view->addVariableList(["news" => $news]);
         $view->view();
     }
