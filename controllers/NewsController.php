@@ -70,7 +70,6 @@ class NewsController extends CoreController
     #[Link("/add", Link::POST, [], "/cmw-admin/news", secure: false)]
     public function addNewsPost(): void
     {
-        Utils::debugConsole("==========================================================================");
 
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
 
