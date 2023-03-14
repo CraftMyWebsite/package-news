@@ -3,6 +3,7 @@
 use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Security\SecurityManager;
 use CMW\Utils\Utils;
+use CMW\Utils\Response;
 
 $title = LangManager::translate("news.dashboard.title");
 $description = LangManager::translate("news.dashboard.desc");
@@ -70,8 +71,8 @@ $description = LangManager::translate("news.dashboard.desc");
                     <div class="card-in-card" id="editorjs"></div>
                 </div>
                 <div class="text-center mt-2">
-                    <button id="saveButton" type="submit"
-                            class="btn btn-primary"><?= LangManager::translate("core.btn.add") ?></button>
+                    <button id="saveButton" disabled type="submit"
+                            class="btn btn-primary"><i class='fa-solid fa-spinner fa-spin-pulse'></i> <?= LangManager::translate("pages.add.create") ?></button>
                 </div>
             </form>
         </div>
@@ -82,14 +83,16 @@ $description = LangManager::translate("news.dashboard.desc");
 <script>
     /**
      * Check inpt befor send
-
+    */
      let input_title = document.querySelector("#title");
-     let input_slug = document.querySelector("#slug");
+     let input_desc = document.querySelector("#desc");
+     let input_img = document.querySelector("#image");
      let button = document.querySelector("#saveButton");
      input_title.addEventListener("change", stateHandle);
-     input_slug.addEventListener("change", stateHandle);
+     input_desc.addEventListener("change", stateHandle);
+     input_img.addEventListener("change", stateHandle);
      function stateHandle() {
-     if (document.querySelector("#title").value !="" && document.querySelector("#slug").value !="") {
+     if (document.querySelector("#title").value !="" && document.querySelector("#desc").value !="" && document.querySelector("#image").value !="") {
       button.disabled = false;
       button.innerHTML = "<?= LangManager::translate("core.btn.add") ?>";
      }
@@ -97,7 +100,7 @@ $description = LangManager::translate("news.dashboard.desc");
       button.disabled = true;
       button.innerHTML = "<i class='fa-solid fa-spinner fa-spin-pulse'></i> <?= LangManager::translate("pages.add.create") ?>";
      }
-    }*/
+    }
 
 
     /**
@@ -119,6 +122,29 @@ $description = LangManager::translate("news.dashboard.desc");
                     placeholder: "Entrez un titre",
                     levels: [2, 3, 4],
                     defaultLevel: 2
+                }
+            },
+            image: {
+                class: ImageTool,
+                config: {
+                    uploader: {
+                        uploadByFile(file) {
+                            let formData = new FormData();
+                            formData.append('image', file);
+                            return fetch("<?= Utils::getEnv()->getValue("PATH_SUBFOLDER")?>cmw-admin/pages/uploadImage/add", {
+                                method: "POST",
+                                body: formData
+                            }).then(res => res.json())
+                                .then(response => {
+                                    return {
+                                        success: 1,
+                                        file: {
+                                            url: "<?= Utils::getEnv()->getValue("PATH_URL")?>public/uploads/editor/" + response
+                                        }
+                                    }
+                                })
+                        }
+                    }
                 }
             },
             list: List,
@@ -189,6 +215,7 @@ $description = LangManager::translate("news.dashboard.desc");
                     method: "POST",
                     body: formData
                 })
+                
             })
             .catch((error) => {
                 alert("Error " + error);
