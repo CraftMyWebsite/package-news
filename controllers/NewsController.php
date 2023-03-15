@@ -128,25 +128,21 @@ class NewsController extends CoreController
             ->view();
     }
 
-    #[Link("/edit/:id", Link::POST, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    public function editNewsPost(int $id): void
+    #[Link("/edit", Link::POST, [], "/cmw-admin/news", secure: false)]
+    public function editNewsPost(): void
     {
+        
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
 
-        [$title, $desc, $content] = Utils::filterInput('title', 'desc', 'content');
-
-        $comm = is_null(filter_input(INPUT_POST, "comm")) ? 0 : 1;
-        $likes = is_null(filter_input(INPUT_POST, "likes")) ? 0 : 1;
+        [$id, $title, $desc, $content, $comm, $likes] = Utils::filterInput('id', 'title', 'desc', 'content', 'comm', 'likes');
 
         $slug = Utils::normalizeForSlug($title);
-
-        $this->newsModel->updateNews($id, $title, $desc, $comm, $likes, $content, $slug,
-            ($_FILES['image']['size'] === 0 && $_FILES['image']['error'] === 0 ? null : $_FILES['image']));
-
-        Response::sendAlert("success", LangManager::translate("core.toaster.success"),
-            LangManager::translate("news.edit.toasters.success", ["actu" => $title]));
-
-        header("location: ../manage");
+        
+        $image = $_FILES['image'];
+        
+        $this->newsModel->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $image);
+        
+        
     }
 
     #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]

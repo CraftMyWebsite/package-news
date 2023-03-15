@@ -12,6 +12,7 @@ class NewsEntity
     private bool $commentsStatus;
     private bool $likesStatus;
     private string $content;
+    private string $contentNt;
     private string $slug;
     private ?UserEntity $author;
     private int $views;
@@ -29,6 +30,7 @@ class NewsEntity
      * @param bool $commentsStatus
      * @param bool $likesStatus
      * @param string $content
+     * @param string $contentNt
      * @param string $slug
      * @param ?\CMW\Entity\Users\UserEntity $author
      * @param int $views
@@ -37,7 +39,7 @@ class NewsEntity
      * @param ?\CMW\Entity\News\NewsLikesEntity $likes
      * @param \CMW\Entity\News\NewsCommentsEntity[]|null $comments
      */
-    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $slug, ?UserEntity $author, int $views, string $imageName, string $dateCreated, ?NewsLikesEntity $likes, ?array $comments)
+    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $contentNt, string $slug, ?UserEntity $author, int $views, string $imageName, string $dateCreated, ?NewsLikesEntity $likes, ?array $comments)
     {
         $this->newsId = $newsId;
         $this->title = $title;
@@ -45,6 +47,7 @@ class NewsEntity
         $this->commentsStatus = $commentsStatus;
         $this->likesStatus = $likesStatus;
         $this->content = $content;
+        $this->contentNt = $contentNt;
         $this->slug = $slug;
         $this->author = $author;
         $this->views = $views;
@@ -100,6 +103,14 @@ class NewsEntity
     public function getContent(): string
     {
         return $this->content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentNotTranslate(): string
+    {
+        return $this->contentNt;
     }
 
     /**
