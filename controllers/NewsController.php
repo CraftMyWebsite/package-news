@@ -131,18 +131,20 @@ class NewsController extends CoreController
     #[Link("/edit", Link::POST, [], "/cmw-admin/news", secure: false)]
     public function editNewsPost(): void
     {
-        
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
 
         [$id, $title, $desc, $content, $comm, $likes] = Utils::filterInput('id', 'title', 'desc', 'content', 'comm', 'likes');
 
         $slug = Utils::normalizeForSlug($title);
-        
-        $image = $_FILES['image'];
+
+        if (isset($_FILES['image'])){
+            $image = $this->newsModel->getNewsById($id)?->getImageName();
+        } else {
+            $image = $_FILES['image'];
+        }
+
         
         $this->newsModel->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $image);
-        
-        
     }
 
     #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
