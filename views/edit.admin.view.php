@@ -72,25 +72,23 @@ $description = LangManager::translate("news.dashboard.desc");
 <script>
     /**
      * Check inpt befor send
-    
+    */
      let input_title = document.querySelector("#title");
      let input_desc = document.querySelector("#desc");
-     let input_img = document.querySelector("#image");
      let button = document.querySelector("#saveButton");
      input_title.addEventListener("change", stateHandle);
      input_desc.addEventListener("change", stateHandle);
-     input_img.addEventListener("change", stateHandle);
      function stateHandle() {
-     if (document.querySelector("#title").value !="" && document.querySelector("#desc").value !="" && document.querySelector("#image").value !="") {
+     if (document.querySelector("#title").value !="" && document.querySelector("#desc").value !="") {
       button.disabled = false;
-      button.innerHTML = "<?= LangManager::translate("core.btn.add") ?>";
+      button.innerHTML = "<?= LangManager::translate("core.btn.save") ?>";
      }
      else {
       button.disabled = true;
       button.innerHTML = "<i class='fa-solid fa-spinner fa-spin-pulse'></i> <?= LangManager::translate("pages.add.create") ?>";
      }
     }
-*/
+
 
     /**
      * EditorJS
@@ -205,6 +203,11 @@ $description = LangManager::translate("news.dashboard.desc");
                     method: "POST",
                     body: formData
                 })
+
+                saveButton.innerHTML = "<i style='color: #16C329;' class='fa-solid fa-check fa-shake'></i> Ok !";
+                        setTimeout(() => {
+                            saveButton.innerHTML = "<?= LangManager::translate("core.btn.save") ?>";
+                        }, 1000);
                 
             })
             .catch((error) => {
