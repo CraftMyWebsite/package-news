@@ -20,6 +20,7 @@ return [
             "views" => "Views",
             "creation_date" => "creation date",
             "edit" => "Edit",
+            "link" => "Link",
         ],
     ],
     "add" => [

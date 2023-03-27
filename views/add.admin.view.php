@@ -20,7 +20,6 @@ $description = LangManager::translate("news.dashboard.desc");
             <h4><?= LangManager::translate("news.dashboard.title_add") ?></h4>
         </div>
         <div class="card-body">
-            <form>
                 <div class="row">
                     <div class="col-12 col-lg-6">
                         <h6><?= LangManager::translate("news.add.title") ?> :</h6>
@@ -74,7 +73,6 @@ $description = LangManager::translate("news.dashboard.desc");
                     <button id="saveButton" disabled type="submit"
                             class="btn btn-primary"><i class='fa-solid fa-spinner fa-spin-pulse'></i> <?= LangManager::translate("pages.add.create") ?></button>
                 </div>
-            </form>
         </div>
     </div>
 </section>
@@ -156,7 +154,7 @@ $description = LangManager::translate("news.dashboard.desc");
                 },
             },
             warning: Warning,
-            code: editorjsCodeflask,
+            code: CodeTool,
             delimiter: Delimiter,
             table: Table,
             embed: {
@@ -216,6 +214,14 @@ $description = LangManager::translate("news.dashboard.desc");
                     body: formData
                 })
                 
+                button.disabled = true;
+                button.innerHTML = "<i class='fa-solid fa-spinner fa-spin-pulse'></i> Enregistrement en cours ...";
+                setTimeout(() => {
+                            button.innerHTML = "<i style='color: #16C329;' class='fa-solid fa-check fa-shake'></i> Ok !";
+                        }, 850);
+                setTimeout(() => {
+                            document.location.replace("<?= Utils::getHttpProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . 'cmw-admin/news/manage'?>");
+                        }, 1000);
             })
             .catch((error) => {
                 alert("Error " + error);

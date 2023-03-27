@@ -2,6 +2,7 @@
 
 use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Security\SecurityManager;
+use CMW\Utils\Utils;
 
 $title = LangManager::translate("news.dashboard.title");
 $description = LangManager::translate("news.dashboard.desc");
@@ -23,6 +24,7 @@ $description = LangManager::translate("news.dashboard.desc");
                     <th class="text-center"><?= LangManager::translate("news.list.table.title") ?></th>
                     <th class="text-center"><?= LangManager::translate("news.list.table.description") ?></th>
                     <th class="text-center"><?= LangManager::translate("news.list.table.author") ?></th>
+                    <th class="text-center"><?= LangManager::translate("news.list.table.link") ?></th>
                     <th class="text-center"><?= LangManager::translate("news.list.table.views") ?></th>
                     <th class="text-center"><?= LangManager::translate("news.list.table.creation_date") ?></th>
                     <th class="text-center"><?= LangManager::translate("core.btn.edit") ?></th>
@@ -34,6 +36,11 @@ $description = LangManager::translate("news.dashboard.desc");
                         <td><?= $news->getTitle() ?></td>
                         <td><?= $news->getDescription() ?></td>
                         <td><?= $news->getAuthor()->getUsername() ?></td>
+                        <td>
+                            <a target="_blank" href="<?= Utils::getHttpProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . "news/" .$news->getSlug() ?>">
+                                <?= mb_strimwidth(Utils::getHttpProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . "news/" .$news->getSlug(), 0, 45, '...') ?>
+                            </a>   
+                        </td>
                         <td><?= $news->getViews() ?></td>
                         <td><?= $news->getDateCreated() ?></td>
                         <td>
