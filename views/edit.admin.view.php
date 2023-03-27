@@ -143,7 +143,7 @@ $description = LangManager::translate("news.dashboard.desc");
                 },
             },
             warning: Warning,
-            code: editorjsCodeflask,
+            code: CodeTool,
             delimiter: Delimiter,
             table: Table,
             embed: {
@@ -204,9 +204,13 @@ $description = LangManager::translate("news.dashboard.desc");
                     body: formData
                 })
 
-                saveButton.innerHTML = "<i style='color: #16C329;' class='fa-solid fa-check fa-shake'></i> Ok !";
-                        setTimeout(() => {
-                            saveButton.innerHTML = "<?= LangManager::translate("core.btn.save") ?>";
+                button.disabled = true;
+                button.innerHTML = "<i class='fa-solid fa-spinner fa-spin-pulse'></i> Enregistrement en cours ...";
+                setTimeout(() => {
+                            button.innerHTML = "<i style='color: #16C329;' class='fa-solid fa-check fa-shake'></i> Ok !";
+                        }, 850);
+                setTimeout(() => {
+                            document.location.replace("<?= Utils::getHttpProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . 'cmw-admin/news/manage'?>");
                         }, 1000);
                 
             })

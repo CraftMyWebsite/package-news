@@ -20,6 +20,7 @@ return [
             "views" => "Affichages",
             "creation_date" => "Date de création",
             "edit" => "Modifications",
+            "link" => "Lien",
         ],
 	],
 	"add" => [

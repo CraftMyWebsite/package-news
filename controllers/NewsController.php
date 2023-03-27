@@ -3,6 +3,7 @@
 namespace CMW\Controller\News;
 
 use CMW\Controller\Core\CoreController;
+use CMW\Controller\Core\EditorController;
 use CMW\Controller\Users\UsersController;
 use CMW\Manager\Lang\LangManager;
 use CMW\Model\News\NewsCommentsLikesModel;
@@ -53,7 +54,7 @@ class NewsController extends CoreController
                 "admin/resources/vendors/editorjs/plugins/delimiter.js",
                 "admin/resources/vendors/editorjs/plugins/list.js",
                 "admin/resources/vendors/editorjs/plugins/quote.js",
-                "admin/resources/vendors/editorjs/plugins/editorjs-codeflask.js",
+                "admin/resources/vendors/editorjs/plugins/code.js",
                 "admin/resources/vendors/editorjs/plugins/table.js",
                 "admin/resources/vendors/editorjs/plugins/link.js",
                 "admin/resources/vendors/editorjs/plugins/warning.js",
@@ -114,7 +115,7 @@ class NewsController extends CoreController
                 "admin/resources/vendors/editorjs/plugins/delimiter.js",
                 "admin/resources/vendors/editorjs/plugins/list.js",
                 "admin/resources/vendors/editorjs/plugins/quote.js",
-                "admin/resources/vendors/editorjs/plugins/editorjs-codeflask.js",
+                "admin/resources/vendors/editorjs/plugins/code.js",
                 "admin/resources/vendors/editorjs/plugins/table.js",
                 "admin/resources/vendors/editorjs/plugins/link.js",
                 "admin/resources/vendors/editorjs/plugins/warning.js",
@@ -131,20 +132,18 @@ class NewsController extends CoreController
     #[Link("/edit", Link::POST, [], "/cmw-admin/news", secure: false)]
     public function editNewsPost(): void
     {
+        
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
 
         [$id, $title, $desc, $content, $comm, $likes] = Utils::filterInput('id', 'title', 'desc', 'content', 'comm', 'likes');
 
         $slug = Utils::normalizeForSlug($title);
-
-        if (isset($_FILES['image'])){
-            $image = $this->newsModel->getNewsById($id)?->getImageName();
-        } else {
-            $image = $_FILES['image'];
-        }
-
+        
+        $image = $_FILES['image'];
         
         $this->newsModel->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $image);
+        
+        
     }
 
     #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
@@ -228,7 +227,7 @@ class NewsController extends CoreController
         //Include the public view file ("public/themes/$themePath/views/news/list.view.php")
         $view = new View('news', 'list');
         $view->addScriptBefore("admin/resources/vendors/highlight/highlight.min.js","admin/resources/vendors/highlight/highlightAll.js");
-        $view->addStyle("admin/resources/vendors/highlight/rainbow.css");//Can be a choice
+        $view->addStyle("admin/resources/vendors/highlight/style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["newsList" => $newsList, "newsModel" => $newsModel]);
         $view->view();
     }
@@ -248,7 +247,7 @@ class NewsController extends CoreController
         //Include the public view file ("public/themes/$themePath/views/news/individual.view.php")
         $view = new View('news', 'individual');
         $view->addScriptBefore("admin/resources/vendors/highlight/highlight.min.js","admin/resources/vendors/highlight/highlightAll.js");
-        $view->addStyle("admin/resources/vendors/highlight/rainbow.css");//Can be a choice
+        $view->addStyle("admin/resources/vendors/highlight/style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["news" => $news]);
         $view->view();
     }
