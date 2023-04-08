@@ -14,7 +14,7 @@ $description = "Affichage de toutes vos news";
             <img src="<?= $news->getImageLink() ?>" height="250" width="250">
             <br>
             <p><?= $news->getContent() ?></p>
-            <p>- <?= $news->getAuthor()->getUsername() ?></p>
+            <p>- <?= $news->getAuthor()->getPseudo() ?></p>
             <p>Nombre de likes: <?= $news->getLikes()->getTotal() ?></p>
 
             <?php if ($news->getLikes()->userCanLike()): ?>

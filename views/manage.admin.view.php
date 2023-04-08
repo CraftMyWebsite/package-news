@@ -35,7 +35,7 @@ $description = LangManager::translate("news.dashboard.desc");
                     <tr>
                         <td><?= $news->getTitle() ?></td>
                         <td><?= $news->getDescription() ?></td>
-                        <td><?= $news->getAuthor()->getUsername() ?></td>
+                        <td><?= $news->getAuthor()->getPseudo() ?></td>
                         <td>
                             <a target="_blank" href="<?= Utils::getHttpProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . "news/" .$news->getSlug() ?>">
                                 <?= mb_strimwidth(Utils::getHttpProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . "news/" .$news->getSlug(), 0, 45, '...') ?>
