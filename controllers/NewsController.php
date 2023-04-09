@@ -149,6 +149,8 @@ class NewsController extends CoreController
     #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
     public function deleteNews(int $id): void
     {
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.delete");
+
         $this->newsModel->deleteNews($id);
 
         Response::sendAlert("success", LangManager::translate("core.toaster.success"),
