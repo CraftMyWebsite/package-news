@@ -6,6 +6,7 @@ use CMW\Entity\Users\UserEntity;
 use CMW\Model\News\NewsCommentsLikesModel;
 use CMW\Model\News\NewsCommentsModel;
 use CMW\Model\Users\UsersModel;
+use CMW\Controller\Core\CoreController;
 
 class NewsCommentsEntity
 {
@@ -74,7 +75,7 @@ class NewsCommentsEntity
      */
     public function getDate(): ?string
     {
-        return $this->date;
+        return CoreController::formatDate($this->date);
     }
 
 
