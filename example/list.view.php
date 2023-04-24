@@ -27,5 +27,5 @@
         <?php else: ?> 
             <a href="<?= $news->getLikes()->getSendLike() ?>">You will like</a>
         <?php endif; ?>
-
+    <?php endif; ?>
 <?php endforeach; ?>
