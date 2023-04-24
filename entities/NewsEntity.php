@@ -3,6 +3,7 @@
 namespace CMW\Entity\News;
 
 use CMW\Entity\Users\UserEntity;
+use CMW\Controller\Core\CoreController;
 
 class NewsEntity
 {
@@ -150,7 +151,7 @@ class NewsEntity
      */
     public function getDateCreated(): string
     {
-        return $this->dateCreated;
+        return CoreController::formatDate($this->dateCreated);
     }
 
     /**

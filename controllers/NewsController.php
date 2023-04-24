@@ -15,6 +15,7 @@ use CMW\Router\Link;
 use CMW\Utils\Response;
 use CMW\Utils\Utils;
 use CMW\Manager\Views\View;
+use CMW\Utils\Redirect;
 
 /**
  * Class: @NewsController
@@ -156,7 +157,7 @@ class NewsController extends CoreController
         Response::sendAlert("success", LangManager::translate("core.toaster.success"),
             LangManager::translate("news.delete.toasters.success"));
 
-        header("location: ../manage");
+        Redirect::redirectToPreviousPage();
     }
 
     #[Link("/news/like/comment/:id", Link::GET, ["id" => "[0-9]+"])]
@@ -170,9 +171,7 @@ class NewsController extends CoreController
             $this->newsCommentsLikesModel->storeLike($commentsId, $user?->getId());
         }
 
-        //Response::sendAlert("error", "Erreur", "Vous avez déjà liké ce commentaire");
-
-        header("location: " . $_SERVER['HTTP_REFERER']);
+        Redirect::redirectToPreviousPage();
     }
 
     #[Link("/news/like/:id", Link::GET, ["id" => "[0-9]+"])]
@@ -186,14 +185,11 @@ class NewsController extends CoreController
             header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
         }
 
-        //We check if the player has already like this news, and we store the like
         if ($this->newsLikesModel->userCanLike($newsId, $user?->getId())) {
             $this->newsLikesModel->storeLike($newsId, $user?->getId());
         }
 
-        //Response::sendAlert("error", "Erreur", "Vous avez déjà liké cette actualité");
-
-        header("location: " . $_SERVER['HTTP_REFERER']);
+        Redirect::redirectToPreviousPage();
     }
 
     #[Link("/news/comments/:id", Link::POST, ["id" => "[0-9]+"])]
@@ -208,7 +204,7 @@ class NewsController extends CoreController
             $this->newsCommentsModel->storeComments($newsId, $user?->getId(), $content);
         }
 
-        header("location: " . $_SERVER['HTTP_REFERER']);
+        Redirect::redirectToPreviousPage();
     }
 
 

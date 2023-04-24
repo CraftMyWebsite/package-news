@@ -11,6 +11,13 @@ return [
         "delete" => "Supression de :",
         "deletealert" => "La supression est definitive.",
         ],
+     "button" => [
+		"create_before" => "<i class='fa-solid fa-spinner fa-spin-pulse'></i> Créer pour enregistrer",
+		"saving" => "<i class='fa-solid fa-spinner fa-spin-pulse'></i> Enregistrement en cours ...",
+	],
+     "editor" => [
+        "start" => "Commencez à taper ou cliquez sur le '+' pour choisir un bloc à ajouter...",
+    ],
 	"list" => [
 		"list" => "Liste des actualités",
         "table" => [

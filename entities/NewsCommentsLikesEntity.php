@@ -3,7 +3,7 @@
 namespace CMW\Entity\News;
 
 use CMW\Entity\Users\UserEntity;
-
+use CMW\Controller\Core\CoreController;
 
 class NewsCommentsLikesEntity
 {
@@ -62,7 +62,7 @@ class NewsCommentsLikesEntity
      */
     public function getDate(): ?string
     {
-        return $this->date;
+        return CoreController::formatDate($this->date);
     }
 
     /**

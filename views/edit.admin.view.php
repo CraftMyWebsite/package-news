@@ -85,7 +85,7 @@ $description = LangManager::translate("news.dashboard.desc");
      }
      else {
       button.disabled = true;
-      button.innerHTML = "<i class='fa-solid fa-spinner fa-spin-pulse'></i> <?= LangManager::translate("pages.add.create") ?>";
+      button.innerHTML = "<?= LangManager::translate("news.button.create_before") ?>";
      }
     }
 
@@ -95,7 +95,7 @@ $description = LangManager::translate("news.dashboard.desc");
      *  //TODO IMPLEMENT IMAGES
      */
     let editor = new EditorJS({
-        placeholder: "Commencez à taper ou cliquez sur le \"+\" pour choisir un bloc à ajouter...",
+        placeholder: "<?= LangManager::translate("news.editor.start") ?>",
         logLevel: "ERROR",
         readOnly: false,
         holder: "editorjs",
@@ -205,7 +205,7 @@ $description = LangManager::translate("news.dashboard.desc");
                 })
 
                 button.disabled = true;
-                button.innerHTML = "<i class='fa-solid fa-spinner fa-spin-pulse'></i> Enregistrement en cours ...";
+                button.innerHTML = "<?= LangManager::translate("news.button.saving") ?>";
                 setTimeout(() => {
                             button.innerHTML = "<i style='color: #16C329;' class='fa-solid fa-check fa-shake'></i> Ok !";
                         }, 850);

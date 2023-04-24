@@ -11,6 +11,13 @@ return [
         "delete" => "Delete :",
         "deletealert" => "The deletion is permanent.",
     ],
+    "button" => [
+        "create_before" => "<i class='fa-solid fa-spinner fa-spin-pulse'></i> Create before save",
+        "saving" => "<i class='fa-solid fa-spinner fa-spin-pulse'></i> Saving in progress",
+    ],
+    "editor" => [
+        "start" => "Start typing or click the '+' to choose a block to add...",
+    ],
     "list" => [
         "list" => "List of news",
         "table" => [

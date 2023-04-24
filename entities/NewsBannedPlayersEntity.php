@@ -2,7 +2,7 @@
 
 namespace CMW\Entity\News;
 
-
+use CMW\Controller\Core\CoreController;
 use CMW\Entity\Users\UserEntity;
 
 class NewsBannedPlayersEntity
@@ -55,7 +55,7 @@ class NewsBannedPlayersEntity
      */
     public function getDate(): string
     {
-        return $this->date;
+        return CoreController::formatDate($this->date);
     }
 
 }
