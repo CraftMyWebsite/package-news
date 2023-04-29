@@ -223,8 +223,8 @@ class NewsController extends CoreController
         $newsList = $this->newsModel->getNews();
         $newsModel = $this->newsModel;
 
-        //Include the Public view file ("Public/Themes/$themePath/Views/news/list.view.php")
-        $view = new View('news', 'list');
+        //Include the Public view file ("Public/Themes/$themePath/Views/News/list.view.php")
+        $view = new View('News', 'list');
         $view->addScriptBefore("Admin/Resources/Vendors/highlight/highlight.min.js","Admin/Resources/Vendors/highlight/highlightAll.js");
         $view->addStyle("Admin/Resources/Vendors/highlight/style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["newsList" => $newsList, "newsModel" => $newsModel]);
@@ -243,8 +243,8 @@ class NewsController extends CoreController
             $this->newsModel->incrementViews($news->getNewsId());
         }
 
-        //Include the Public view file ("Public/Themes/$themePath/Views/news/individual.view.php")
-        $view = new View('news', 'individual');
+        //Include the Public view file ("Public/Themes/$themePath/Views/News/individual.view.php")
+        $view = new View('News', 'individual');
         $view->addScriptBefore("Admin/Resources/Vendors/highlight/highlight.min.js","Admin/Resources/Vendors/highlight/highlightAll.js");
         $view->addStyle("Admin/Resources/Vendors/highlight/style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["news" => $news]);
