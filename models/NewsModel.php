@@ -329,7 +329,7 @@ class NewsModel extends DatabaseManager
         //Detect if we update the image
         if (!empty($image['name'])) {
             //Delete the old image
-            unlink(getenv("dir") . "public/uploads/news/" . $this->getNewsById($newsId)?->getImageName());
+            unlink(getenv("dir") . "Public/uploads/news/" . $this->getNewsById($newsId)?->getImageName());
 
             //Upload the new image
             $imageName = Images::upload($image, "news");
@@ -355,7 +355,7 @@ class NewsModel extends DatabaseManager
     public function deleteNews(int $newsId): void
     {
         //Delete the image file
-        unlink(getenv("dir") . "public/uploads/news/" . $this->getNewsById($newsId)?->getImageName());
+        unlink(getenv("dir") . "Public/uploads/news/" . $this->getNewsById($newsId)?->getImageName());
 
         $sql = "DELETE FROM cmw_news WHERE news_id=:news_id";
 

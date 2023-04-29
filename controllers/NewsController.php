@@ -43,32 +43,32 @@ class NewsController extends CoreController
     }
 
 
-    #[Link(path: "/", method: Link::GET, scope: "/cmw-admin/news")]
-    #[Link("/add", Link::GET, [], "/cmw-admin/news")]
+    #[Link(path: "/", method: Link::GET, scope: "/cmw-Admin/news")]
+    #[Link("/add", Link::GET, [], "/cmw-Admin/news")]
     public function addNews(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
 
         View::createAdminView('news', 'add')
-            ->addScriptBefore("admin/resources/vendors/editorjs/plugins/header.js",
-                "admin/resources/vendors/editorjs/plugins/image.js",
-                "admin/resources/vendors/editorjs/plugins/delimiter.js",
-                "admin/resources/vendors/editorjs/plugins/list.js",
-                "admin/resources/vendors/editorjs/plugins/quote.js",
-                "admin/resources/vendors/editorjs/plugins/code.js",
-                "admin/resources/vendors/editorjs/plugins/table.js",
-                "admin/resources/vendors/editorjs/plugins/link.js",
-                "admin/resources/vendors/editorjs/plugins/warning.js",
-                "admin/resources/vendors/editorjs/plugins/embed.js",
-                "admin/resources/vendors/editorjs/plugins/marker.js",
-                "admin/resources/vendors/editorjs/plugins/underline.js",
-                "admin/resources/vendors/editorjs/plugins/drag-drop.js",
-                "admin/resources/vendors/editorjs/plugins/undo.js",
-                "admin/resources/vendors/editorjs/editor.js")
+            ->addScriptBefore("Admin/Resources/Vendors/editorjs/plugins/header.js",
+                "Admin/Resources/Vendors/editorjs/plugins/image.js",
+                "Admin/Resources/Vendors/editorjs/plugins/delimiter.js",
+                "Admin/Resources/Vendors/editorjs/plugins/list.js",
+                "Admin/Resources/Vendors/editorjs/plugins/quote.js",
+                "Admin/Resources/Vendors/editorjs/plugins/code.js",
+                "Admin/Resources/Vendors/editorjs/plugins/table.js",
+                "Admin/Resources/Vendors/editorjs/plugins/link.js",
+                "Admin/Resources/Vendors/editorjs/plugins/warning.js",
+                "Admin/Resources/Vendors/editorjs/plugins/embed.js",
+                "Admin/Resources/Vendors/editorjs/plugins/marker.js",
+                "Admin/Resources/Vendors/editorjs/plugins/underline.js",
+                "Admin/Resources/Vendors/editorjs/plugins/drag-drop.js",
+                "Admin/Resources/Vendors/editorjs/plugins/undo.js",
+                "Admin/Resources/Vendors/editorjs/editor.js")
             ->view();
     }
 
-    #[Link("/add", Link::POST, [], "/cmw-admin/news", secure: false)]
+    #[Link("/add", Link::POST, [], "/cmw-Admin/news", secure: false)]
     public function addNewsPost(): void
     {
 
@@ -88,7 +88,7 @@ class NewsController extends CoreController
 
     }
 
-    #[Link("/manage", Link::GET, [], "/cmw-admin/news")]
+    #[Link("/manage", Link::GET, [], "/cmw-Admin/news")]
     public function listNews(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage");
@@ -97,13 +97,13 @@ class NewsController extends CoreController
 
         View::createAdminView('news', 'manage')
         /*El famosso doublon*/
-        ->addStyle("admin/resources/vendors/simple-datatables/style.css","admin/resources/assets/css/pages/simple-datatables.css","admin/resources/vendors/summernote/summernote-lite.css","admin/resources/assets/css/pages/summernote.css")
-        ->addScriptAfter("admin/resources/vendors/simple-datatables/umd/simple-datatables.js","admin/resources/assets/js/pages/simple-datatables.js","admin/resources/vendors/jquery/jquery.min.js","admin/resources/vendors/summernote/summernote-lite.min.js","admin/resources/assets/js/pages/summernote.js")
+        ->addStyle("Admin/Resources/Vendors/Simple-datatables/style.css","Admin/Resources/Assets/Css/Pages/simple-datatables.css","Admin/Resources/Vendors/Summernote/summernote-lite.css","Admin/Resources/Assets/Css/Pages/summernote.css")
+        ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/Umd/simple-datatables.js","Admin/Resources/Assets/Js/Pages/simple-datatables.js","Admin/Resources/Vendors/jquery/jquery.min.js","Admin/Resources/Vendors/Summernote/summernote-lite.min.js","Admin/Resources/Assets/Js/Pages/summernote.js")
             ->addVariableList(["newsList" => $newsList])
             ->view();
     }
 
-    #[Link("/edit/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
+    #[Link("/edit/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-Admin/news")]
     public function editNews(int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
@@ -111,26 +111,26 @@ class NewsController extends CoreController
         $news = $this->newsModel->getNewsById($id);
 
         View::createAdminView('news', 'edit')
-            ->addScriptBefore("admin/resources/vendors/editorjs/plugins/header.js",
-                "admin/resources/vendors/editorjs/plugins/image.js",
-                "admin/resources/vendors/editorjs/plugins/delimiter.js",
-                "admin/resources/vendors/editorjs/plugins/list.js",
-                "admin/resources/vendors/editorjs/plugins/quote.js",
-                "admin/resources/vendors/editorjs/plugins/code.js",
-                "admin/resources/vendors/editorjs/plugins/table.js",
-                "admin/resources/vendors/editorjs/plugins/link.js",
-                "admin/resources/vendors/editorjs/plugins/warning.js",
-                "admin/resources/vendors/editorjs/plugins/embed.js",
-                "admin/resources/vendors/editorjs/plugins/marker.js",
-                "admin/resources/vendors/editorjs/plugins/underline.js",
-                "admin/resources/vendors/editorjs/plugins/drag-drop.js",
-                "admin/resources/vendors/editorjs/plugins/undo.js",
-                "admin/resources/vendors/editorjs/editor.js")
+            ->addScriptBefore("Admin/Resources/Vendors/editorjs/plugins/header.js",
+                "Admin/Resources/Vendors/editorjs/plugins/image.js",
+                "Admin/Resources/Vendors/editorjs/plugins/delimiter.js",
+                "Admin/Resources/Vendors/editorjs/plugins/list.js",
+                "Admin/Resources/Vendors/editorjs/plugins/quote.js",
+                "Admin/Resources/Vendors/editorjs/plugins/code.js",
+                "Admin/Resources/Vendors/editorjs/plugins/table.js",
+                "Admin/Resources/Vendors/editorjs/plugins/link.js",
+                "Admin/Resources/Vendors/editorjs/plugins/warning.js",
+                "Admin/Resources/Vendors/editorjs/plugins/embed.js",
+                "Admin/Resources/Vendors/editorjs/plugins/marker.js",
+                "Admin/Resources/Vendors/editorjs/plugins/underline.js",
+                "Admin/Resources/Vendors/editorjs/plugins/drag-drop.js",
+                "Admin/Resources/Vendors/editorjs/plugins/undo.js",
+                "Admin/Resources/Vendors/editorjs/editor.js")
             ->addVariableList(["news" => $news])
             ->view();
     }
 
-    #[Link("/edit", Link::POST, [], "/cmw-admin/news", secure: false)]
+    #[Link("/edit", Link::POST, [], "/cmw-Admin/news", secure: false)]
     public function editNewsPost(): void
     {
         
@@ -147,7 +147,7 @@ class NewsController extends CoreController
         
     }
 
-    #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
+    #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-Admin/news")]
     public function deleteNews(int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.delete");
@@ -222,10 +222,10 @@ class NewsController extends CoreController
         $newsList = $this->newsModel->getNews();
         $newsModel = $this->newsModel;
 
-        //Include the public view file ("public/themes/$themePath/views/news/list.view.php")
+        //Include the Public view file ("Public/Themes/$themePath/Views/news/list.view.php")
         $view = new View('news', 'list');
-        $view->addScriptBefore("admin/resources/vendors/highlight/highlight.min.js","admin/resources/vendors/highlight/highlightAll.js");
-        $view->addStyle("admin/resources/vendors/highlight/style/" . EditorController::getCurrentStyle());
+        $view->addScriptBefore("Admin/Resources/Vendors/highlight/highlight.min.js","Admin/Resources/Vendors/highlight/highlightAll.js");
+        $view->addStyle("Admin/Resources/Vendors/highlight/style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["newsList" => $newsList, "newsModel" => $newsModel]);
         $view->view();
     }
@@ -242,10 +242,10 @@ class NewsController extends CoreController
             $this->newsModel->incrementViews($news->getNewsId());
         }
 
-        //Include the public view file ("public/themes/$themePath/views/news/individual.view.php")
+        //Include the Public view file ("Public/Themes/$themePath/Views/news/individual.view.php")
         $view = new View('news', 'individual');
-        $view->addScriptBefore("admin/resources/vendors/highlight/highlight.min.js","admin/resources/vendors/highlight/highlightAll.js");
-        $view->addStyle("admin/resources/vendors/highlight/style/" . EditorController::getCurrentStyle());
+        $view->addScriptBefore("Admin/Resources/Vendors/highlight/highlight.min.js","Admin/Resources/Vendors/highlight/highlightAll.js");
+        $view->addStyle("Admin/Resources/Vendors/highlight/style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["news" => $news]);
         $view->view();
     }
