@@ -118,7 +118,7 @@ $description = LangManager::translate("news.dashboard.desc");
                         uploadByFile(file) {
                             let formData = new FormData();
                             formData.append('image', file);
-                            return fetch("<?= Utils::getEnv()->getValue("PATH_SUBFOLDER")?>cmw-admin/pages/uploadImage/add", {
+                            return fetch("<?= Utils::getEnv()->getValue("PATH_SUBFOLDER")?>cmw-Admin/Pages/uploadImage/add", {
                                 method: "POST",
                                 body: formData
                             }).then(res => res.json())
@@ -199,7 +199,7 @@ $description = LangManager::translate("news.dashboard.desc");
                 formData.append('comm', comm_state.toString());
                 formData.append('likes', likes_state.toString());
 
-                fetch("<?= Utils::getEnv()->getValue("PATH_URL") ?>cmw-admin/news/edit", {
+                fetch("<?= Utils::getEnv()->getValue("PATH_URL") ?>cmw-Admin/news/edit", {
                     method: "POST",
                     body: formData
                 })
@@ -210,7 +210,7 @@ $description = LangManager::translate("news.dashboard.desc");
                             button.innerHTML = "<i style='color: #16C329;' class='fa-solid fa-check fa-shake'></i> Ok !";
                         }, 850);
                 setTimeout(() => {
-                            document.location.replace("<?= Utils::getHttpProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . 'cmw-admin/news/manage'?>");
+                            document.location.replace("<?= Utils::getHttpProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . 'cmw-Admin/news/manage'?>");
                         }, 1000);
                 
             })
