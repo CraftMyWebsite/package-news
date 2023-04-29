@@ -6,6 +6,7 @@ use CMW\Controller\Core\CoreController;
 use CMW\Controller\Core\EditorController;
 use CMW\Controller\Users\UsersController;
 use CMW\Manager\Lang\LangManager;
+use CMW\Manager\Requests\Request;
 use CMW\Model\News\NewsCommentsLikesModel;
 use CMW\Model\News\NewsCommentsModel;
 use CMW\Model\News\NewsLikesModel;
@@ -50,21 +51,21 @@ class NewsController extends CoreController
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
 
         View::createAdminView('news', 'add')
-            ->addScriptBefore("Admin/Resources/Vendors/editorjs/plugins/header.js",
-                "Admin/Resources/Vendors/editorjs/plugins/image.js",
-                "Admin/Resources/Vendors/editorjs/plugins/delimiter.js",
-                "Admin/Resources/Vendors/editorjs/plugins/list.js",
-                "Admin/Resources/Vendors/editorjs/plugins/quote.js",
-                "Admin/Resources/Vendors/editorjs/plugins/code.js",
-                "Admin/Resources/Vendors/editorjs/plugins/table.js",
-                "Admin/Resources/Vendors/editorjs/plugins/link.js",
-                "Admin/Resources/Vendors/editorjs/plugins/warning.js",
-                "Admin/Resources/Vendors/editorjs/plugins/embed.js",
-                "Admin/Resources/Vendors/editorjs/plugins/marker.js",
-                "Admin/Resources/Vendors/editorjs/plugins/underline.js",
-                "Admin/Resources/Vendors/editorjs/plugins/drag-drop.js",
-                "Admin/Resources/Vendors/editorjs/plugins/undo.js",
-                "Admin/Resources/Vendors/editorjs/editor.js")
+            ->addScriptBefore("Admin/Resources/Vendors/Editorjs/Plugins/header.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/image.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/delimiter.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/list.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/quote.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/code.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/table.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/link.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/warning.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/embed.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/marker.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/underline.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/drag-drop.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/undo.js",
+                "Admin/Resources/Vendors/Editorjs/editor.js")
             ->view();
     }
 
@@ -104,28 +105,28 @@ class NewsController extends CoreController
     }
 
     #[Link("/edit/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    public function editNews(int $id): void
+    public function editNews(Request $request, int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
 
         $news = $this->newsModel->getNewsById($id);
 
         View::createAdminView('news', 'edit')
-            ->addScriptBefore("Admin/Resources/Vendors/editorjs/plugins/header.js",
-                "Admin/Resources/Vendors/editorjs/plugins/image.js",
-                "Admin/Resources/Vendors/editorjs/plugins/delimiter.js",
-                "Admin/Resources/Vendors/editorjs/plugins/list.js",
-                "Admin/Resources/Vendors/editorjs/plugins/quote.js",
-                "Admin/Resources/Vendors/editorjs/plugins/code.js",
-                "Admin/Resources/Vendors/editorjs/plugins/table.js",
-                "Admin/Resources/Vendors/editorjs/plugins/link.js",
-                "Admin/Resources/Vendors/editorjs/plugins/warning.js",
-                "Admin/Resources/Vendors/editorjs/plugins/embed.js",
-                "Admin/Resources/Vendors/editorjs/plugins/marker.js",
-                "Admin/Resources/Vendors/editorjs/plugins/underline.js",
-                "Admin/Resources/Vendors/editorjs/plugins/drag-drop.js",
-                "Admin/Resources/Vendors/editorjs/plugins/undo.js",
-                "Admin/Resources/Vendors/editorjs/editor.js")
+            ->addScriptBefore("Admin/Resources/Vendors/Editorjs/Plugins/header.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/image.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/delimiter.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/list.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/quote.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/code.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/table.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/link.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/warning.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/embed.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/marker.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/underline.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/drag-drop.js",
+                "Admin/Resources/Vendors/Editorjs/Plugins/undo.js",
+                "Admin/Resources/Vendors/Editorjs/editor.js")
             ->addVariableList(["news" => $news])
             ->view();
     }
@@ -148,7 +149,7 @@ class NewsController extends CoreController
     }
 
     #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    public function deleteNews(int $id): void
+    public function deleteNews(Request $request, int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.delete");
 
@@ -161,7 +162,7 @@ class NewsController extends CoreController
     }
 
     #[Link("/news/like/comment/:id", Link::GET, ["id" => "[0-9]+"])]
-    public function likeCommentsNews(int $commentsId): void
+    public function likeCommentsNews(Request $request, int $commentsId): void
     {
         $user = $this->usersModel::getCurrentUser();
 
@@ -175,7 +176,7 @@ class NewsController extends CoreController
     }
 
     #[Link("/news/like/:id", Link::GET, ["id" => "[0-9]+"])]
-    public function likeNews(int $newsId): void
+    public function likeNews(Request $request, int $newsId): void
     {
         $user = $this->usersModel::getCurrentUser();
         $news = $this->newsModel->getNewsById($newsId);
@@ -193,7 +194,7 @@ class NewsController extends CoreController
     }
 
     #[Link("/news/comments/:id", Link::POST, ["id" => "[0-9]+"])]
-    public function commentsNews(int $newsId): void
+    public function commentsNews(Request $request, int $newsId): void
     {
         $user = $this->usersModel::getCurrentUser();
 
@@ -234,7 +235,7 @@ class NewsController extends CoreController
      * @throws \CMW\Router\RouterException
      */
     #[Link("/news/:slug", Link::GET, ["slug" => ".*?"])]
-    public function publicIndividualNews(string $slug): void
+    public function publicIndividualNews(Request $request, string $slug): void
     {
         $news = $this->newsModel->getNewsBySlug($slug);
 
