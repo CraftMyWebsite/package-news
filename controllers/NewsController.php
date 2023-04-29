@@ -43,8 +43,8 @@ class NewsController extends CoreController
     }
 
 
-    #[Link(path: "/", method: Link::GET, scope: "/cmw-Admin/news")]
-    #[Link("/add", Link::GET, [], "/cmw-Admin/news")]
+    #[Link(path: "/", method: Link::GET, scope: "/cmw-admin/news")]
+    #[Link("/add", Link::GET, [], "/cmw-admin/news")]
     public function addNews(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
@@ -68,7 +68,7 @@ class NewsController extends CoreController
             ->view();
     }
 
-    #[Link("/add", Link::POST, [], "/cmw-Admin/news", secure: false)]
+    #[Link("/add", Link::POST, [], "/cmw-admin/news", secure: false)]
     public function addNewsPost(): void
     {
 
@@ -88,7 +88,7 @@ class NewsController extends CoreController
 
     }
 
-    #[Link("/manage", Link::GET, [], "/cmw-Admin/news")]
+    #[Link("/manage", Link::GET, [], "/cmw-admin/news")]
     public function listNews(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage");
@@ -103,7 +103,7 @@ class NewsController extends CoreController
             ->view();
     }
 
-    #[Link("/edit/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-Admin/news")]
+    #[Link("/edit/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
     public function editNews(int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
@@ -130,7 +130,7 @@ class NewsController extends CoreController
             ->view();
     }
 
-    #[Link("/edit", Link::POST, [], "/cmw-Admin/news", secure: false)]
+    #[Link("/edit", Link::POST, [], "/cmw-admin/news", secure: false)]
     public function editNewsPost(): void
     {
         
@@ -147,7 +147,7 @@ class NewsController extends CoreController
         
     }
 
-    #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-Admin/news")]
+    #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
     public function deleteNews(int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.delete");
