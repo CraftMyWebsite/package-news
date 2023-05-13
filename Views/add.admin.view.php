@@ -1,9 +1,11 @@
 <?php
 
+use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Security\SecurityManager;
 use CMW\Utils\Utils;
 use CMW\Utils\Response;
+use CMW\Utils\Website;
 
 $title = LangManager::translate("news.dashboard.title");
 $description = LangManager::translate("news.dashboard.desc");
@@ -129,7 +131,7 @@ $description = LangManager::translate("news.dashboard.desc");
                         uploadByFile(file) {
                             let formData = new FormData();
                             formData.append('image', file);
-                            return fetch("<?= Utils::getEnv()->getValue("PATH_SUBFOLDER")?>cmw-admin/Pages/uploadImage/add", {
+                            return fetch("<?= EnvManager::getInstance()->getValue("PATH_SUBFOLDER")?>cmw-admin/Pages/uploadImage/add", {
                                 method: "POST",
                                 body: formData
                             }).then(res => res.json())
@@ -137,7 +139,7 @@ $description = LangManager::translate("news.dashboard.desc");
                                     return {
                                         success: 1,
                                         file: {
-                                            url: "<?= Utils::getEnv()->getValue("PATH_URL")?>public/uploads/editor/" + response
+                                            url: "<?= EnvManager::getInstance()->getValue("PATH_URL")?>public/uploads/editor/" + response
                                         }
                                     }
                                 })
@@ -209,7 +211,7 @@ $description = LangManager::translate("news.dashboard.desc");
                 formData.append('comm', comm_state.toString());
                 formData.append('likes', likes_state.toString());
 
-                fetch("<?= Utils::getEnv()->getValue("PATH_URL") ?>cmw-admin/news/add", {
+                fetch("<?= EnvManager::getInstance()->getValue("PATH_URL") ?>cmw-admin/news/add", {
                     method: "POST",
                     body: formData
                 })
@@ -220,7 +222,7 @@ $description = LangManager::translate("news.dashboard.desc");
                             button.innerHTML = "<i style='color: #16C329;' class='fa-solid fa-check fa-shake'></i> Ok !";
                         }, 850);
                 setTimeout(() => {
-                            document.location.replace("<?= Utils::getHttpProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . 'cmw-admin/news/manage'?>");
+                            document.location.replace("<?= Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . 'cmw-admin/news/manage'?>");
                         }, 1000);
             })
             .catch((error) => {
