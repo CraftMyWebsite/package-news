@@ -4,6 +4,7 @@ namespace CMW\Model\News;
 
 use CMW\Entity\News\NewsLikesEntity;
 use CMW\Manager\Database\DatabaseManager;
+use CMW\Manager\Package\AbstractModel;
 use CMW\Model\Users\UsersModel;
 
 
@@ -13,7 +14,7 @@ use CMW\Model\Users\UsersModel;
  * @author Teyir
  * @version 1.0
  */
-class NewsLikesModel extends DatabaseManager
+class NewsLikesModel extends AbstractModel
 {
 
     /**
@@ -24,7 +25,7 @@ class NewsLikesModel extends DatabaseManager
     {
         $sql = "SELECT news_like_news_id FROM cmw_news_likes";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
         $res = $req->execute();
 
@@ -45,7 +46,7 @@ class NewsLikesModel extends DatabaseManager
 
         $sql = "SELECT news_like_id FROM `cmw_news_likes` WHERE news_like_news_id = :news_id AND news_like_user_id = :user_id";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
         $res->execute(array("news_id" => $newsId, "user_id" => $userId));
@@ -57,7 +58,7 @@ class NewsLikesModel extends DatabaseManager
     {
         $sql = "INSERT INTO cmw_news_likes (news_like_news_id, news_like_user_id) VALUES (:news_id, :user_id)";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
 
@@ -78,7 +79,7 @@ class NewsLikesModel extends DatabaseManager
     {
         $sql = "SELECT * FROM cmw_news_likes WHERE news_like_news_id = :news_id";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
 
@@ -114,7 +115,7 @@ class NewsLikesModel extends DatabaseManager
     {
         $sql = "SELECT news_like_news_id FROM cmw_news_likes WHERE news_like_news_id = :news_id";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
         $res = $req->execute(array("news_id" => $newsId));
 
