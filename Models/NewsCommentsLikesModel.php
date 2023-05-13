@@ -4,6 +4,7 @@ namespace CMW\Model\News;
 
 use CMW\Entity\News\NewsCommentsLikesEntity;
 use CMW\Manager\Database\DatabaseManager;
+use CMW\Manager\Package\AbstractModel;
 use CMW\Model\Users\UsersModel;
 
 
@@ -13,7 +14,7 @@ use CMW\Model\Users\UsersModel;
  * @author Teyir
  * @version 1.0
  */
-class NewsCommentsLikesModel extends DatabaseManager
+class NewsCommentsLikesModel extends AbstractModel
 {
 
     /**
@@ -24,7 +25,7 @@ class NewsCommentsLikesModel extends DatabaseManager
     {
         $sql = "SELECT news_comments_likes_comments_id FROM cmw_news_comments_likes";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
         $res = $req->execute();
 
@@ -52,7 +53,7 @@ class NewsCommentsLikesModel extends DatabaseManager
                                        WHERE news_comments_likes_comments_id = :comments_id
                                          AND news_comments_likes_user_id = :user_id";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
         $res->execute(array("comments_id" => $commentsId, "user_id" => $userId));
@@ -70,7 +71,7 @@ class NewsCommentsLikesModel extends DatabaseManager
         $sql = "INSERT INTO cmw_news_comments_likes (news_comments_likes_comments_id, news_comments_likes_user_id) 
                         VALUES (:comments_id, :user_id)";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
 
@@ -88,7 +89,7 @@ class NewsCommentsLikesModel extends DatabaseManager
         $sql = "SELECT news_comments_likes_id, 	news_comments_likes_comments_id , news_comments_likes_user_id,
                 news_comments_likes_date FROM cmw_news_comments_likes WHERE news_comments_likes_id =:id";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
         if (!$res->execute(array("id" => $likeId))) {
@@ -118,7 +119,7 @@ class NewsCommentsLikesModel extends DatabaseManager
         $sql = "SELECT news_comments_likes_comments_id FROM cmw_news_comments_likes
                                        WHERE news_comments_likes_comments_id = :comments_id";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
         $res = $req->execute(array("comments_id" => $commentsId));
 
@@ -139,7 +140,7 @@ class NewsCommentsLikesModel extends DatabaseManager
     {
         $sql = "SELECT * FROM cmw_news_comments_likes WHERE news_comments_likes_comments_id = :comments_id";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
         if (!$res->execute(array("comments_id" => $commentsId))) {
