@@ -5,6 +5,7 @@ namespace CMW\Model\News;
 use CMW\Entity\News\NewsBannedPlayersEntity;
 use CMW\Entity\News\NewsEntity;
 use CMW\Manager\Database\DatabaseManager;
+use CMW\Manager\Package\AbstractModel;
 use CMW\Manager\Uploads\ImagesManager;
 use CMW\Model\Users\UsersModel;
 use CMW\Utils\Images;
@@ -18,7 +19,7 @@ use JsonException;
  * @author Teyir
  * @version 1.0
  */
-class NewsModel extends DatabaseManager
+class NewsModel extends AbstractModel
 {
 
     public function createNews(string $title, string $desc, int $comm, int $likes, string $content, string $slug, int $authorId, array $image): ?NewsEntity
@@ -42,7 +43,7 @@ class NewsModel extends DatabaseManager
                 news_slug, news_author, news_image_name) 
                 VALUES (:title, :desc, :comm, :likes, :content, :slug, :authorId, :imageName)";
 
-            $db = self::getInstance();
+            $db = DatabaseManager::getInstance();
             $req = $db->prepare($sql);
 
 
@@ -193,7 +194,7 @@ class NewsModel extends DatabaseManager
                 news_slug, news_author, news_views, news_image_name, news_date_created
                 FROM cmw_news WHERE news_id=:news_id";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
 
@@ -231,7 +232,7 @@ class NewsModel extends DatabaseManager
                 news_slug, news_author, news_views, news_image_name, news_date_created
                 FROM cmw_news WHERE news_slug=:news_slug";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
 
@@ -270,7 +271,7 @@ class NewsModel extends DatabaseManager
     public function getNews(): array
     {
         $sql = "SELECT news_id FROM cmw_news";
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
 
         $res = $db->prepare($sql);
 
@@ -293,7 +294,7 @@ class NewsModel extends DatabaseManager
         $order === "ASC" ? $sql = "SELECT news_id FROM cmw_news ORDER BY `cmw_news`.`news_id` LIMIT :limit"
             : $sql = "SELECT news_id FROM cmw_news ORDER BY `cmw_news`.`news_id` DESC LIMIT :limit";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
 
         $res = $db->prepare($sql);
 
@@ -343,7 +344,7 @@ class NewsModel extends DatabaseManager
         }
 
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
         if ($req->execute($var)) {
             return $this->getNewsById($newsId);
@@ -359,7 +360,7 @@ class NewsModel extends DatabaseManager
 
         $sql = "DELETE FROM cmw_news WHERE news_id=:news_id";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
         $req->execute(array("news_id" => $newsId));
     }
@@ -368,7 +369,7 @@ class NewsModel extends DatabaseManager
     {
 
         $sql = "SELECT news_banned_players_player_id FROM cmw_news_banned_players";
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
 
         $res = $db->prepare($sql);
 
@@ -391,7 +392,7 @@ class NewsModel extends DatabaseManager
         $sql = "SELECT news_banned_players_id, news_banned_players_player_id, news_banned_players_author_id, news_banned_players_date
                 FROM cmw_news_banned_players WHERE news_banned_players_player_id = :userId";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
 
@@ -423,7 +424,7 @@ class NewsModel extends DatabaseManager
             $sql = "INSERT INTO cmw_news_banned_players (news_banned_players_player_id, news_banned_players_author_id) 
                     VALUES (:userId, :authorId)";
 
-            $db = self::getInstance();
+            $db = DatabaseManager::getInstance();
 
             $res = $db->prepare($sql);
 
@@ -439,7 +440,7 @@ class NewsModel extends DatabaseManager
         $sql = "SELECT news_banned_players_id FROM `cmw_news_banned_players` 
                               WHERE news_banned_players_player_id = :user_id";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
         $res->execute(array("user_id" => $userId));
@@ -451,7 +452,7 @@ class NewsModel extends DatabaseManager
     {
         $sql = "UPDATE cmw_news SET news_views = news_views + 1 WHERE news_id = :id";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
 
         $req->execute(array("id" => $newsId));

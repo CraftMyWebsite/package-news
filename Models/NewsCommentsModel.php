@@ -4,6 +4,7 @@ namespace CMW\Model\News;
 
 use CMW\Entity\News\NewsCommentsEntity;
 use CMW\Manager\Database\DatabaseManager;
+use CMW\Manager\Package\AbstractModel;
 use CMW\Model\Users\UsersModel;
 
 
@@ -13,7 +14,7 @@ use CMW\Model\Users\UsersModel;
  * @author Teyir
  * @version 1.0
  */
-class NewsCommentsModel extends DatabaseManager
+class NewsCommentsModel extends AbstractModel
 {
 
     /**
@@ -25,7 +26,7 @@ class NewsCommentsModel extends DatabaseManager
     {
         $sql = "SELECT * FROM cmw_news_comments WHERE news_comments_news_id = :news_id";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
 
@@ -48,7 +49,7 @@ class NewsCommentsModel extends DatabaseManager
         $sql = "SELECT news_comments_id, news_comments_news_id, news_comments_content, news_comments_user_id, news_comments_date
                     FROM cmw_news_comments WHERE news_comments_id =:id";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
         if (!$res->execute(array("id" => $commentsId))) {
@@ -82,7 +83,7 @@ class NewsCommentsModel extends DatabaseManager
         $sql = "INSERT INTO cmw_news_comments (news_comments_news_id, news_comments_user_id, news_comments_content) 
                     VALUES (:news_id, :user_id, :content)";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
 
@@ -107,7 +108,7 @@ class NewsCommentsModel extends DatabaseManager
         $sql = "SELECT news_id FROM `cmw_news` 
                               WHERE news_id = :news_id AND news_comments_status = 1";
 
-        $db = self::getInstance();
+        $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
         $res->execute(array("news_id" => $newsId));

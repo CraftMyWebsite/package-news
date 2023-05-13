@@ -2,18 +2,18 @@
 
 namespace CMW\Controller\News;
 
-use CMW\Controller\Core\CoreController;
 use CMW\Controller\Core\EditorController;
 use CMW\Controller\Users\UsersController;
+use CMW\Manager\Flash\Flash;
 use CMW\Manager\Lang\LangManager;
+use CMW\Manager\Package\AbstractController;
 use CMW\Manager\Requests\Request;
+use CMW\Manager\Router\Link;
 use CMW\Model\News\NewsCommentsLikesModel;
 use CMW\Model\News\NewsCommentsModel;
 use CMW\Model\News\NewsLikesModel;
 use CMW\Model\News\NewsModel;
 use CMW\Model\Users\UsersModel;
-use CMW\Router\Link;
-use CMW\Utils\Response;
 use CMW\Utils\Utils;
 use CMW\Manager\Views\View;
 use CMW\Utils\Redirect;
@@ -24,33 +24,15 @@ use CMW\Utils\Redirect;
  * @author Teyir
  * @version 1.0
  */
-class NewsController extends CoreController
+class NewsController extends AbstractController
 {
-    public static string $themePath;
-    private UsersModel $usersModel;
-    private NewsModel $newsModel;
-    private NewsLikesModel $newsLikesModel;
-    private NewsCommentsModel $newsCommentsModel;
-    private NewsCommentsLikesModel $newsCommentsLikesModel;
-
-    public function __construct($themePath = null)
-    {
-        parent::__construct($themePath);
-        $this->usersModel = new UsersModel();
-        $this->newsModel = new NewsModel();
-        $this->newsLikesModel = new NewsLikesModel();
-        $this->newsCommentsModel = new NewsCommentsModel();
-        $this->newsCommentsLikesModel = new NewsCommentsLikesModel();
-    }
-
-
     #[Link(path: "/", method: Link::GET, scope: "/cmw-admin/news")]
     #[Link("/add", Link::GET, [], "/cmw-admin/news")]
     public function addNews(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
 
-        View::createAdminView('news', 'add')
+        View::createAdminView('News', 'add')
             ->addScriptBefore("Admin/Resources/Vendors/Editorjs/Plugins/header.js",
                 "Admin/Resources/Vendors/Editorjs/Plugins/image.js",
                 "Admin/Resources/Vendors/Editorjs/Plugins/delimiter.js",
@@ -83,9 +65,9 @@ class NewsController extends CoreController
         $userId = $user::getLoggedUser();
         $image = $_FILES['image'];
 
-        $this->newsModel->createNews($title, $desc, $comm, $likes, $content, $slug, $userId, $image);
+        newsModel::getInstance()->createNews($title, $desc, $comm, $likes, $content, $slug, $userId, $image);
 
-        Response::sendAlert("success", LangManager::translate("core.toaster.success"),LangManager::translate("news.add.toasters.success"));
+        Flash::send("success", LangManager::translate("core.toaster.success"),LangManager::translate("news.add.toasters.success"));
 
     }
 
@@ -94,9 +76,9 @@ class NewsController extends CoreController
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage");
 
-        $newsList = $this->newsModel->getNews();
+        $newsList = newsModel::getInstance()->getNews();
 
-        View::createAdminView('news', 'manage')
+        View::createAdminView('News', 'manage')
         /*El famosso doublon*/
         ->addStyle("Admin/Resources/Vendors/Simple-datatables/style.css","Admin/Resources/Assets/Css/Pages/simple-datatables.css","Admin/Resources/Vendors/Summernote/summernote-lite.css","Admin/Resources/Assets/Css/Pages/summernote.css")
         ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/Umd/simple-datatables.js","Admin/Resources/Assets/Js/Pages/simple-datatables.js","Admin/Resources/Vendors/jquery/jquery.min.js","Admin/Resources/Vendors/Summernote/summernote-lite.min.js","Admin/Resources/Assets/Js/Pages/summernote.js")
@@ -109,9 +91,9 @@ class NewsController extends CoreController
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
 
-        $news = $this->newsModel->getNewsById($id);
+        $news = newsModel::getInstance()->getNewsById($id);
 
-        View::createAdminView('news', 'edit')
+        View::createAdminView('News', 'edit')
             ->addScriptBefore("Admin/Resources/Vendors/Editorjs/Plugins/header.js",
                 "Admin/Resources/Vendors/Editorjs/Plugins/image.js",
                 "Admin/Resources/Vendors/Editorjs/Plugins/delimiter.js",
@@ -143,7 +125,7 @@ class NewsController extends CoreController
         
         $image = $_FILES['image'];
         
-        $this->newsModel->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $image);
+        newsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $image);
         
         
     }
@@ -153,9 +135,9 @@ class NewsController extends CoreController
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.delete");
 
-        $this->newsModel->deleteNews($id);
+        newsModel::getInstance()->deleteNews($id);
 
-        Response::sendAlert("success", LangManager::translate("core.toaster.success"),
+        Flash::send("success", LangManager::translate("core.toaster.success"),
             LangManager::translate("news.delete.toasters.success"));
 
         Redirect::redirectToPreviousPage();
@@ -164,12 +146,12 @@ class NewsController extends CoreController
     #[Link("/news/like/comment/:id", Link::GET, ["id" => "[0-9]+"])]
     public function likeCommentsNews(Request $request, int $commentsId): void
     {
-        $user = $this->usersModel::getCurrentUser();
+        $user = usersModel::getInstance()::getCurrentUser();
 
 
         //We check if the player has already like this comments, and we store the like
-        if ($this->newsCommentsLikesModel->userCanLike($commentsId, $user?->getId())) {
-            $this->newsCommentsLikesModel->storeLike($commentsId, $user?->getId());
+        if (newsCommentsLikesModel::getInstance()->userCanLike($commentsId, $user?->getId())) {
+            newsCommentsLikesModel::getInstance()->storeLike($commentsId, $user?->getId());
         }
 
         Redirect::redirectToPreviousPage();
@@ -178,16 +160,16 @@ class NewsController extends CoreController
     #[Link("/news/like/:id", Link::GET, ["id" => "[0-9]+"])]
     public function likeNews(Request $request, int $newsId): void
     {
-        $user = $this->usersModel::getCurrentUser();
-        $news = $this->newsModel->getNewsById($newsId);
+        $user = usersModel::getInstance()::getCurrentUser();
+        $news = newsModel::getInstance()->getNewsById($newsId);
 
         //First check if the news is likeable
         if (!$news?->isLikesStatus()) {
             header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
         }
 
-        if ($this->newsLikesModel->userCanLike($newsId, $user?->getId())) {
-            $this->newsLikesModel->storeLike($newsId, $user?->getId());
+        if (newsLikesModel::getInstance()->userCanLike($newsId, $user?->getId())) {
+            newsLikesModel::getInstance()->storeLike($newsId, $user?->getId());
         }
 
         Redirect::redirectToPreviousPage();
@@ -196,13 +178,13 @@ class NewsController extends CoreController
     #[Link("/news/comments/:id", Link::POST, ["id" => "[0-9]+"])]
     public function commentsNews(Request $request, int $newsId): void
     {
-        $user = $this->usersModel::getCurrentUser();
+        $user = usersModel::getInstance()::getCurrentUser();
 
         $content = strip_tags(htmlentities(filter_input(INPUT_POST, 'comments')));
 
         if((new NewsCommentsModel())->userCanComment($newsId, $user?->getId()))
         {
-            $this->newsCommentsModel->storeComments($newsId, $user?->getId(), $content);
+            newsCommentsModel::getInstance()->storeComments($newsId, $user?->getId(), $content);
         }
 
         Redirect::redirectToPreviousPage();
@@ -220,8 +202,8 @@ class NewsController extends CoreController
     #[Link("/news", Link::GET)]
     public function publicListNews(): void
     {
-        $newsList = $this->newsModel->getNews();
-        $newsModel = $this->newsModel;
+        $newsList = newsModel::getInstance()->getNews();
+        $newsModel = newsModel::getInstance();
 
         //Include the Public view file ("Public/Themes/$themePath/Views/News/list.view.php")
         $view = new View('News', 'list');
@@ -237,10 +219,10 @@ class NewsController extends CoreController
     #[Link("/news/:slug", Link::GET, ["slug" => ".*?"])]
     public function publicIndividualNews(Request $request, string $slug): void
     {
-        $news = $this->newsModel->getNewsBySlug($slug);
+        $news = newsModel::getInstance()->getNewsBySlug($slug);
 
         if (!is_null($news)){
-            $this->newsModel->incrementViews($news->getNewsId());
+            newsModel::getInstance()->incrementViews($news->getNewsId());
         }
 
         //Include the Public view file ("Public/Themes/$themePath/Views/News/individual.view.php")
