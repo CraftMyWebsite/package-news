@@ -1,6 +1,7 @@
 <?php
 
 return [
+    "news" => "Actualités",
 	"dashboard" => [
 		"title" => "Actualités",
 		"title_add" => "Ajouter une actualités",

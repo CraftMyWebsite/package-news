@@ -3,13 +3,14 @@
 namespace CMW\Implementation\News;
 
 use CMW\Interface\Core\IMenus;
+use CMW\Manager\Lang\LangManager;
 
 class NewsMenusImplementations implements IMenus {
 
     public function getRoutes(): array
     {
         return [
-            'news'
+            LangManager::translate('news.news') => 'news'
         ];
     }
 

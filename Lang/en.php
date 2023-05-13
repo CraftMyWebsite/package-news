@@ -1,6 +1,7 @@
 <?php
 
 return [
+    "news" => "News",
     "dashboard" => [
         "title" => "News",
         "title_add" => "Add News",
