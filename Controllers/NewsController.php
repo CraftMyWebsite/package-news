@@ -4,6 +4,7 @@ namespace CMW\Controller\News;
 
 use CMW\Controller\Core\EditorController;
 use CMW\Controller\Users\UsersController;
+use CMW\Manager\Flash\Alert;
 use CMW\Manager\Flash\Flash;
 use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\AbstractController;
@@ -67,7 +68,8 @@ class NewsController extends AbstractController
 
         newsModel::getInstance()->createNews($title, $desc, $comm, $likes, $content, $slug, $userId, $image);
 
-        Flash::send("success", LangManager::translate("core.toaster.success"),LangManager::translate("news.add.toasters.success"));
+        Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"),
+            LangManager::translate("news.add.toasters.success"));
 
     }
 
@@ -126,8 +128,6 @@ class NewsController extends AbstractController
         $image = $_FILES['image'];
         
         newsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $image);
-        
-        
     }
 
     #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
@@ -137,10 +137,10 @@ class NewsController extends AbstractController
 
         newsModel::getInstance()->deleteNews($id);
 
-        Flash::send("success", LangManager::translate("core.toaster.success"),
+        Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"),
             LangManager::translate("news.delete.toasters.success"));
 
-        Redirect::redirectToPreviousPage();
+        Redirect::redirectPreviousRoute();
     }
 
     #[Link("/news/like/comment/:id", Link::GET, ["id" => "[0-9]+"])]
@@ -154,7 +154,7 @@ class NewsController extends AbstractController
             newsCommentsLikesModel::getInstance()->storeLike($commentsId, $user?->getId());
         }
 
-        Redirect::redirectToPreviousPage();
+        Redirect::redirectPreviousRoute();
     }
 
     #[Link("/news/like/:id", Link::GET, ["id" => "[0-9]+"])]
@@ -165,14 +165,14 @@ class NewsController extends AbstractController
 
         //First check if the news is likeable
         if (!$news?->isLikesStatus()) {
-            header('Location: ' . getenv("PATH_SUBFOLDER") . "news");
+           Redirect::redirect('news');
         }
 
         if (newsLikesModel::getInstance()->userCanLike($newsId, $user?->getId())) {
             newsLikesModel::getInstance()->storeLike($newsId, $user?->getId());
         }
 
-        Redirect::redirectToPreviousPage();
+        Redirect::redirectPreviousRoute();
     }
 
     #[Link("/news/comments/:id", Link::POST, ["id" => "[0-9]+"])]
@@ -187,7 +187,7 @@ class NewsController extends AbstractController
             newsCommentsModel::getInstance()->storeComments($newsId, $user?->getId(), $content);
         }
 
-        Redirect::redirectToPreviousPage();
+        Redirect::redirectPreviousRoute();
     }
 
 
@@ -196,9 +196,7 @@ class NewsController extends AbstractController
     //////// PUBLIC AREA \\\\\\\\
 
 
-    /**
-     * @throws \CMW\Router\RouterException
-     */
+
     #[Link("/news", Link::GET)]
     public function publicListNews(): void
     {
@@ -213,9 +211,7 @@ class NewsController extends AbstractController
         $view->view();
     }
 
-    /**
-     * @throws \CMW\Router\RouterException
-     */
+
     #[Link("/news/:slug", Link::GET, ["slug" => ".*?"])]
     public function publicIndividualNews(Request $request, string $slug): void
     {

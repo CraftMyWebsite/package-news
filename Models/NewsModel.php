@@ -5,6 +5,9 @@ namespace CMW\Model\News;
 use CMW\Entity\News\NewsBannedPlayersEntity;
 use CMW\Entity\News\NewsEntity;
 use CMW\Manager\Database\DatabaseManager;
+use CMW\Manager\Flash\Alert;
+use CMW\Manager\Flash\Flash;
+use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\AbstractModel;
 use CMW\Manager\Uploads\ImagesManager;
 use CMW\Model\Users\UsersModel;
@@ -24,10 +27,9 @@ class NewsModel extends AbstractModel
 
     public function createNews(string $title, string $desc, int $comm, int $likes, string $content, string $slug, int $authorId, array $image): ?NewsEntity
     {
-
         //Upload image
         try {
-            $imageName = ImagesManager::upload($image, "news");
+            $imageName = ImagesManager::upload($image, "News");
             $var = array(
                 'title' => $title,
                 'desc' => $desc,
@@ -51,7 +53,8 @@ class NewsModel extends AbstractModel
                 $id = $db->lastInsertId();
                 return $this->getNewsById($id);
             }
-        } catch (JsonException) {
+        } catch (JsonException $e) {
+            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.internalError"), $e);
         }
 
         return null;
@@ -330,10 +333,15 @@ class NewsModel extends AbstractModel
         //Detect if we update the image
         if (!empty($image['name'])) {
             //Delete the old image
-            unlink(getenv("dir") . "Public/uploads/news/" . $this->getNewsById($newsId)?->getImageName());
+            ImagesManager::deleteImage($this->getNewsById($newsId)?->getImageName(), "News/");
 
             //Upload the new image
-            $imageName = Images::upload($image, "news");
+            try {
+                $imageName = ImagesManager::upload($image, "News");
+            } catch (JsonException $e) {
+                Flash::send(Alert::ERROR, LangManager::translate("core.toaster.internalError"), $e);
+                return null;
+            }
 
             //Add the image to the var
             $var += array("imageName" => $imageName);
