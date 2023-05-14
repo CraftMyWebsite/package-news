@@ -207,8 +207,8 @@ class NewsController extends AbstractController
 
         //Include the Public view file ("Public/Themes/$themePath/Views/News/list.view.php")
         $view = new View('News', 'list');
-        $view->addScriptBefore("Admin/Resources/Vendors/highlight/highlight.min.js","Admin/Resources/Vendors/highlight/highlightAll.js");
-        $view->addStyle("Admin/Resources/Vendors/highlight/style/" . EditorController::getCurrentStyle());
+        $view->addScriptBefore("Admin/Resources/Vendors/Highlight/highlight.min.js","Admin/Resources/Vendors/Highlight/highlightAll.js");
+        $view->addStyle("Admin/Resources/Vendors/Highlight/Style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["newsList" => $newsList, "newsModel" => $newsModel]);
         $view->view();
     }
@@ -227,8 +227,8 @@ class NewsController extends AbstractController
 
         //Include the Public view file ("Public/Themes/$themePath/Views/News/individual.view.php")
         $view = new View('News', 'individual');
-        $view->addScriptBefore("Admin/Resources/Vendors/highlight/highlight.min.js","Admin/Resources/Vendors/highlight/highlightAll.js");
-        $view->addStyle("Admin/Resources/Vendors/highlight/style/" . EditorController::getCurrentStyle());
+        $view->addScriptBefore("Admin/Resources/Vendors/Highlight/highlight.min.js","Admin/Resources/Vendors/Highlight/highlightAll.js");
+        $view->addStyle("Admin/Resources/Vendors/Highlight/Style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["news" => $news]);
         $view->view();
     }

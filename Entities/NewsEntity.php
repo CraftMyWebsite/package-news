@@ -175,7 +175,7 @@ class NewsEntity
      */
     public function getImageLink(): string
     {
-        return getenv("PATH_SUBFOLDER") . "Public/uploads/news/" . $this->imageName;
+        return getenv("PATH_SUBFOLDER") . "Public/Uploads/News/" . $this->imageName;
     }
 
     public function sendComments(): string
