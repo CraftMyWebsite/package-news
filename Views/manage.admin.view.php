@@ -3,6 +3,7 @@
 use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Security\SecurityManager;
 use CMW\Utils\Utils;
+use CMW\Utils\Website;
 
 $title = LangManager::translate("news.dashboard.title");
 $description = LangManager::translate("news.dashboard.desc");
@@ -37,8 +38,8 @@ $description = LangManager::translate("news.dashboard.desc");
                         <td><?= $news->getDescription() ?></td>
                         <td><?= $news->getAuthor()->getPseudo() ?></td>
                         <td>
-                            <a target="_blank" href="<?= Utils::getHttpProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . "news/" .$news->getSlug() ?>">
-                                <?= mb_strimwidth(Utils::getHttpProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . "news/" .$news->getSlug(), 0, 45, '...') ?>
+                            <a target="_blank" href="<?= Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . "news/" .$news->getSlug() ?>">
+                                <?= mb_strimwidth(Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . getenv("PATH_SUBFOLDER") . "news/" .$news->getSlug(), 0, 45, '...') ?>
                             </a>   
                         </td>
                         <td><?= $news->getViews() ?></td>
