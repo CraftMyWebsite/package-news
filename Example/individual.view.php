@@ -21,7 +21,6 @@ use CMW\Controller\Users\UsersController;
         <?php else: ?> 
             <a href="<?= $news->getLikes()->getSendLike() ?>">You will like</a>
         <?php endif; ?>
-    <?php endif; ?>
 
 <?= $news->getContent() ?>
 
@@ -40,7 +39,6 @@ use CMW\Controller\Users\UsersController;
         <?php else: ?> 
             <a href="<?= $comment->getSendLike() ?>">You will like</a>
         <?php endif; ?>
-    <?php endif; ?>
 
 <?php endforeach; ?>   
 
