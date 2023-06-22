@@ -5,6 +5,7 @@ namespace CMW\Model\News;
 use CMW\Entity\News\NewsBannedPlayersEntity;
 use CMW\Entity\News\NewsEntity;
 use CMW\Manager\Database\DatabaseManager;
+use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Flash\Alert;
 use CMW\Manager\Flash\Flash;
 use CMW\Manager\Lang\LangManager;
@@ -364,7 +365,7 @@ class NewsModel extends AbstractModel
     public function deleteNews(int $newsId): void
     {
         //Delete the image file
-        unlink(getenv("dir") . "Public/uploads/news/" . $this->getNewsById($newsId)?->getImageName());
+        unlink(EnvManager::getInstance()->getValue("DIR") . "Public/uploads/news/" . $this->getNewsById($newsId)?->getImageName());
 
         $sql = "DELETE FROM cmw_news WHERE news_id=:news_id";
 

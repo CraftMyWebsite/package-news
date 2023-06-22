@@ -1,7 +1,9 @@
 <!------------------------------------
     ----- Required namespace-----
 -------------------------------------->
-<?php 
+<?php
+
+use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Security\SecurityManager;
 use CMW\Controller\Users\UsersController;
 ?>
@@ -53,7 +55,7 @@ use CMW\Controller\Users\UsersController;
     <?php if(UsersController::isUserLogged()): ?>
         <button type="submit">Comment</button>
     <?php else: ?> 
-        <a href="<?= Utils::getEnv()->getValue("PATH_SUBFOLDER") ?>login" >Login</a>
+        <a href="<?= EnvManager::getInstance()->getValue("PATH_SUBFOLDER") ?>login" >Login</a>
     <?php endif; ?>
     
 </form>

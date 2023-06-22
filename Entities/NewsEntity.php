@@ -4,6 +4,7 @@ namespace CMW\Entity\News;
 
 use CMW\Entity\Users\UserEntity;
 use CMW\Controller\Core\CoreController;
+use CMW\Manager\Env\EnvManager;
 
 class NewsEntity
 {
@@ -175,12 +176,12 @@ class NewsEntity
      */
     public function getImageLink(): string
     {
-        return getenv("PATH_SUBFOLDER") . "Public/Uploads/News/" . $this->imageName;
+        return EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "Public/Uploads/News/" . $this->imageName;
     }
 
     public function sendComments(): string
     {
-        return getenv("PATH_SUBFOLDER") . "news/comments/" . $this->newsId;
+        return EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "news/comments/" . $this->newsId;
     }
 
 }
