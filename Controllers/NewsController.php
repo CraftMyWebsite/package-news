@@ -10,14 +10,14 @@ use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\AbstractController;
 use CMW\Manager\Requests\Request;
 use CMW\Manager\Router\Link;
+use CMW\Manager\Views\View;
 use CMW\Model\News\NewsCommentsLikesModel;
 use CMW\Model\News\NewsCommentsModel;
 use CMW\Model\News\NewsLikesModel;
 use CMW\Model\News\NewsModel;
 use CMW\Model\Users\UsersModel;
-use CMW\Utils\Utils;
-use CMW\Manager\Views\View;
 use CMW\Utils\Redirect;
+use CMW\Utils\Utils;
 
 /**
  * Class: @NewsController
@@ -81,9 +81,9 @@ class NewsController extends AbstractController
         $newsList = newsModel::getInstance()->getNews();
 
         View::createAdminView('News', 'manage')
-        /*El famosso doublon*/
-        ->addStyle("Admin/Resources/Vendors/Simple-datatables/style.css","Admin/Resources/Assets/Css/Pages/simple-datatables.css","Admin/Resources/Vendors/Summernote/summernote-lite.css","Admin/Resources/Assets/Css/Pages/summernote.css")
-        ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/Umd/simple-datatables.js","Admin/Resources/Assets/Js/Pages/simple-datatables.js","Admin/Resources/Vendors/jquery/jquery.min.js","Admin/Resources/Vendors/Summernote/summernote-lite.min.js","Admin/Resources/Assets/Js/Pages/summernote.js")
+            /*El famosso doublon*/
+            ->addStyle("Admin/Resources/Vendors/Simple-datatables/style.css", "Admin/Resources/Assets/Css/Pages/simple-datatables.css")
+            ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/Umd/simple-datatables.js", "Admin/Resources/Assets/Js/Pages/simple-datatables.js")
             ->addVariableList(["newsList" => $newsList])
             ->view();
     }
@@ -118,15 +118,15 @@ class NewsController extends AbstractController
     #[Link("/edit", Link::POST, [], "/cmw-admin/news", secure: false)]
     public function editNewsPost(): void
     {
-        
+
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
 
         [$id, $title, $desc, $content, $comm, $likes] = Utils::filterInput('id', 'title', 'desc', 'content', 'comm', 'likes');
 
         $slug = Utils::normalizeForSlug($title);
-        
+
         $image = $_FILES['image'];
-        
+
         newsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $image);
     }
 
@@ -165,7 +165,7 @@ class NewsController extends AbstractController
 
         //First check if the news is likeable
         if (!$news?->isLikesStatus()) {
-           Redirect::redirect('news');
+            Redirect::redirect('news');
         }
 
         if (newsLikesModel::getInstance()->userCanLike($newsId, $user?->getId())) {
@@ -182,8 +182,7 @@ class NewsController extends AbstractController
 
         $content = strip_tags(htmlentities(filter_input(INPUT_POST, 'comments')));
 
-        if((new NewsCommentsModel())->userCanComment($newsId, $user?->getId()))
-        {
+        if ((new NewsCommentsModel())->userCanComment($newsId, $user?->getId())) {
             newsCommentsModel::getInstance()->storeComments($newsId, $user?->getId(), $content);
         }
 
@@ -191,10 +190,7 @@ class NewsController extends AbstractController
     }
 
 
-
-
     //////// PUBLIC AREA \\\\\\\\
-
 
 
     #[Link("/news", Link::GET)]
@@ -205,7 +201,7 @@ class NewsController extends AbstractController
 
         //Include the Public view file ("Public/Themes/$themePath/Views/News/list.view.php")
         $view = new View('News', 'list');
-        $view->addScriptBefore("Admin/Resources/Vendors/Highlight/highlight.min.js","Admin/Resources/Vendors/Highlight/highlightAll.js");
+        $view->addScriptBefore("Admin/Resources/Vendors/Highlight/highlight.min.js", "Admin/Resources/Vendors/Highlight/highlightAll.js");
         $view->addStyle("Admin/Resources/Vendors/Highlight/Style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["newsList" => $newsList, "newsModel" => $newsModel]);
         $view->view();
@@ -217,13 +213,13 @@ class NewsController extends AbstractController
     {
         $news = newsModel::getInstance()->getNewsBySlug($slug);
 
-        if (!is_null($news)){
+        if (!is_null($news)) {
             newsModel::getInstance()->incrementViews($news->getNewsId());
         }
 
         //Include the Public view file ("Public/Themes/$themePath/Views/News/individual.view.php")
         $view = new View('News', 'individual');
-        $view->addScriptBefore("Admin/Resources/Vendors/Highlight/highlight.min.js","Admin/Resources/Vendors/Highlight/highlightAll.js");
+        $view->addScriptBefore("Admin/Resources/Vendors/Highlight/highlight.min.js", "Admin/Resources/Vendors/Highlight/highlightAll.js");
         $view->addStyle("Admin/Resources/Vendors/Highlight/Style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["news" => $news]);
         $view->view();
