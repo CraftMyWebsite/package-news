@@ -131,7 +131,7 @@ $description = LangManager::translate("news.dashboard.desc");
                         uploadByFile(file) {
                             let formData = new FormData();
                             formData.append('image', file);
-                            return fetch("<?= EnvManager::getInstance()->getValue("PATH_SUBFOLDER")?>cmw-admin/Pages/uploadImage/add", {
+                            return fetch("<?= EnvManager::getInstance()->getValue("PATH_SUBFOLDER")?>cmw-admin/pages/uploadImage/add", {
                                 method: "POST",
                                 body: formData
                             }).then(res => res.json())
@@ -139,7 +139,7 @@ $description = LangManager::translate("news.dashboard.desc");
                                     return {
                                         success: 1,
                                         file: {
-                                            url: "<?= EnvManager::getInstance()->getValue("PATH_URL")?>public/uploads/editor/" + response
+                                            url: "<?= EnvManager::getInstance()->getValue("PATH_URL")?>Public/Uploads/Editor/" + response
                                         }
                                     }
                                 })
