@@ -38,7 +38,7 @@ return [
 		"desc_placeholder" => "Description",
 		"enable_comm" => "Activer les commentaires",
 		"enable_likes" => "Activer les likes",
-		"allow_files" => "Fichiers autorisé : png, jpg, jpeg, webp, svg, gif",
+		"allow_files" => "Fichiers autorisés : png, jpg, jpeg, webp, svg, gif",
 		"image" => "Image de couverture",
 		"select_image" => "Choisissez une image",
 		"content" => "Contenu",
