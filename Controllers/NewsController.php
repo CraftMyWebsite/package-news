@@ -58,12 +58,11 @@ class NewsController extends AbstractController
 
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
 
-        $user = new UsersModel();
 
         [$title, $desc, $content, $comm, $likes] = Utils::filterInput("title", "desc", "content", "comm", "likes");
 
         $slug = Utils::normalizeForSlug(filter_input(INPUT_POST, "title"));
-        $userId = $user::getLoggedUser();
+        $userId = UsersModel::getCurrentUser()?->getId();
         $image = $_FILES['image'];
 
         newsModel::getInstance()->createNews($title, $desc, $comm, $likes, $content, $slug, $userId, $image);
