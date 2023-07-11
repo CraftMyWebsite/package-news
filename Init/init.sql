@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS `cmw_news_likes`
     `news_like_user_id` INT(11)   NOT NULL,
     `news_like_date`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 
 ALTER TABLE `cmw_news_likes`
     ADD PRIMARY KEY (`news_like_id`),
@@ -61,7 +62,8 @@ CREATE TABLE IF NOT EXISTS `cmw_news_comments`
     `news_comments_content` TEXT      NOT NULL,
     `news_comments_date`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 
 ALTER TABLE `cmw_news_comments`
     ADD PRIMARY KEY (`news_comments_id`),
@@ -86,7 +88,8 @@ CREATE TABLE IF NOT EXISTS `cmw_news_comments_likes`
     `news_comments_likes_user_id`     INT(11)   NOT NULL,
     `news_comments_likes_date`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 
 ALTER TABLE `cmw_news_comments_likes`
     ADD PRIMARY KEY (`news_comments_likes_id`),
@@ -114,7 +117,8 @@ CREATE TABLE IF NOT EXISTS `cmw_news_banned_players`
     INDEX (`news_banned_players_author_id`),
     UNIQUE (`news_banned_players_player_id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 
 ALTER TABLE `cmw_news_banned_players`
     ADD FOREIGN KEY (`news_banned_players_player_id`) REFERENCES `cmw_users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
