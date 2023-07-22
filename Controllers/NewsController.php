@@ -34,25 +34,12 @@ class NewsController extends AbstractController
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
 
         View::createAdminView('News', 'add')
-            ->addScriptBefore("Admin/Resources/Vendors/Editorjs/Plugins/header.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/image.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/delimiter.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/list.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/quote.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/code.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/table.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/link.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/warning.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/embed.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/marker.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/underline.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/drag-drop.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/undo.js",
-                "Admin/Resources/Vendors/Editorjs/editor.js")
+            ->addScriptBefore("Admin/Resources/Vendors/Tinymce/tinymce.min.js",
+                "Admin/Resources/Vendors/Tinymce/Config/full.js")
             ->view();
     }
 
-    #[Link("/add", Link::POST, [], "/cmw-admin/news", secure: false)]
+    #[Link("/add", Link::POST, [], "/cmw-admin/news")]
     public function addNewsPost(): void
     {
 
@@ -69,6 +56,8 @@ class NewsController extends AbstractController
 
         Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"),
             LangManager::translate("news.add.toasters.success"));
+
+        Redirect::redirectPreviousRoute();
 
     }
 
@@ -95,38 +84,29 @@ class NewsController extends AbstractController
         $news = newsModel::getInstance()->getNewsById($id);
 
         View::createAdminView('News', 'edit')
-            ->addScriptBefore("Admin/Resources/Vendors/Editorjs/Plugins/header.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/image.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/delimiter.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/list.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/quote.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/code.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/table.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/link.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/warning.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/embed.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/marker.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/underline.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/drag-drop.js",
-                "Admin/Resources/Vendors/Editorjs/Plugins/undo.js",
-                "Admin/Resources/Vendors/Editorjs/editor.js")
+            ->addScriptBefore("Admin/Resources/Vendors/Tinymce/tinymce.min.js",
+                "Admin/Resources/Vendors/Tinymce/Config/full.js")
             ->addVariableList(["news" => $news])
             ->view();
     }
 
-    #[Link("/edit", Link::POST, [], "/cmw-admin/news", secure: false)]
-    public function editNewsPost(): void
+    #[Link("/edit/:id", Link::POST, [], "/cmw-admin/news")]
+    public function editNewsPost(Request $request, int $id): void
     {
 
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
 
-        [$id, $title, $desc, $content, $comm, $likes] = Utils::filterInput('id', 'title', 'desc', 'content', 'comm', 'likes');
+        [ $title, $desc, $content, $comm, $likes] = Utils::filterInput('title', 'desc', 'content', 'comm', 'likes');
 
         $slug = Utils::normalizeForSlug($title);
 
         $image = $_FILES['image'];
 
         newsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $image);
+
+        Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"),LangManager::translate("news.edit.toasters.success"));
+
+        Redirect::redirectPreviousRoute();
     }
 
     #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
@@ -200,8 +180,8 @@ class NewsController extends AbstractController
 
         //Include the Public view file ("Public/Themes/$themePath/Views/News/list.view.php")
         $view = new View('News', 'list');
-        $view->addScriptBefore("Admin/Resources/Vendors/Highlight/highlight.min.js", "Admin/Resources/Vendors/Highlight/highlightAll.js");
-        $view->addStyle("Admin/Resources/Vendors/Highlight/Style/" . EditorController::getCurrentStyle());
+        $view->addScriptBefore("Admin/Resources/Vendors/Prismjs/prism.js");
+        $view->addStyle("Admin/Resources/Vendors/Prismjs/Style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["newsList" => $newsList, "newsModel" => $newsModel]);
         $view->view();
     }
@@ -218,8 +198,8 @@ class NewsController extends AbstractController
 
         //Include the Public view file ("Public/Themes/$themePath/Views/News/individual.view.php")
         $view = new View('News', 'individual');
-        $view->addScriptBefore("Admin/Resources/Vendors/Highlight/highlight.min.js", "Admin/Resources/Vendors/Highlight/highlightAll.js");
-        $view->addStyle("Admin/Resources/Vendors/Highlight/Style/" . EditorController::getCurrentStyle());
+        $view->addScriptBefore("Admin/Resources/Vendors/Prismjs/prism.js");
+        $view->addStyle("Admin/Resources/Vendors/Prismjs/Style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["news" => $news]);
         $view->view();
     }

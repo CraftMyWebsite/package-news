@@ -112,7 +112,7 @@ class NewsEntity
      */
     public function getContentNotTranslate(): string
     {
-        return $this->contentNt;
+        return htmlspecialchars($this->contentNt);
     }
 
     /**
