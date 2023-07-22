@@ -48,7 +48,7 @@ return [
     ],
     "edit" => [
         "toasters" => [
-            "success" => "News <b>%actu%</b> update with success !"
+            "success" => "News update with success !"
         ],
     ],
     "delete" => [
