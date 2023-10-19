@@ -30,7 +30,7 @@ use CMW\Controller\Users\UsersController;
         ----- COMMENT -----
 -------------------------------------->
 <?php foreach ($news->getComments() as $comment): ?>
-    <img src="<?= $comment->getUser()->getUserPicture()->getImageLink() ?>" alt="...">
+    <img src="<?= $comment->getUser()->getUserPicture()->getImage() ?>" alt="...">
     <?= $comment->getUser()->getPseudo() ?>
     <?= $comment->getDate() ?>
     <?= $comment->getContent() ?>
