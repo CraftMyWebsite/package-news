@@ -24,6 +24,8 @@ class NewsEntity
     private ?NewsLikesEntity $likes;
     /** @var \CMW\Entity\News\NewsCommentsEntity|\CMW\Entity\News\NewsCommentsEntity[] $comments */
     private ?array $comments;
+    /** @var \CMW\Entity\News\NewsTagsEntity[] $tags */
+    private array $tags;
 
     /**
      * @param int $newsId
@@ -40,8 +42,9 @@ class NewsEntity
      * @param string $dateCreated
      * @param ?\CMW\Entity\News\NewsLikesEntity $likes
      * @param \CMW\Entity\News\NewsCommentsEntity[]|null $comments
+     * @param \CMW\Entity\News\NewsTagsEntity[] $tags
      */
-    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $contentNt, string $slug, ?UserEntity $author, int $views, string $imageName, string $dateCreated, ?NewsLikesEntity $likes, ?array $comments)
+    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $contentNt, string $slug, ?UserEntity $author, int $views, string $imageName, string $dateCreated, ?NewsLikesEntity $likes, ?array $comments, array $tags)
     {
         $this->newsId = $newsId;
         $this->title = $title;
@@ -57,6 +60,7 @@ class NewsEntity
         $this->dateCreated = $dateCreated;
         $this->likes = $likes;
         $this->comments = $comments;
+        $this->tags = $tags;
     }
 
     /**
@@ -172,6 +176,14 @@ class NewsEntity
     }
 
     /**
+     * @return array
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    /**
      * @return string
      */
     public function getImageLink(): string
@@ -182,6 +194,21 @@ class NewsEntity
     public function sendComments(): string
     {
         return EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "news/comments/" . $this->newsId;
+    }
+
+    /**
+     * @param int $tagId
+     * @return bool
+     */
+    public function hasTag(int $tagId): bool
+    {
+        foreach ($this->tags as $tag) {
+            if ($tag->getId() === $tagId){
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

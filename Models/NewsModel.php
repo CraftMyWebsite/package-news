@@ -12,26 +12,24 @@ use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\AbstractModel;
 use CMW\Manager\Uploads\ImagesManager;
 use CMW\Model\Users\UsersModel;
-use CMW\Utils\Images;
 use JetBrains\PhpStorm\ExpectedValues;
 use JsonException;
 
 
 /**
  * Class @NewsModel
- * @package news
+ * @package News
  * @author Teyir
  * @version 1.0
  */
 class NewsModel extends AbstractModel
 {
-
     public function createNews(string $title, string $desc, int $comm, int $likes, string $content, string $slug, int $authorId, array $image): ?NewsEntity
     {
         //Upload image
         try {
             $imageName = ImagesManager::upload($image, "News");
-            $var = array(
+            $var = [
                 'title' => $title,
                 'desc' => $desc,
                 'comm' => $comm,
@@ -39,8 +37,8 @@ class NewsModel extends AbstractModel
                 'content' => $content,
                 'slug' => $slug,
                 'authorId' => $authorId,
-                'imageName' => $imageName
-            );
+                'imageName' => $imageName,
+            ];
 
             $sql = "INSERT INTO cmw_news (news_title, news_desc, news_comments_status, news_likes_status, news_content, 
                 news_slug, news_author, news_image_name) 
@@ -72,7 +70,7 @@ class NewsModel extends AbstractModel
         $res = $db->prepare($sql);
 
 
-        if (!$res->execute(array("news_id" => $newsId))) {
+        if (!$res->execute(["news_id" => $newsId])) {
             return null;
         }
 
@@ -95,7 +93,8 @@ class NewsModel extends AbstractModel
             $res['news_image_name'],
             $res['news_date_created'],
             $newsLikes,
-            (new NewsCommentsModel())->getCommentsForNews($res['news_id'])
+            NewsCommentsModel::getInstance()->getCommentsForNews($res['news_id']),
+            NewsTagsModel::getInstance()->getTagsForNewsById($res['news_id']),
         );
     }
 
@@ -110,15 +109,15 @@ class NewsModel extends AbstractModel
         $res = $db->prepare($sql);
 
 
-        if (!$res->execute(array("news_slug" => $newsSlug))) {
+        if (!$res->execute(["news_slug" => $newsSlug])) {
             return null;
         }
 
         $res = $res->fetch();
 
-        $author = (new UsersModel())->getUserById($res["news_author"]);
-        $newsLikes = (new NewsLikesModel())->getLikesForNews($res['news_id']);
-        $newsComments = (new NewsCommentsModel())->getCommentsForNews($res['news_id']);
+        $author = UsersModel::getInstance()->getUserById($res["news_author"]);
+        $newsLikes = NewsLikesModel::getInstance()->getLikesForNews($res['news_id']);
+        $newsComments = NewsCommentsModel::getInstance()->getCommentsForNews($res['news_id']);
 
         return new NewsEntity(
             $res['news_id'],
@@ -134,7 +133,8 @@ class NewsModel extends AbstractModel
             $res['news_image_name'],
             $res['news_date_created'],
             $newsLikes,
-            $newsComments
+            $newsComments,
+            NewsTagsModel::getInstance()->getTagsForNewsById($res['news_id']),
         );
     }
 
@@ -150,10 +150,10 @@ class NewsModel extends AbstractModel
         $res = $db->prepare($sql);
 
         if (!$res->execute()) {
-            return array();
+            return [];
         }
 
-        $toReturn = array();
+        $toReturn = [];
 
         while ($news = $res->fetch()) {
             $toReturn[] = $this->getNewsById($news["news_id"]);
@@ -172,11 +172,11 @@ class NewsModel extends AbstractModel
 
         $res = $db->prepare($sql);
 
-        if (!$res->execute(array("limit" => $limit))) {
-            return array();
+        if (!$res->execute(["limit" => $limit])) {
+            return [];
         }
 
-        $toReturn = array();
+        $toReturn = [];
 
         while ($news = $res->fetch()) {
             $toReturn[] = $this->getNewsById($news["news_id"]);
@@ -188,15 +188,15 @@ class NewsModel extends AbstractModel
     public function updateNews(int $newsId, string $title, string $desc, int $comm, int $likes, string $content, string $slug, array|null $image): ?NewsEntity
     {
 
-        $var = array(
+        $var = [
             'newsId' => $newsId,
             'title' => $title,
             'desc' => $desc,
             'comm' => $comm,
             'likes' => $likes,
             'content' => $content,
-            'slug' => $slug
-        );
+            'slug' => $slug,
+        ];
 
         $sql = "UPDATE cmw_news SET news_title = :title, news_desc = :desc, news_comments_status = :comm, 
                     news_likes_status = :likes, news_content = :content, news_slug = :slug WHERE news_id = :newsId";
@@ -215,7 +215,7 @@ class NewsModel extends AbstractModel
             }
 
             //Add the image to the var
-            $var += array("imageName" => $imageName);
+            $var += ["imageName" => $imageName];
 
             //Update SQL
             $sql = "UPDATE cmw_news SET news_title = :title, news_desc = :desc, news_comments_status = :comm, 
@@ -241,7 +241,7 @@ class NewsModel extends AbstractModel
 
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
-        $req->execute(array("news_id" => $newsId));
+        $req->execute(["news_id" => $newsId]);
     }
 
     public function getBannedUsers(): array
@@ -253,10 +253,10 @@ class NewsModel extends AbstractModel
         $res = $db->prepare($sql);
 
         if (!$res->execute()) {
-            return array();
+            return [];
         }
 
-        $toReturn = array();
+        $toReturn = [];
 
         while ($player = $res->fetch()) {
             $toReturn[] = $this->getBannedUser($player["news_banned_players_player_id"]);
@@ -275,7 +275,7 @@ class NewsModel extends AbstractModel
         $res = $db->prepare($sql);
 
 
-        if (!$res->execute(array("userId" => $userId))) {
+        if (!$res->execute(["userId" => $userId])) {
             return null;
         }
 
@@ -295,10 +295,10 @@ class NewsModel extends AbstractModel
     public function banPlayer(int $userId): ?NewsBannedPlayersEntity
     {
         if (!$this->isUserBanned($userId)) {
-            $var = array(
+            $var = [
                 "userId" => $userId,
-                "authorId" => UsersModel::getCurrentUser()?->getId()
-            );
+                "authorId" => UsersModel::getCurrentUser()?->getId(),
+            ];
 
             $sql = "INSERT INTO cmw_news_banned_players (news_banned_players_player_id, news_banned_players_author_id) 
                     VALUES (:userId, :authorId)";
@@ -322,7 +322,7 @@ class NewsModel extends AbstractModel
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
-        $res->execute(array("user_id" => $userId));
+        $res->execute(["user_id" => $userId]);
 
         return count($res->fetchAll()) !== 0;
     }
@@ -334,7 +334,6 @@ class NewsModel extends AbstractModel
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
 
-        $req->execute(array("id" => $newsId));
+        $req->execute(["id" => $newsId]);
     }
-
 }

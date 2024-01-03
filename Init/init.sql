@@ -124,3 +124,28 @@ ALTER TABLE `cmw_news_banned_players`
     ADD FOREIGN KEY (`news_banned_players_player_id`) REFERENCES `cmw_users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `cmw_news_banned_players`
     ADD FOREIGN KEY (`news_banned_players_author_id`) REFERENCES `cmw_users` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+
+CREATE TABLE IF NOT EXISTS `cmw_news_tags`
+(
+    `news_tags_id`    INT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `news_tags_name`  VARCHAR(50) NOT NULL UNIQUE,
+    `news_tags_icon`  VARCHAR(50) NULL DEFAULT NULL,
+    `news_tags_color` VARCHAR(7)  NULL DEFAULT NULL
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `cmw_news_tags_list`
+(
+    `news_id`      INT NOT NULL,
+    `news_tags_id` INT NOT NULL,
+    KEY `news_id` (`news_id`),
+    KEY `news_tags_id` (`news_tags_id`),
+    CONSTRAINT `fk_cmw_news_tags_list_news_id` FOREIGN KEY (`news_id`)
+        REFERENCES `cmw_news` (`news_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_cmw_news_tags_list_news_tags_id` FOREIGN KEY (`news_tags_id`)
+        REFERENCES `cmw_news_tags` (`news_tags_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;

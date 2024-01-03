@@ -1,11 +1,9 @@
 <?php
 
-use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Security\SecurityManager;
-use CMW\Utils\Utils;
-use CMW\Utils\Response;
-use CMW\Utils\Website;
+
+/* @var \CMW\Entity\News\NewsTagsEntity[] $tags */
 
 $title = LangManager::translate("news.dashboard.title");
 $description = LangManager::translate("news.dashboard.desc");
@@ -13,7 +11,7 @@ $description = LangManager::translate("news.dashboard.desc");
 
 <div class="d-flex flex-wrap justify-content-between">
     <h3><i class="fa-solid fa-newspaper"></i> <span
-                class="m-lg-auto"><?= LangManager::translate("news.dashboard.title") ?></span></h3>
+            class="m-lg-auto"><?= LangManager::translate("news.dashboard.title") ?></span></h3>
 </div>
 
 <section>
@@ -23,7 +21,7 @@ $description = LangManager::translate("news.dashboard.desc");
         </div>
         <form action="" method="post" enctype="multipart/form-data">
             <?php (new SecurityManager())->insertHiddenToken() ?>
-        <div class="card-body">
+            <div class="card-body">
                 <div class="row">
                     <div class="col-12 col-lg-6">
                         <h6><?= LangManager::translate("news.add.title") ?> :</h6>
@@ -52,6 +50,15 @@ $description = LangManager::translate("news.dashboard.desc");
                         <input name="image" required class="mt-2 form-control form-control-sm" type="file" id="image"
                                accept=".png,.jpg,.jpeg,.webp,.svg,.gif">
                         <span><?= LangManager::translate("news.add.allow_files") ?></span>
+
+                        <h6 class="mt-1"><?= LangManager::translate("news.tags.tags") ?> :</h6>
+                        <fieldset class="form-group">
+                            <select class="choices choices__list--multiple" name="tags[]" multiple>
+                                <?php foreach ($tags as $tag) : ?>
+                                    <option value="<?= $tag->getId() ?>"><?= $tag->getName() ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </fieldset>
                     </div>
                     <div class="col-12 col-lg-6">
                         <div class="form-check form-switch">
@@ -67,17 +74,17 @@ $description = LangManager::translate("news.dashboard.desc");
                         </div>
                     </div>
                 </div>
-                <h6><?= LangManager::translate("news.add.content") ?> :</h6>
 
-
-                <div>
+                <div class="mt-4">
+                    <h6><?= LangManager::translate("news.add.content") ?> :</h6>
                     <textarea class="tinymce" name="content"></textarea>
                 </div>
                 <div class="text-center mt-2">
-                    <button id="saveButton" type="submit"
-                            class="btn btn-primary"><?= LangManager::translate("core.btn.save") ?></button>
+                    <button id="saveButton" type="submit" class="btn btn-primary">
+                        <?= LangManager::translate("core.btn.save") ?>
+                    </button>
                 </div>
-        </div>
+            </div>
         </form>
     </div>
 </section>

@@ -43,17 +43,48 @@ return [
         "select_image" => "Choose cover image",
         "content" => "Content",
         "toasters" => [
-            "success" => "News added with success !"
+            "success" => "News added with success !",
+            'error' => 'Unable to add this news !',
         ],
     ],
     "edit" => [
         "toasters" => [
-            "success" => "News update with success !"
+            "success" => "News update with success !",
         ],
     ],
     "delete" => [
         "toasters" => [
-            "success" => "Delete remove with success !"
+            "success" => "Delete remove with success !",
         ],
+    ],
+    "tags" => [
+        "toasters" => [
+            "add" => [
+                "success" => "Tag ajouté avec succès",
+                "error" => "Impossible d'ajouter ce tag",
+            ],
+            "delete" => [
+                "success" => "Tag supprimé avec succès",
+                "error" => "Impossible de supprimer ce tag",
+            ],
+            "edit" => [
+                "success" => "Tag modifié avec succès",
+                "error" => "Impossible de modifier ce tag",
+            ],
+        ],
+        "add" => [
+            'title' => "Ajouter un tag",
+        ],
+        'list' => [
+            'title' => 'Liste des tags',
+            'associatedNews' => 'Articles associés',
+        ],
+        'edit' => [
+            'title' => 'Modification du tag',
+        ],
+        'icon' => "Icon",
+        'name' => 'Nom',
+        'color' => 'Couleur',
+        'tags' => 'Tags',
     ],
 ];
