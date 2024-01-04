@@ -11,6 +11,7 @@ use CMW\Model\News\NewsCommentsLikesModel;
 use CMW\Model\News\NewsCommentsModel;
 use CMW\Model\News\NewsLikesModel;
 use CMW\Model\News\NewsModel;
+use CMW\Model\News\NewsTagsModel;
 use CMW\Model\Users\UsersModel;
 use CMW\Utils\Redirect;
 
@@ -37,20 +38,67 @@ class NewsPublicController extends AbstractController
         $view->view();
     }
 
+    #[Link("/news/:tagSlug/:articleSlug", Link::GET, ["tagSlug" => ".*?", "articleSlug" => ".*?"])]
+    public function publicNewsTagIndividual(Request $request, string $tagSlug, string $articleSlug): void
+    {
+        $news = NewsModel::getInstance()->getNewsBySlug($articleSlug);
+        $tag = NewsTagsModel::getInstance()->isTagExistByName($tagSlug);
+
+        if (is_null($news) || !$tag) {
+            Redirect::redirectToHome();
+        }
+
+        NewsModel::getInstance()->incrementViews($news->getNewsId());
+
+        $view = new View('News', 'individual');
+        $view->addScriptBefore("Admin/Resources/Vendors/Prismjs/prism.js");
+        $view->addStyle("Admin/Resources/Vendors/Prismjs/Style/" . EditorController::getCurrentStyle());
+        $view->addVariableList(["news" => $news]);
+        $view->view();
+    }
+
     #[Link("/news/:slug", Link::GET, ["slug" => ".*?"])]
     public function publicIndividualNews(Request $request, string $slug): void
     {
+
+        $isTag = NewsTagsModel::getInstance()->isTagExistByName($slug);
+
+        if ($isTag) {
+            $this->publicListNewsForTag($slug);
+            return;
+        }
+
         $news = NewsModel::getInstance()->getNewsBySlug($slug);
 
-        if (!is_null($news)) {
-            NewsModel::getInstance()->incrementViews($news->getNewsId());
+        if (is_null($news)) {
+            Redirect::redirectToHome();
         }
+
+        NewsModel::getInstance()->incrementViews($news->getNewsId());
 
         //Include the Public view file ("Public/Themes/$themePath/Views/News/individual.view.php")
         $view = new View('News', 'individual');
         $view->addScriptBefore("Admin/Resources/Vendors/Prismjs/prism.js");
         $view->addStyle("Admin/Resources/Vendors/Prismjs/Style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["news" => $news]);
+        $view->view();
+    }
+
+    public function publicListNewsForTag(string $tagSlug): void
+    {
+        $tag = NewsTagsModel::getInstance()->getTagByName($tagSlug);
+
+        if (!$tag) {
+            Redirect::redirectToHome();
+        }
+
+        $newsList = NewsTagsModel::getInstance()->getNewsForTagById($tag->getId());
+        $newsModel = NewsModel::getInstance();
+
+        $view = new View('News', 'list');
+        $view->addScriptBefore("Admin/Resources/Vendors/Prismjs/prism.js");
+        $view->addStyle("Admin/Resources/Vendors/Prismjs/Style/" . EditorController::getCurrentStyle());
+        $view->addVariableList(["newsList" => $newsList, "newsModel" => $newsModel]);
         $view->view();
     }
 

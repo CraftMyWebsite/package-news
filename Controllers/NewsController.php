@@ -47,15 +47,16 @@ class NewsController extends AbstractController
 
         [$title, $desc, $content, $comm, $likes] = Utils::filterInput("title", "desc", "content", "comm", "likes");
 
-        $slug = Utils::normalizeForSlug(filter_input(INPUT_POST, "title"));
+        //We are storing $content for prevent error and not loose all data.
+        $_SESSION['cmwNewsContent'] = $content;
+
+        $slug = Utils::normalizeForSlug(FilterManager::filterInputStringPost('title'));
         $userId = UsersModel::getCurrentUser()?->getId();
         $image = $_FILES['image'];
 
         $news = NewsModel::getInstance()->createNews($title, $desc, $comm, $likes, $content, $slug, $userId, $image);
 
         if (is_null($news)) {
-            //TODO: Why not save $content in localStorage or $_SESSION ?
-
             Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
                 LangManager::translate("news.add.toasters.error"));
             Redirect::redirectPreviousRoute();
@@ -70,6 +71,9 @@ class NewsController extends AbstractController
 
         Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"),
             LangManager::translate("news.add.toasters.success"));
+
+        //If all good, we reset temp session data
+        $_SESSION['cmwNewsContent'] = "";
 
         Redirect::redirectPreviousRoute();
     }

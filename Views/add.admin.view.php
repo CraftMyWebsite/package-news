@@ -77,7 +77,7 @@ $description = LangManager::translate("news.dashboard.desc");
 
                 <div class="mt-4">
                     <h6><?= LangManager::translate("news.add.content") ?> :</h6>
-                    <textarea class="tinymce" name="content"></textarea>
+                    <textarea class="tinymce" name="content"><?= $_SESSION['cmwNewsContent'] ?? '' ?></textarea>
                 </div>
                 <div class="text-center mt-2">
                     <button id="saveButton" type="submit" class="btn btn-primary">

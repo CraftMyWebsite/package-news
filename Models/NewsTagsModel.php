@@ -2,9 +2,11 @@
 
 namespace CMW\Model\News;
 
+use CMW\Entity\News\NewsEntity;
 use CMW\Entity\News\NewsTagsEntity;
 use CMW\Manager\Database\DatabaseManager;
 use CMW\Manager\Package\AbstractModel;
+use CMW\Model\Users\UsersModel;
 
 
 /**
@@ -118,6 +120,30 @@ class NewsTagsModel extends AbstractModel
         );
     }
 
+    public function getTagByName(string $tagName): ?NewsTagsEntity
+    {
+        $sql = "SELECT * FROM cmw_news_tags WHERE news_tags_name = :name";
+        $db = DatabaseManager::getInstance();
+        $req = $db->prepare($sql);
+
+        if (!$req->execute(['name' => $tagName])) {
+            return null;
+        }
+
+        $res = $req->fetch();
+
+        if (!$res) {
+            return null;
+        }
+
+        return new NewsTagsEntity(
+            $res['news_tags_id'],
+            $res['news_tags_name'],
+            $res['news_tags_icon'],
+            $res['news_tags_color'],
+        );
+    }
+
     public function getTagsForNewsById(int $newsId): array
     {
         $sql = "SELECT * FROM cmw_news_tags 
@@ -173,5 +199,79 @@ class NewsTagsModel extends AbstractModel
         }
 
         return $res['count'] ?? 0;
+    }
+
+    /**
+     * @param int $tagId
+     * @return \CMW\Entity\News\NewsEntity[]
+     */
+    public function getNewsForTagById(int $tagId): array
+    {
+        $sql = "SELECT * FROM cmw_news 
+                    JOIN cmw_news_tags_list ON cmw_news.news_id = cmw_news_tags_list.news_id 
+                    WHERE cmw_news_tags_list.news_tags_id = :id";
+        $db = DatabaseManager::getInstance();
+        $req = $db->prepare($sql);
+
+        if (!$req->execute(['id' => $tagId])) {
+            return [];
+        }
+
+        $res = $req->fetchAll();
+
+        if (!$res) {
+            return [];
+        }
+
+        $toReturn = [];
+
+        foreach ($res as $article) {
+            $author = UsersModel::getInstance()->getUserById($article["news_author"]);
+            $newsLikes = NewsLikesModel::getInstance()->getLikesForNews($article['news_id']);
+
+            $toReturn[] = new NewsEntity(
+                $article['news_id'],
+                $article['news_title'],
+                $article['news_desc'],
+                $article['news_comments_status'],
+                $article['news_likes_status'],
+                $article["news_content"],
+                $article["news_content"],
+                $article['news_slug'],
+                $author,
+                $article['news_views'],
+                $article['news_image_name'],
+                $article['news_date_created'],
+                $newsLikes,
+                NewsCommentsModel::getInstance()->getCommentsForNews($article['news_id']),
+                self::getInstance()->getTagsForNewsById($article['news_id']),
+            );
+        }
+
+        return $toReturn;
+    }
+
+    /**
+     * @param string $tagName
+     * @return bool
+     */
+    public function isTagExistByName(string $tagName): bool
+    {
+        $sql = "SELECT news_tags_id FROM cmw_news_tags WHERE news_tags_name = :name";
+        $db = DatabaseManager::getInstance();
+
+        $req = $db->prepare($sql);
+
+        if (!$req->execute(['name' => $tagName])){
+            return false;
+        }
+
+        $res = $req->fetch();
+
+        if (!$res){
+            return false;
+        }
+
+        return count($res) >= 1;
     }
 }

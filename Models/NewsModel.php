@@ -12,6 +12,7 @@ use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\AbstractModel;
 use CMW\Manager\Uploads\ImagesManager;
 use CMW\Model\Users\UsersModel;
+use CMW\Utils\Log;
 use JetBrains\PhpStorm\ExpectedValues;
 use JsonException;
 
@@ -114,6 +115,10 @@ class NewsModel extends AbstractModel
         }
 
         $res = $res->fetch();
+
+        if (!$res){
+            return null;
+        }
 
         $author = UsersModel::getInstance()->getUserById($res["news_author"]);
         $newsLikes = NewsLikesModel::getInstance()->getLikesForNews($res['news_id']);
