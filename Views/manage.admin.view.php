@@ -7,6 +7,7 @@ use CMW\Model\News\NewsTagsModel;
 use CMW\Utils\Website;
 
 /* @var \CMW\Entity\News\NewsTagsEntity[] $tags */
+/** @var \CMW\Entity\News\NewsEntity[] $newsList */
 
 $title = LangManager::translate("news.dashboard.title");
 $description = LangManager::translate("news.dashboard.desc");
@@ -160,8 +161,7 @@ $description = LangManager::translate("news.dashboard.desc");
                 </tr>
                 </thead>
                 <tbody class="text-center">
-                <?php /** @var \CMW\Entity\News\NewsEntity[] $newsList */
-                foreach ($newsList as $news) : ?>
+                <?php foreach ($newsList as $news) : ?>
                     <tr>
                         <td><?= $news->getTitle() ?></td>
                         <td><?= $news->getDescription() ?></td>

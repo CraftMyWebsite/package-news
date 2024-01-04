@@ -93,7 +93,7 @@ class NewsPublicController extends AbstractController
 
         $content = strip_tags(htmlentities(filter_input(INPUT_POST, 'comments')));
 
-        if ((new NewsCommentsModel())->userCanComment($newsId, $user?->getId())) {
+        if (NewsCommentsModel::getInstance()->userCanComment($newsId, $user?->getId())) {
             newsCommentsModel::getInstance()->storeComments($newsId, $user?->getId(), $content);
         }
 

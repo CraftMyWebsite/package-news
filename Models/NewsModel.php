@@ -76,8 +76,8 @@ class NewsModel extends AbstractModel
 
         $res = $res->fetch();
 
-        $author = (new UsersModel())->getUserById($res["news_author"]);
-        $newsLikes = (new NewsLikesModel())->getLikesForNews($res['news_id']);
+        $author = UsersModel::getInstance()->getUserById($res["news_author"]);
+        $newsLikes = NewsLikesModel::getInstance()->getLikesForNews($res['news_id']);
 
         return new NewsEntity(
             $res['news_id'],
@@ -235,7 +235,7 @@ class NewsModel extends AbstractModel
     public function deleteNews(int $newsId): void
     {
         //Delete the image file
-        unlink(EnvManager::getInstance()->getValue("DIR") . "Public/uploads/news/" . $this->getNewsById($newsId)?->getImageName());
+        unlink(EnvManager::getInstance()->getValue("DIR") . "Public/Uploads/News/" . $this->getNewsById($newsId)?->getImageName());
 
         $sql = "DELETE FROM cmw_news WHERE news_id=:news_id";
 
@@ -281,8 +281,8 @@ class NewsModel extends AbstractModel
 
         $res = $res->fetch();
 
-        $player = (new UsersModel())->getUserById($userId);
-        $author = (new UsersModel())->getUserById($res['news_banned_players_author_id']);
+        $player = UsersModel::getInstance()->getUserById($userId);
+        $author = UsersModel::getInstance()->getUserById($res['news_banned_players_author_id']);
 
         return new NewsBannedPlayersEntity(
             $res['news_banned_players_id'],

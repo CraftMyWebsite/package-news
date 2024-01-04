@@ -10,7 +10,7 @@ use CMW\Model\Users\UsersModel;
 
 /**
  * Class @NewsLikesModel
- * @package news
+ * @package News
  * @author Teyir
  * @version 1.0
  */
@@ -40,8 +40,8 @@ class NewsLikesModel extends AbstractModel
 
     public function userCanLike(int $newsId, ?int $userId): bool
     {
-        if ($userId === null){
-            return  false;
+        if ($userId === null) {
+            return false;
         }
 
         $sql = "SELECT news_like_id FROM `cmw_news_likes` WHERE news_like_news_id = :news_id AND news_like_user_id = :user_id";
@@ -49,7 +49,7 @@ class NewsLikesModel extends AbstractModel
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
-        $res->execute(array("news_id" => $newsId, "user_id" => $userId));
+        $res->execute(["news_id" => $newsId, "user_id" => $userId]);
 
         return count($res->fetchAll()) === 0;
     }
@@ -62,7 +62,7 @@ class NewsLikesModel extends AbstractModel
         $res = $db->prepare($sql);
 
 
-        if ($res->execute(array("news_id" => $newsId, "user_id" => $userId))) {
+        if ($res->execute(["news_id" => $newsId, "user_id" => $userId])) {
             $id = $db->lastInsertId();
             return $this->getLikesForNews($id);
         }
@@ -83,7 +83,7 @@ class NewsLikesModel extends AbstractModel
         $res = $db->prepare($sql);
 
 
-        if (!$res->execute(array("news_id" => $newsId))) {
+        if (!$res->execute(["news_id" => $newsId])) {
             return null;
         }
 
@@ -117,7 +117,7 @@ class NewsLikesModel extends AbstractModel
 
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
-        $res = $req->execute(array("news_id" => $newsId));
+        $res = $req->execute(["news_id" => $newsId]);
 
         if ($res) {
             $lines = $req->fetchAll();

@@ -10,7 +10,7 @@ use CMW\Model\Users\UsersModel;
 
 /**
  * Class @NewsCommentsModel
- * @package news
+ * @package News
  * @author Teyir
  * @version 1.0
  */
@@ -30,11 +30,11 @@ class NewsCommentsModel extends AbstractModel
         $res = $db->prepare($sql);
 
 
-        if (!$res->execute(array("news_id" => $newsId))) {
-            return array();
+        if (!$res->execute(["news_id" => $newsId])) {
+            return [];
         }
 
-        $toReturn = array();
+        $toReturn = [];
 
         while ($comments = $res->fetch()) {
             $toReturn[] = $this->getCommentsById($comments["news_comments_id"]);
@@ -52,13 +52,13 @@ class NewsCommentsModel extends AbstractModel
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
-        if (!$res->execute(array("id" => $commentsId))) {
+        if (!$res->execute(["id" => $commentsId])) {
             return null;
         }
 
         $res = $res->fetch();
 
-        $user = (new UsersModel())->getUserById($res["news_comments_user_id"]);
+        $user = UsersModel::getInstance()->getUserById($res["news_comments_user_id"]);
 
         return new NewsCommentsEntity(
             $res['news_comments_id'],
@@ -66,7 +66,7 @@ class NewsCommentsModel extends AbstractModel
             $user,
             $res['news_comments_content'],
             $res['news_comments_date'],
-            (new NewsCommentsLikesModel())->getLikesForComments($res['news_comments_id'])
+            NewsCommentsLikesModel::getInstance()->getLikesForComments($res['news_comments_id'])
         );
     }
 
@@ -87,7 +87,7 @@ class NewsCommentsModel extends AbstractModel
         $res = $db->prepare($sql);
 
 
-        if ($res->execute(array("news_id" => $newsId, "user_id" => $userId, "content" => $content))) {
+        if ($res->execute(["news_id" => $newsId, "user_id" => $userId, "content" => $content])) {
             $id = $db->lastInsertId();
             return $this->getCommentsById($id);
         }
@@ -97,11 +97,11 @@ class NewsCommentsModel extends AbstractModel
 
     public function userCanComment(int $newsId, ?int $userId): bool
     {
-        if ($userId === null){
-            return  false;
+        if ($userId === null) {
+            return false;
         }
 
-        if((new NewsModel())->isUserBanned($userId)){
+        if ((new NewsModel())->isUserBanned($userId)) {
             return false;
         }
 
@@ -111,7 +111,7 @@ class NewsCommentsModel extends AbstractModel
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
-        $res->execute(array("news_id" => $newsId));
+        $res->execute(["news_id" => $newsId]);
 
         return count($res->fetchAll()) === 1;
     }

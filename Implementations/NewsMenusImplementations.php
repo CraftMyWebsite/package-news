@@ -3,7 +3,6 @@
 namespace CMW\Implementation\News;
 
 use CMW\Interface\Core\IMenus;
-use CMW\Manager\Lang\LangManager;
 use CMW\Model\News\NewsModel;
 
 
@@ -14,8 +13,8 @@ class NewsMenusImplementations implements IMenus {
         $slug = [];
         $slug['News'] = 'news';
 
-        foreach ((new NewsModel())->getNews() as $news) {
-            $slug[$news->getTitle()] = "p/" . $news->getSlug();
+        foreach (NewsModel::getInstance()->getNews() as $news) {
+            $slug[$news->getTitle()] = "news/" . $news->getSlug();
         }
 
         return $slug;

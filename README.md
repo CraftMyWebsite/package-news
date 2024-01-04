@@ -9,6 +9,7 @@ Ajoutez facilement des news sur votre site avec ce package !
 - Désactivez les commentaires / likes
 - Commentez les news, likez les news et les commentaires
 - Affichage des news en liste (système de tri + limite)
+- Tags (rangez vos articles dans des catégories avec des tags.)
 
 
 ## Exemple affichage des news
