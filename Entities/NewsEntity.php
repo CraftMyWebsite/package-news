@@ -191,6 +191,14 @@ class NewsEntity
         return EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "Public/Uploads/News/" . $this->imageName;
     }
 
+    /**
+     * @return string
+     */
+    public function getFullImageLink(): string
+    {
+        return EnvManager::getInstance()->getValue("PATH_URL") . $this->getImageLink();
+    }
+
     public function sendComments(): string
     {
         return EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "news/comments/" . $this->newsId;
