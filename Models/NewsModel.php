@@ -12,7 +12,6 @@ use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\AbstractModel;
 use CMW\Manager\Uploads\ImagesManager;
 use CMW\Model\Users\UsersModel;
-use CMW\Utils\Log;
 use JetBrains\PhpStorm\ExpectedValues;
 use JsonException;
 
@@ -63,9 +62,7 @@ class NewsModel extends AbstractModel
     public function getNewsById(int $newsId): ?NewsEntity
     {
 
-        $sql = "SELECT news_id, news_title, news_desc, news_comments_status, news_likes_status, news_content, 
-                news_slug, news_author, news_views, news_image_name, news_date_created
-                FROM cmw_news WHERE news_id=:news_id";
+        $sql = "SELECT * FROM cmw_news WHERE news_id=:news_id";
 
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
@@ -93,6 +90,7 @@ class NewsModel extends AbstractModel
             $res['news_views'],
             $res['news_image_name'],
             $res['news_date_created'],
+            $res['news_date_updated'],
             $newsLikes,
             NewsCommentsModel::getInstance()->getCommentsForNews($res['news_id']),
             NewsTagsModel::getInstance()->getTagsForNewsById($res['news_id']),
@@ -102,9 +100,7 @@ class NewsModel extends AbstractModel
     public function getNewsBySlug(string $newsSlug): ?NewsEntity
     {
 
-        $sql = "SELECT news_id, news_title, news_desc, news_comments_status, news_likes_status, news_content, 
-                news_slug, news_author, news_views, news_image_name, news_date_created
-                FROM cmw_news WHERE news_slug=:news_slug";
+        $sql = "SELECT * FROM cmw_news WHERE news_slug=:news_slug";
 
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
@@ -116,7 +112,7 @@ class NewsModel extends AbstractModel
 
         $res = $res->fetch();
 
-        if (!$res){
+        if (!$res) {
             return null;
         }
 
@@ -137,6 +133,7 @@ class NewsModel extends AbstractModel
             $res['news_views'],
             $res['news_image_name'],
             $res['news_date_created'],
+            $res['news_date_updated'],
             $newsLikes,
             $newsComments,
             NewsTagsModel::getInstance()->getTagsForNewsById($res['news_id']),

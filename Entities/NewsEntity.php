@@ -21,6 +21,7 @@ class NewsEntity
     private string $imageName;
     private string $imageLink;
     private string $dateCreated;
+    private string $dateUpdated;
     private ?NewsLikesEntity $likes;
     /** @var \CMW\Entity\News\NewsCommentsEntity|\CMW\Entity\News\NewsCommentsEntity[] $comments */
     private ?array $comments;
@@ -40,11 +41,12 @@ class NewsEntity
      * @param int $views
      * @param string $imageName
      * @param string $dateCreated
+     * @param string $dateUpdated
      * @param ?\CMW\Entity\News\NewsLikesEntity $likes
      * @param \CMW\Entity\News\NewsCommentsEntity[]|null $comments
      * @param \CMW\Entity\News\NewsTagsEntity[] $tags
      */
-    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $contentNt, string $slug, ?UserEntity $author, int $views, string $imageName, string $dateCreated, ?NewsLikesEntity $likes, ?array $comments, array $tags)
+    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $contentNt, string $slug, ?UserEntity $author, int $views, string $imageName, string $dateCreated, string $dateUpdated, ?NewsLikesEntity $likes, ?array $comments, array $tags)
     {
         $this->newsId = $newsId;
         $this->title = $title;
@@ -58,6 +60,7 @@ class NewsEntity
         $this->views = $views;
         $this->imageName = $imageName;
         $this->dateCreated = $dateCreated;
+        $this->dateUpdated = $dateUpdated;
         $this->likes = $likes;
         $this->comments = $comments;
         $this->tags = $tags;
@@ -156,7 +159,31 @@ class NewsEntity
      */
     public function getDateCreated(): string
     {
+        return $this->dateCreated;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateCreatedFormatted(): string
+    {
         return CoreController::formatDate($this->dateCreated);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateUpdated(): string
+    {
+        return $this->dateUpdated;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDateUpdatedFormatted(): string
+    {
+        return CoreController::formatDate($this->dateUpdated);
     }
 
     /**

@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `cmw_news`
     `news_views`           INT          NOT NULL DEFAULT 0,
     `news_image_name`      VARCHAR(255) NOT NULL,
     `news_date_created`    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `news_date_updated`    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     PRIMARY KEY (`news_id`),
     INDEX (`news_author`),
