@@ -131,6 +131,14 @@ class NewsEntity
     }
 
     /**
+     * @return string
+     */
+    public function getFullUrl(): string
+    {
+        return EnvManager::getInstance()->getValue('PATH_SUBFOLDE') . $this->slug;
+    }
+
+    /**
      * @return ?\CMW\Entity\Users\UserEntity
      */
     public function getAuthor(): ?UserEntity
