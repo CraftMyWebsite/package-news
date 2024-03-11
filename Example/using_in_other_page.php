@@ -15,7 +15,7 @@ use CMW\Model\News\NewsModel;
 
 if (PackageController::isInstalled("news")) {
     $newsList = new newsModel;
-    $newsList = $newsList->getSomeNews(ThemeModel::fetchConfigValue('news_number_display'));
+    $newsList = $newsList->getSomeNews(ThemeModel::getInstance()->fetchConfigValue('news_number_display'));
 }
 ?>
 
