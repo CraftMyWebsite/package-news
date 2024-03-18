@@ -79,7 +79,7 @@ class NewsCommentsLikesEntity
      */
     public function getSendLike(): string
     {
-        return EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "news/comments/like/" . $this->commentsId;
+        return EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "like/news/comments/" . $this->commentsId;
     }
 
 

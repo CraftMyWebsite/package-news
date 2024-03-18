@@ -50,6 +50,9 @@ class NewsController extends AbstractController
         //We are storing $content for prevent error and not loose all data.
         $_SESSION['cmwNewsContent'] = $content;
 
+        if (is_null($comm)) { $comm = 0;}
+        if (is_null($likes)) { $likes = 0;}
+
         $slug = Utils::normalizeForSlug(FilterManager::filterInputStringPost('title'));
         $userId = UsersModel::getCurrentUser()?->getId();
         $image = $_FILES['image'];
@@ -115,6 +118,9 @@ class NewsController extends AbstractController
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
 
         [$title, $desc, $content, $comm, $likes] = Utils::filterInput('title', 'desc', 'content', 'comm', 'likes');
+
+        if (is_null($comm)) { $comm = 0;}
+        if (is_null($likes)) { $likes = 0;}
 
         $slug = Utils::normalizeForSlug($title);
 

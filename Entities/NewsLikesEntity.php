@@ -76,7 +76,7 @@ class NewsLikesEntity
      */
     public function getSendLike(): string
     {
-        return EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "news/like/" . $this->newsId;
+        return EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "like/news/" . $this->newsId;
     }
 
     /**

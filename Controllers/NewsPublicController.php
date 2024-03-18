@@ -3,6 +3,8 @@
 namespace CMW\Controller\News;
 
 use CMW\Controller\Core\EditorController;
+use CMW\Manager\Flash\Alert;
+use CMW\Manager\Flash\Flash;
 use CMW\Manager\Package\AbstractController;
 use CMW\Manager\Requests\Request;
 use CMW\Manager\Router\Link;
@@ -102,11 +104,10 @@ class NewsPublicController extends AbstractController
         $view->view();
     }
 
-    #[Link("/news/like/comment/:id", Link::GET, ["id" => "[0-9]+"])]
+    #[Link("/like/news/comments/:id", Link::GET, ["id" => "[0-9]+"])]
     public function likeCommentsNews(Request $request, int $commentsId): void
     {
         $user = usersModel::getInstance()::getCurrentUser();
-
 
         //We check if the player has already like this comments, and we store the like
         if (newsCommentsLikesModel::getInstance()->userCanLike($commentsId, $user?->getId())) {
@@ -116,19 +117,19 @@ class NewsPublicController extends AbstractController
         Redirect::redirectPreviousRoute();
     }
 
-    #[Link("/news/like/:id", Link::GET, ["id" => "[0-9]+"])]
-    public function likeNews(Request $request, int $newsId): void
+    #[Link("/like/news/:id", Link::GET, ["id" => "[0-9]+"])]
+    public function likeNews(Request $request, int $id): void
     {
         $user = usersModel::getInstance()::getCurrentUser();
-        $news = NewsModel::getInstance()->getNewsById($newsId);
+        $news = NewsModel::getInstance()->getNewsById($id);
 
         //First check if the news is likeable
         if (!$news?->isLikesStatus()) {
             Redirect::redirect('news');
         }
 
-        if (newsLikesModel::getInstance()->userCanLike($newsId, $user?->getId())) {
-            newsLikesModel::getInstance()->storeLike($newsId, $user?->getId());
+        if (newsLikesModel::getInstance()->userCanLike($id, $user?->getId())) {
+            newsLikesModel::getInstance()->storeLike($id, $user?->getId());
         }
 
         Redirect::redirectPreviousRoute();
