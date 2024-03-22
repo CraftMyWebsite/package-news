@@ -74,6 +74,10 @@ class NewsModel extends AbstractModel
 
         $res = $res->fetch();
 
+        if (empty($res)) {
+            return null;
+        }
+
         $author = UsersModel::getInstance()->getUserById($res["news_author"]);
         $newsLikes = NewsLikesModel::getInstance()->getLikesForNews($res['news_id']);
 
