@@ -168,6 +168,11 @@ class NewsModel extends AbstractModel
         return $toReturn;
     }
 
+    /**
+     * @param int $limit
+     * @param string $order
+     * @return NewsEntity[]
+     */
     public function getSomeNews(int $limit, #[ExpectedValues (values: ['DESC', 'ASC'])] string $order = "DESC"): array
     {
 
