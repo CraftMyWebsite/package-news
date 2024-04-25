@@ -1,6 +1,6 @@
 <?php
 
-namespace CMW\Implementation\News;
+namespace CMW\Implementation\News\Core;
 
 use CMW\Interface\Core\IMenus;
 use CMW\Model\News\NewsModel;
