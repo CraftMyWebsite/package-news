@@ -44,7 +44,7 @@ return [
         "content" => "Contenu",
         "toasters" => [
             "success" => "Actualité ajoutée avec succès !",
-            'error' => "Impossible d'ajouter cette news !"
+            'error' => "Impossible d'ajouter cette news !",
         ],
     ],
     "edit" => [
@@ -80,11 +80,19 @@ return [
             'associatedNews' => 'Articles associés',
         ],
         'edit' => [
-          'title' => 'Modification du tag',
+            'title' => 'Modification du tag',
         ],
         'icon' => "Icon",
         'name' => 'Nom',
         'color' => 'Couleur',
         'tags' => 'Tags',
+    ],
+    "permissions" => [
+        "news" => [
+            "add" => "Ajouter une actualité",
+            "manage" => "Gérer les actualités",
+            "edit" => "Modifier une actualité",
+            "delete" => "Supprimer une actualité",
+        ],
     ],
 ];

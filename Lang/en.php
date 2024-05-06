@@ -87,4 +87,12 @@ return [
         'color' => 'Couleur',
         'tags' => 'Tags',
     ],
+    "permissions" => [
+        "news" => [
+            "add" => "Add news",
+            "manage" => "Manage news",
+            "edit" => "Edit news",
+            "delete" => "Delete news",
+        ],
+    ],
 ];
