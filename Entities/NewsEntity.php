@@ -135,7 +135,7 @@ class NewsEntity
      */
     public function getFullUrl(): string
     {
-        return EnvManager::getInstance()->getValue('PATH_SUBFOLDE') . 'news/' . $this->slug;
+        return EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . 'news/' . $this->slug;
     }
 
     /**
