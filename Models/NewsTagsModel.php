@@ -242,6 +242,7 @@ class NewsTagsModel extends AbstractModel
                 $article['news_views'],
                 $article['news_image_name'],
                 $article['news_date_created'],
+                $article['news_date_updated'],
                 $newsLikes,
                 NewsCommentsModel::getInstance()->getCommentsForNews($article['news_id']),
                 self::getInstance()->getTagsForNewsById($article['news_id']),
