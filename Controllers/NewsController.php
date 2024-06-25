@@ -91,8 +91,9 @@ class NewsController extends AbstractController
 
         View::createAdminView('News', 'manage')
             /*El famosso doublon*/
-            ->addStyle("Admin/Resources/Vendors/Simple-datatables/style.css", "Admin/Resources/Assets/Css/Pages/simple-datatables.css")
-            ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/Umd/simple-datatables.js", "Admin/Resources/Assets/Js/Pages/simple-datatables.js")
+            ->addStyle("Admin/Resources/Assets/Css/simple-datatables.css")
+            ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/Umd/simple-datatables.js",
+                "Admin/Resources/Vendors/Simple-datatables/config-datatables.js")
             ->addVariableList(["newsList" => $newsList, 'tags' => $tags])
             ->view();
     }
@@ -125,6 +126,10 @@ class NewsController extends AbstractController
         $slug = Utils::normalizeForSlug($title);
 
         $image = $_FILES['image'];
+
+        if (empty($image)) {
+            $image = NewsModel::getInstance()->getNewsById($id)->getImageName();
+        }
 
         NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $image);
 
@@ -187,18 +192,6 @@ class NewsController extends AbstractController
                 LangManager::translate("news.tags.toasters.delete.error"));
         }
         Redirect::redirectPreviousRoute();
-    }
-
-    #[Link("/tag/edit/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    public function editNewsTag(Request $request, int $id): void
-    {
-        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage");
-
-        $tag = NewsTagsModel::getInstance()->getTagById($id);
-
-        View::createAdminView('News', 'Tags/edit')
-            ->addVariableList(["tag" => $tag])
-            ->view();
     }
 
     #[Link("/tag/edit/:id", Link::POST, ["id" => "[0-9]+"], "/cmw-admin/news")]

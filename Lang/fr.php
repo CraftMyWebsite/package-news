@@ -20,7 +20,7 @@ return [
         "start" => "Commencez à taper ou cliquez sur le '+' pour choisir un bloc à ajouter...",
     ],
     "list" => [
-        "list" => "Liste des actualités",
+        "list" => "Actualités",
         "table" => [
             "title" => "Titre",
             "description" => "Description",
@@ -76,7 +76,7 @@ return [
             'title' => "Ajouter un tag",
         ],
         'list' => [
-            'title' => 'Liste des tags',
+            'title' => 'Tags',
             'associatedNews' => 'Articles associés',
         ],
         'edit' => [
@@ -89,10 +89,10 @@ return [
     ],
     "permissions" => [
         "news" => [
-            "add" => "Ajouter une actualité",
-            "manage" => "Gérer les actualités",
-            "edit" => "Modifier une actualité",
-            "delete" => "Supprimer une actualité",
+            "add" => "Ajouter",
+            "manage" => "Gérer",
+            "edit" => "Modifier",
+            "delete" => "Supprimer",
         ],
     ],
 ];

@@ -40,39 +40,17 @@ class Package implements IPackageConfig
                 lang: "fr",
                 icon: "fas fa-newspaper",
                 title: "Actualités",
-                url: null,
-                permission: null,
-                subMenus: [
-                    new PackageSubMenuType(
-                        title: 'Gestion',
-                        permission: 'news.manage',
-                        url: 'news/manage',
-                    ),
-                    new PackageSubMenuType(
-                        title: 'Ajouter',
-                        permission: 'news.add',
-                        url: 'news/add',
-                    ),
-                ]
+                url: 'news/manage',
+                permission: 'news.manage',
+                subMenus: []
             ),
             new PackageMenuType(
                 lang: "en",
                 icon: "fas fa-newspaper",
                 title: "News",
-                url: null,
-                permission: null,
-                subMenus: [
-                    new PackageSubMenuType(
-                        title: 'Manage',
-                        permission: 'news.manage',
-                        url: 'news/manage',
-                    ),
-                    new PackageSubMenuType(
-                        title: 'Add',
-                        permission: 'news.add',
-                        url: 'news/add',
-                    ),
-                ]
+                url: 'news/manage',
+                permission: 'news.manage',
+                subMenus: []
             ),
         ];
     }
