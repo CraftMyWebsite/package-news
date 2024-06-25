@@ -12,19 +12,19 @@ class Permissions implements IPermissionInit
     {
         return [
             new PermissionInitType(
-                code: 'news.add',
-                description: LangManager::translate('news.permissions.news.add'),
-            ),
-            new PermissionInitType(
                 code: 'news.manage',
                 description: LangManager::translate('news.permissions.news.manage'),
             ),
             new PermissionInitType(
-                code: 'news.edit',
+                code: 'news.manage.add',
+                description: LangManager::translate('news.permissions.news.add'),
+            ),
+            new PermissionInitType(
+                code: 'news.manage.edit',
                 description: LangManager::translate('news.permissions.news.edit'),
             ),
             new PermissionInitType(
-                code: 'news.delete',
+                code: 'news.manage.delete',
                 description: LangManager::translate('news.permissions.news.delete'),
             ),
         ];

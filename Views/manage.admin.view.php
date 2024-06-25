@@ -76,16 +76,23 @@ $description = LangManager::translate("news.dashboard.desc");
     </div>
 </div>
 
-<div class="grid-3 mt-4">
+<div class="grid-2 mt-4">
     <div class="card">
         <div class="lg:flex justify-between">
             <h6><?= LangManager::translate("news.tags.list.title") ?></h6>
-            <button data-modal-toggle="modal-tag-add" class="btn-primary" type="button"><?= LangManager::translate("core.btn.add") ?></button>
+            <div class="space-x-2">
+                <button type="submit" class="btn-danger btn-mass-delete loading-btn" data-loading-btn="Chargement" data-target-table="1">
+                    Supprimer la selection
+                </button>
+                <button data-modal-toggle="modal-tag-add" class="btn-primary" type="button"><?= LangManager::translate("core.btn.add") ?></button>
+            </div>
+
         </div>
         <div class="table-container">
-            <table id="table1">
+            <table class="table-checkeable" data-form-action="tag/deleteSelected" id="table1">
                 <thead>
                 <tr>
+                    <th class="mass-selector"></th>
                     <th><?= LangManager::translate("news.tags.name") ?></th>
                     <th><?= LangManager::translate("news.tags.icon") ?></th>
                     <th><?= LangManager::translate("news.tags.list.associatedNews") ?></th>
@@ -95,6 +102,7 @@ $description = LangManager::translate("news.dashboard.desc");
                 <tbody>
                 <?php foreach ($tags as $tag) : ?>
                     <tr>
+                        <td class="item-selector" data-value="<?= $tag->getId() ?>"></td>
                         <td><?= $tag->getName() ?></td>
                         <td>
                             <i class="<?= $tag->getIcon() ?>" style="color: <?= $tag->getColor() ?>"></i>
@@ -103,55 +111,56 @@ $description = LangManager::translate("news.dashboard.desc");
                         <td class="space-x-2 text-center">
                             <button data-modal-toggle="modal-edit-<?= $tag->getId() ?>" type="button"><i class="text-info fa-solid fa-gears"></i></button>
                             <button data-modal-toggle="modal-delete-<?= $tag->getId() ?>" type="button"><i class="text-danger fas fa-trash-alt"></i></button>
+
+                            <div id="modal-edit-<?= $tag->getId() ?>" class="modal-container">
+                                <div class="modal">
+                                    <div class="modal-header">
+                                        <h6><?= LangManager::translate("news.tags.edit.title") ?> <?= $tag->getName() ?></h6>
+                                        <button type="button" data-modal-hide="modal-edit-<?= $tag->getId() ?>"><i class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                    <form method="post" action="tag/edit/<?= $tag->getId() ?>">
+                                        <?php (new SecurityManager())->insertHiddenToken() ?>
+                                        <div class="modal-body">
+                                            <div class="grid-2">
+                                                <div>
+                                                    <label for="name"><?= LangManager::translate("news.tags.name") ?> :</label>
+                                                    <div class="input-group">
+                                                        <i class="fa-solid fa-tag"></i>
+                                                        <input type="text" name="name" id="name" autocomplete="off"
+                                                               placeholder="Devblog" value="<?= $tag->getName() ?>" required>
+                                                    </div>
+                                                </div>
+                                                <div class="icon-picker" data-id="icon" data-name="icon" data-label="<?= LangManager::translate("news.tags.icon") ?>" data-placeholder="Sélectionner un icon" data-value="<?= $tag->getIcon() ?>"></div>
+                                            </div>
+                                            <label class="form-label" for="color"><?= LangManager::translate("news.tags.color") ?>
+                                                <input type="color" class="form-control form-control-color" name="color" value="<?= $tag->getColor() ?>">
+                                            </label>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn-primary"><?= LangManager::translate("core.btn.edit") ?></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div id="modal-delete-<?= $tag->getId() ?>" class="modal-container">
+                                <div class="modal">
+                                    <div class="modal-header-danger">
+                                        <h6><?= LangManager::translate("news.modal.delete") ?> <?= $tag->getName() ?></h6>
+                                        <button type="button" data-modal-hide="modal-delete-<?= $tag->getId() ?>"><i class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <?= LangManager::translate("news.modal.deletealert") ?>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="tag/delete/<?= $tag->getId() ?>" class="btn-danger">
+                                            <?= LangManager::translate("core.btn.delete") ?>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
-                    <div id="modal-edit-<?= $tag->getId() ?>" class="modal-container">
-                        <div class="modal">
-                            <div class="modal-header">
-                                <h6><?= LangManager::translate("news.tags.edit.title") ?> <?= $tag->getName() ?></h6>
-                                <button type="button" data-modal-hide="modal-edit-<?= $tag->getId() ?>"><i class="fa-solid fa-xmark"></i></button>
-                            </div>
-                            <form method="post" action="tag/edit/<?= $tag->getId() ?>">
-                                <?php (new SecurityManager())->insertHiddenToken() ?>
-                                <div class="modal-body">
-                                    <div class="grid-2">
-                                        <div>
-                                            <label for="name"><?= LangManager::translate("news.tags.name") ?> :</label>
-                                            <div class="input-group">
-                                                <i class="fa-solid fa-tag"></i>
-                                                <input type="text" name="name" id="name" autocomplete="off"
-                                                       placeholder="Devblog" value="<?= $tag->getName() ?>" required>
-                                            </div>
-                                        </div>
-                                        <div class="icon-picker" data-id="icon" data-name="icon" data-label="<?= LangManager::translate("news.tags.icon") ?>" data-placeholder="Sélectionner un icon" data-value="<?= $tag->getIcon() ?>"></div>
-                                    </div>
-                                    <label class="form-label" for="color"><?= LangManager::translate("news.tags.color") ?>
-                                        <input type="color" class="form-control form-control-color" name="color" value="<?= $tag->getColor() ?>">
-                                    </label>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn-primary"><?= LangManager::translate("core.btn.edit") ?></button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div id="modal-delete-<?= $tag->getId() ?>" class="modal-container">
-                        <div class="modal">
-                            <div class="modal-header-danger">
-                                <h6><?= LangManager::translate("news.modal.delete") ?> <?= $tag->getName() ?></h6>
-                                <button type="button" data-modal-hide="modal-delete-<?= $tag->getId() ?>"><i class="fa-solid fa-xmark"></i></button>
-                            </div>
-                            <div class="modal-body">
-                                <?= LangManager::translate("news.modal.deletealert") ?>
-                            </div>
-                            <div class="modal-footer">
-                                <a href="tag/delete/<?= $tag->getId() ?>" class="btn-danger">
-                                    <?= LangManager::translate("core.btn.delete") ?>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                 <?php endforeach; ?>
                 </tbody>
             </table>
