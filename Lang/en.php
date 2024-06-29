@@ -20,7 +20,7 @@ return [
         "start" => "Start typing or click the '+' to choose a block to add...",
     ],
     "list" => [
-        "list" => "List of news",
+        "list" => "News",
         "table" => [
             "title" => "Title",
             "description" => "Description",
@@ -60,39 +60,39 @@ return [
     "tags" => [
         "toasters" => [
             "add" => [
-                "success" => "Tag ajouté avec succès",
-                "error" => "Impossible d'ajouter ce tag",
+                "success" => "Tag added successfully",
+                "error" => "Unable to add this tag",
             ],
             "delete" => [
-                "success" => "Tag supprimé avec succès",
-                "error" => "Impossible de supprimer ce tag",
+                "success" => "Tag deleted successfully",
+                "error" => "Unable to remove this tag",
             ],
             "edit" => [
-                "success" => "Tag modifié avec succès",
-                "error" => "Impossible de modifier ce tag",
+                "success" => "Tag modified successfully",
+                "error" => "Unable to modify this tag",
             ],
         ],
         "add" => [
-            'title' => "Ajouter un tag",
+            'title' => "Add a tag",
         ],
         'list' => [
-            'title' => 'Liste des tags',
-            'associatedNews' => 'Articles associés',
+            'title' => 'Tags',
+            'associatedNews' => 'Related articles',
         ],
         'edit' => [
-            'title' => 'Modification du tag',
+            'title' => 'Editing the tag',
         ],
         'icon' => "Icon",
-        'name' => 'Nom',
-        'color' => 'Couleur',
+        'name' => 'Name',
+        'color' => 'Color',
         'tags' => 'Tags',
     ],
     "permissions" => [
         "news" => [
-            "add" => "Add news",
-            "manage" => "Manage news",
-            "edit" => "Edit news",
-            "delete" => "Delete news",
+            "add" => "Add",
+            "manage" => "Manage",
+            "edit" => "Edit",
+            "delete" => "Delete",
         ],
     ],
 ];

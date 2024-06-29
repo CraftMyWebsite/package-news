@@ -29,7 +29,7 @@ class NewsController extends AbstractController
     #[Link("/add", Link::GET, [], "/cmw-admin/news")]
     public function addNews(): void
     {
-        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage.add");
 
         $tags = NewsTagsModel::getInstance()->getTags();
 
@@ -43,7 +43,7 @@ class NewsController extends AbstractController
     #[Link("/add", Link::POST, [], "/cmw-admin/news")]
     public function addNewsPost(): void
     {
-        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.add");
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage.add");
 
         [$title, $desc, $content, $comm, $likes] = Utils::filterInput("title", "desc", "content", "comm", "likes");
 
@@ -90,9 +90,9 @@ class NewsController extends AbstractController
         $tags = NewsTagsModel::getInstance()->getTags();
 
         View::createAdminView('News', 'manage')
-            /*El famosso doublon*/
-            ->addStyle("Admin/Resources/Vendors/Simple-datatables/style.css", "Admin/Resources/Assets/Css/Pages/simple-datatables.css")
-            ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/Umd/simple-datatables.js", "Admin/Resources/Assets/Js/Pages/simple-datatables.js")
+            ->addStyle("Admin/Resources/Assets/Css/simple-datatables.css")
+            ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/Umd/simple-datatables.js",
+                "Admin/Resources/Vendors/Simple-datatables/config-datatables.js")
             ->addVariableList(["newsList" => $newsList, 'tags' => $tags])
             ->view();
     }
@@ -100,7 +100,7 @@ class NewsController extends AbstractController
     #[Link("/edit/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
     public function editNews(Request $request, int $id): void
     {
-        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage.edit");
 
         $news = NewsModel::getInstance()->getNewsById($id);
         $tags = NewsTagsModel::getInstance()->getTags();
@@ -115,7 +115,7 @@ class NewsController extends AbstractController
     #[Link("/edit/:id", Link::POST, ["id" => "[0-9]+"], "/cmw-admin/news")]
     public function editNewsPost(Request $request, int $id): void
     {
-        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.edit");
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage.edit");
 
         [$title, $desc, $content, $comm, $likes] = Utils::filterInput('title', 'desc', 'content', 'comm', 'likes');
 
@@ -125,6 +125,10 @@ class NewsController extends AbstractController
         $slug = Utils::normalizeForSlug($title);
 
         $image = $_FILES['image'];
+
+        if (empty($image)) {
+            $image = NewsModel::getInstance()->getNewsById($id)->getImageName();
+        }
 
         NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $image);
 
@@ -145,7 +149,7 @@ class NewsController extends AbstractController
     #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
     public function deleteNews(Request $request, int $id): void
     {
-        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.delete");
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage.delete");
 
         NewsModel::getInstance()->deleteNews($id);
 
@@ -189,16 +193,27 @@ class NewsController extends AbstractController
         Redirect::redirectPreviousRoute();
     }
 
-    #[Link("/tag/edit/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    public function editNewsTag(Request $request, int $id): void
+    #[NoReturn] #[Link("/tag/deleteSelected", Link::POST, [], "/cmw-admin/news", secure: false)]
+    private function adminDeleteSelectedPost(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage");
 
-        $tag = NewsTagsModel::getInstance()->getTagById($id);
+        $selectedIds = $_POST['selectedIds'];
 
-        View::createAdminView('News', 'Tags/edit')
-            ->addVariableList(["tag" => $tag])
-            ->view();
+        if (empty($selectedIds)) {
+            Flash::send(Alert::ERROR, "Contact", "Aucun message sélectionné");
+            Redirect::redirectPreviousRoute();
+        }
+
+        $i = 0;
+        foreach ($selectedIds as $selectedId) {
+            $selectedId = FilterManager::filterData($selectedId, 11, FILTER_SANITIZE_NUMBER_INT);
+            NewsTagsModel::getInstance()->deleteTag($selectedId);
+            $i++;
+        }
+        Flash::send(Alert::SUCCESS, "News", "$i tags supprimé !");
+
+        Redirect::redirectPreviousRoute();
     }
 
     #[Link("/tag/edit/:id", Link::POST, ["id" => "[0-9]+"], "/cmw-admin/news")]

@@ -13,205 +13,190 @@ $title = LangManager::translate("news.dashboard.title");
 $description = LangManager::translate("news.dashboard.desc");
 ?>
 
-<div class="d-flex flex-wrap justify-content-between">
-    <h3>
-        <i class="fa-solid fa-newspaper"></i>
-        <span class="m-lg-auto">
-            <?= LangManager::translate("news.dashboard.title") ?>
-        </span>
-    </h3>
+<h3><i class="fa-solid fa-newspaper"></i> <?= LangManager::translate("news.dashboard.title") ?></h3>
+
+<div class="card">
+    <div class="lg:flex justify-between">
+        <h6><?= LangManager::translate("news.list.list") ?></h6>
+        <a href="add" class="btn-primary" type="button"><?= LangManager::translate("core.btn.add") ?></a>
+    </div>
+    <div class="table-container">
+        <table id="table2" data-load-per-page="10" >
+            <thead>
+            <tr>
+                <th><?= LangManager::translate("news.list.table.title") ?></th>
+                <th><?= LangManager::translate("news.list.table.description") ?></th>
+                <th><?= LangManager::translate("news.list.table.author") ?></th>
+                <th><?= LangManager::translate("news.list.table.link") ?></th>
+                <th><?= LangManager::translate("news.list.table.views") ?></th>
+                <th><?= LangManager::translate("news.list.table.creation_date") ?></th>
+                <th class="text-center"><?= LangManager::translate("core.btn.edit") ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($newsList as $news) : ?>
+                <tr>
+                    <td><?= mb_strimwidth($news->getTitle(), 0, 20, '...') ?></td>
+                    <td><?= mb_strimwidth($news->getDescription(), 0, 20, '...') ?></td>
+                    <td><?= $news->getAuthor()->getPseudo() ?></td>
+                    <td>
+                        <a target="_blank" class="link"
+                           href="<?= Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "news/" . $news->getSlug() ?>">
+                            <?= mb_strimwidth(Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "news/" . $news->getSlug(), 0, 35, '...') ?>
+                        </a>
+                    </td>
+                    <td><?= $news->getViews() ?></td>
+                    <td><?= $news->getDateCreated() ?></td>
+                    <td class="text-center space-x-2">
+                        <a class="me-3" href="../news/edit/<?= $news->getNewsId() ?>">
+                            <i class="text-info fa-solid fa-gears"></i>
+                        </a>
+                        <button data-modal-toggle="modal-delete-news-<?= $news->getNewsId() ?>" type="button"><i class="text-danger fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+                <div id="modal-delete-news-<?= $news->getNewsId() ?>" class="modal-container">
+                    <div class="modal">
+                        <div class="modal-header-danger">
+                            <h6><?= LangManager::translate("news.modal.delete") ?> <?= $news->getTitle() ?></h6>
+                            <button type="button" data-modal-hide="modal-delete-news-<?= $news->getNewsId() ?>"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            <?= LangManager::translate("news.modal.deletealert") ?>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="../news/delete/<?= $news->getNewsId() ?>" class="btn-danger">
+                                <?= LangManager::translate("core.btn.delete") ?>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 
-
-<!-- Tags -->
-<section class="row">
-    <div class="col-12 col-lg-3">
-        <div class="card">
-            <div class="card-header">
-                <h4><?= LangManager::translate("news.tags.add.title") ?></h4>
+<div class="grid-2 mt-4">
+    <div class="card">
+        <div class="lg:flex justify-between">
+            <h6><?= LangManager::translate("news.tags.list.title") ?></h6>
+            <div class="space-x-2">
+                <button type="submit" class="btn-danger btn-mass-delete loading-btn" data-loading-btn="Chargement" data-target-table="1">
+                    Supprimer la selection
+                </button>
+                <button data-modal-toggle="modal-tag-add" class="btn-primary" type="button"><?= LangManager::translate("core.btn.add") ?></button>
             </div>
-            <div class="card-body">
-                <form method="post" action="tag">
-                    <?php (new SecurityManager())->insertHiddenToken() ?>
-                    <div class="form-group mandatory has-icon-left">
-                        <label class="form-label" for="name"><?= LangManager::translate("news.tags.name") ?></label>
-                        <div class="position-relative">
-                            <input type="text" class="form-control" name="name" id="name" autocomplete="off"
-                                   placeholder="Devblog" required>
-                            <div class="form-control-icon">
-                                <i class="fa-solid fa-tag"></i>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="form-group has-icon-left">
-                        <label class="form-label" for="icon">
-                            <?= LangManager::translate("news.tags.icon") ?> <small>(FontAwesome)</small>
-                        </label>
-                        <div class="position-relative">
-                            <input type="text" class="form-control" name="icon" id="icon" autocomplete="off"
-                                   placeholder="fa-solid fa-tag">
-                            <div class="form-control-icon">
-                                <i class="fa-solid fa-tag"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <label class="form-label" for="color"><?= LangManager::translate("news.tags.color") ?>
-                        <input type="color" class="form-control form-control-color" name="color">
-                    </label>
-
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary">
-                            <?= LangManager::translate("core.btn.add") ?>
-                        </button>
-                    </div>
-                </form>
-            </div>
         </div>
-    </div>
-    <div class="col-12 col-lg-9">
-        <div class="card">
-            <div class="card-header">
-                <h4><?= LangManager::translate("news.tags.list.title") ?></h4>
-            </div>
-            <div class="card-body">
-                <table class="table" id="table1">
-                    <thead>
+        <div class="table-container">
+            <table class="table-checkeable" data-form-action="tag/deleteSelected" id="table1">
+                <thead>
+                <tr>
+                    <th class="mass-selector"></th>
+                    <th><?= LangManager::translate("news.tags.name") ?></th>
+                    <th><?= LangManager::translate("news.tags.icon") ?></th>
+                    <th><?= LangManager::translate("news.tags.list.associatedNews") ?></th>
+                    <th class="text-center"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($tags as $tag) : ?>
                     <tr>
-                        <th class="text-center"><?= LangManager::translate("news.tags.name") ?></th>
-                        <th class="text-center"><?= LangManager::translate("news.tags.icon") ?></th>
-                        <th class="text-center"><?= LangManager::translate("news.tags.list.associatedNews") ?></th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody class="text-center">
-                    <?php foreach ($tags as $tag) : ?>
-                        <tr>
-                            <td><?= $tag->getName() ?></td>
-                            <td>
-                                <i class="<?= $tag->getIcon() ?>" style="color: <?= $tag->getColor() ?>"></i>
-                            </td>
-                            <td><?= NewsTagsModel::getInstance()->getNewsNumberForTag($tag->getId()) ?></td>
-                            <td>
-                                <a class="me-3" href="tag/edit/<?= $tag->getId() ?>">
-                                    <i class="text-primary fa-solid fa-gears"></i>
-                                </a>
-                                <a type="button" data-bs-toggle="modal"
-                                   data-bs-target="#delete-tag-<?= $tag->getId() ?>">
-                                    <i class="text-danger fas fa-trash-alt"></i>
-                                </a>
-                            </td>
-                        </tr>
+                        <td class="item-selector" data-value="<?= $tag->getId() ?>"></td>
+                        <td><?= $tag->getName() ?></td>
+                        <td>
+                            <i class="<?= $tag->getIcon() ?>" style="color: <?= $tag->getColor() ?>"></i>
+                        </td>
+                        <td><?= NewsTagsModel::getInstance()->getNewsNumberForTag($tag->getId()) ?></td>
+                        <td class="space-x-2 text-center">
+                            <button data-modal-toggle="modal-edit-<?= $tag->getId() ?>" type="button"><i class="text-info fa-solid fa-gears"></i></button>
+                            <button data-modal-toggle="modal-delete-<?= $tag->getId() ?>" type="button"><i class="text-danger fas fa-trash-alt"></i></button>
 
-                        <div class="modal fade text-left" id="delete-tag-<?= $tag->getId() ?>" tabindex="-1"
-                             role="dialog"
-                             aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header bg-danger">
-                                        <h5 class="modal-title white"
-                                            id="myModalLabel160"><?= LangManager::translate("news.modal.delete") ?> <?= $tag->getName() ?></h5>
+                            <div id="modal-edit-<?= $tag->getId() ?>" class="modal-container">
+                                <div class="modal">
+                                    <div class="modal-header">
+                                        <h6><?= LangManager::translate("news.tags.edit.title") ?> <?= $tag->getName() ?></h6>
+                                        <button type="button" data-modal-hide="modal-edit-<?= $tag->getId() ?>"><i class="fa-solid fa-xmark"></i></button>
+                                    </div>
+                                    <form method="post" action="tag/edit/<?= $tag->getId() ?>">
+                                        <?php (new SecurityManager())->insertHiddenToken() ?>
+                                        <div class="modal-body">
+                                            <div class="grid-2">
+                                                <div>
+                                                    <label for="name"><?= LangManager::translate("news.tags.name") ?> :</label>
+                                                    <div class="input-group">
+                                                        <i class="fa-solid fa-tag"></i>
+                                                        <input type="text" name="name" id="name" autocomplete="off"
+                                                               placeholder="Devblog" value="<?= $tag->getName() ?>" required>
+                                                    </div>
+                                                </div>
+                                                <div class="icon-picker" data-id="icon" data-name="icon" data-label="<?= LangManager::translate("news.tags.icon") ?>" data-placeholder="Sélectionner un icon" data-value="<?= $tag->getIcon() ?>"></div>
+                                            </div>
+                                            <label class="form-label" for="color"><?= LangManager::translate("news.tags.color") ?>
+                                                <input type="color" class="form-control form-control-color" name="color" value="<?= $tag->getColor() ?>">
+                                            </label>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn-primary"><?= LangManager::translate("core.btn.edit") ?></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div id="modal-delete-<?= $tag->getId() ?>" class="modal-container">
+                                <div class="modal">
+                                    <div class="modal-header-danger">
+                                        <h6><?= LangManager::translate("news.modal.delete") ?> <?= $tag->getName() ?></h6>
+                                        <button type="button" data-modal-hide="modal-delete-<?= $tag->getId() ?>"><i class="fa-solid fa-xmark"></i></button>
                                     </div>
                                     <div class="modal-body">
                                         <?= LangManager::translate("news.modal.deletealert") ?>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                                            <i class="bx bx-x d-block d-sm-none"></i>
-                                            <span
-                                                class="d-none d-sm-block"><?= LangManager::translate("core.btn.close") ?></span>
-                                        </button>
-                                        <a href="tag/delete/<?= $tag->getId() ?>" class="btn btn-danger ml-1">
-                                            <i class="bx bx-check d-block d-sm-none"></i>
-                                            <span class="d-none d-sm-block">
-                                                <?= LangManager::translate("core.btn.delete") ?>
-                                            </span>
+                                        <a href="tag/delete/<?= $tag->getId() ?>" class="btn-danger">
+                                            <?= LangManager::translate("core.btn.delete") ?>
                                         </a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-<!-- List NEWS-->
-<section>
-    <div class="card">
-        <div class="card-header">
-            <h4><?= LangManager::translate("news.list.list") ?></h4>
-        </div>
-        <div class="card-body">
-            <table class="table" id="table2">
-                <thead>
-                <tr>
-                    <th class="text-center"><?= LangManager::translate("news.list.table.title") ?></th>
-                    <th class="text-center"><?= LangManager::translate("news.list.table.description") ?></th>
-                    <th class="text-center"><?= LangManager::translate("news.list.table.author") ?></th>
-                    <th class="text-center"><?= LangManager::translate("news.list.table.link") ?></th>
-                    <th class="text-center"><?= LangManager::translate("news.list.table.views") ?></th>
-                    <th class="text-center"><?= LangManager::translate("news.list.table.creation_date") ?></th>
-                    <th class="text-center"><?= LangManager::translate("core.btn.edit") ?></th>
-                </tr>
-                </thead>
-                <tbody class="text-center">
-                <?php foreach ($newsList as $news) : ?>
-                    <tr>
-                        <td><?= $news->getTitle() ?></td>
-                        <td><?= $news->getDescription() ?></td>
-                        <td><?= $news->getAuthor()->getPseudo() ?></td>
-                        <td>
-                            <a target="_blank"
-                               href="<?= Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "news/" . $news->getSlug() ?>">
-                                <?= mb_strimwidth(Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "news/" . $news->getSlug(), 0, 45, '...') ?>
-                            </a>
-                        </td>
-                        <td><?= $news->getViews() ?></td>
-                        <td><?= $news->getDateCreated() ?></td>
-                        <td>
-                            <a class="me-3" href="../news/edit/<?= $news->getNewsId() ?>">
-                                <i class="text-primary fa-solid fa-gears"></i>
-                            </a>
-                            <a type="button" data-bs-toggle="modal" data-bs-target="#delete-<?= $news->getNewsId() ?>">
-                                <i class="text-danger fas fa-trash-alt"></i>
-                            </a>
                         </td>
                     </tr>
-                    <div class="modal fade text-left" id="delete-<?= $news->getNewsId() ?>" tabindex="-1" role="dialog"
-                         aria-labelledby="myModalLabel160" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header bg-danger">
-                                    <h5 class="modal-title white"
-                                        id="myModalLabel160"><?= LangManager::translate("news.modal.delete") ?> <?= $news->getTitle() ?></h5>
-                                </div>
-                                <div class="modal-body">
-                                    <?= LangManager::translate("news.modal.deletealert") ?>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                                        <i class="bx bx-x d-block d-sm-none"></i>
-                                        <span
-                                            class="d-none d-sm-block"><?= LangManager::translate("core.btn.close") ?></span>
-                                    </button>
-                                    <a href="../news/delete/<?= $news->getNewsId() ?>" class="btn btn-danger ml-1">
-                                        <i class="bx bx-check d-block d-sm-none"></i>
-                                        <span
-                                            class="d-none d-sm-block"><?= LangManager::translate("core.btn.delete") ?></span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
     </div>
-</section>
+</div>
+
+<div id="modal-tag-add" class="modal-container">
+    <div class="modal">
+        <div class="modal-header">
+            <h6><?= LangManager::translate("news.tags.add.title") ?></h6>
+            <button type="button" data-modal-hide="modal-tag-add"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form method="post" action="tag">
+            <?php (new SecurityManager())->insertHiddenToken() ?>
+        <div class="modal-body">
+            <div class="grid-2">
+                <div>
+                    <label for="name"><?= LangManager::translate("news.tags.name") ?> :</label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-tag"></i>
+                        <input type="text" name="name" id="name" autocomplete="off"
+                               placeholder="Devblog" required>
+                    </div>
+                </div>
+                <div class="icon-picker" data-id="icon" data-name="icon" data-label="<?= LangManager::translate("news.tags.icon") ?>" data-placeholder="Sélectionner un icon" data-value=""></div>
+            </div>
+            <label class="form-label" for="color"><?= LangManager::translate("news.tags.color") ?>
+                <input type="color" class="form-control form-control-color" name="color">
+            </label>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn-primary">
+                <?= LangManager::translate("core.btn.add") ?>
+            </button>
+        </div>
+        </form>
+    </div>
+</div>
