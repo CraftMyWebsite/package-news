@@ -10,6 +10,8 @@ use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\AbstractController;
 use CMW\Manager\Requests\Request;
 use CMW\Manager\Router\Link;
+use CMW\Manager\Uploads\ImagesException;
+use CMW\Manager\Uploads\ImagesManager;
 use CMW\Manager\Views\View;
 use CMW\Model\News\NewsModel;
 use CMW\Model\News\NewsTagsModel;
@@ -50,14 +52,27 @@ class NewsController extends AbstractController
         //We are storing $content for prevent error and not loose all data.
         $_SESSION['cmwNewsContent'] = $content;
 
-        if (is_null($comm)) { $comm = 0;}
-        if (is_null($likes)) { $likes = 0;}
+        if (is_null($comm)) {
+            $comm = 0;
+        }
+        if (is_null($likes)) {
+            $likes = 0;
+        }
 
         $slug = Utils::normalizeForSlug(FilterManager::filterInputStringPost('title'));
         $userId = UsersModel::getCurrentUser()?->getId();
         $image = $_FILES['image'];
 
-        $news = NewsModel::getInstance()->createNews($title, $desc, $comm, $likes, $content, $slug, $userId, $image);
+        try {
+            //Upload image
+            $imageName = ImagesManager::upload($image, "News");
+        } catch (ImagesException $e) {
+            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
+                LangManager::translate("core.errors.upload.image"));
+            Redirect::redirectPreviousRoute();
+        }
+
+        $news = NewsModel::getInstance()->createNews($title, $desc, $comm, $likes, $content, $slug, $userId, $imageName);
 
         if (is_null($news)) {
             Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
@@ -119,18 +134,35 @@ class NewsController extends AbstractController
 
         [$title, $desc, $content, $comm, $likes] = Utils::filterInput('title', 'desc', 'content', 'comm', 'likes');
 
-        if (is_null($comm)) { $comm = 0;}
-        if (is_null($likes)) { $likes = 0;}
+        if (is_null($comm)) {
+            $comm = 0;
+        }
+        if (is_null($likes)) {
+            $likes = 0;
+        }
 
         $slug = Utils::normalizeForSlug($title);
 
         $image = $_FILES['image'];
 
         if (empty($image)) {
-            $image = NewsModel::getInstance()->getNewsById($id)->getImageName();
+            $image = NewsModel::getInstance()->getNewsById($id)?->getImageName();
         }
 
-        NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $image);
+        if (!$image) {
+            Redirect::errorPage(404);
+        }
+
+        try {
+            //Upload image
+            $imageName = ImagesManager::upload($image, "News");
+        } catch (ImagesException $e) {
+            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
+                LangManager::translate("core.errors.upload.image"));
+            Redirect::redirectPreviousRoute();
+        }
+
+        NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $imageName);
 
         //Clear and add tags
         if (isset($_POST['tags']) && $_POST['tags'] !== []) {

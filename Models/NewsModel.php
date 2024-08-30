@@ -6,14 +6,10 @@ use CMW\Entity\News\NewsBannedPlayersEntity;
 use CMW\Entity\News\NewsEntity;
 use CMW\Manager\Database\DatabaseManager;
 use CMW\Manager\Env\EnvManager;
-use CMW\Manager\Flash\Alert;
-use CMW\Manager\Flash\Flash;
-use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\AbstractModel;
 use CMW\Manager\Uploads\ImagesManager;
 use CMW\Model\Users\UsersModel;
 use JetBrains\PhpStorm\ExpectedValues;
-use JsonException;
 
 
 /**
@@ -24,36 +20,30 @@ use JsonException;
  */
 class NewsModel extends AbstractModel
 {
-    public function createNews(string $title, string $desc, int $comm, int $likes, string $content, string $slug, int $authorId, array $image): ?NewsEntity
+    public function createNews(string $title, string $desc, int $comm, int $likes, string $content, string $slug, int $authorId, string $imageName): ?NewsEntity
     {
-        //Upload image
-        try {
-            $imageName = ImagesManager::upload($image, "News");
-            $var = [
-                'title' => $title,
-                'desc' => $desc,
-                'comm' => $comm,
-                'likes' => $likes,
-                'content' => $content,
-                'slug' => $slug,
-                'authorId' => $authorId,
-                'imageName' => $imageName,
-            ];
+        $var = [
+            'title' => $title,
+            'desc' => $desc,
+            'comm' => $comm,
+            'likes' => $likes,
+            'content' => $content,
+            'slug' => $slug,
+            'authorId' => $authorId,
+            'imageName' => $imageName,
+        ];
 
-            $sql = "INSERT INTO cmw_news (news_title, news_desc, news_comments_status, news_likes_status, news_content, 
+        $sql = "INSERT INTO cmw_news (news_title, news_desc, news_comments_status, news_likes_status, news_content, 
                 news_slug, news_author, news_image_name) 
                 VALUES (:title, :desc, :comm, :likes, :content, :slug, :authorId, :imageName)";
 
-            $db = DatabaseManager::getInstance();
-            $req = $db->prepare($sql);
+        $db = DatabaseManager::getInstance();
+        $req = $db->prepare($sql);
 
 
-            if ($req->execute($var)) {
-                $id = $db->lastInsertId();
-                return $this->getNewsById($id);
-            }
-        } catch (JsonException $e) {
-            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.internalError"), $e);
+        if ($req->execute($var)) {
+            $id = $db->lastInsertId();
+            return $this->getNewsById($id);
         }
 
         return null;
@@ -196,9 +186,8 @@ class NewsModel extends AbstractModel
         return $toReturn;
     }
 
-    public function updateNews(int $newsId, string $title, string $desc, int $comm, int $likes, string $content, string $slug, array|null $image): ?NewsEntity
+    public function updateNews(int $newsId, string $title, string $desc, int $comm, int $likes, string $content, string $slug, string|null $imageName): ?NewsEntity
     {
-
         $var = [
             'newsId' => $newsId,
             'title' => $title,
@@ -216,14 +205,6 @@ class NewsModel extends AbstractModel
         if (!empty($image['name'])) {
             //Delete the old image
             ImagesManager::deleteImage($this->getNewsById($newsId)?->getImageName(), "News/");
-
-            //Upload the new image
-            try {
-                $imageName = ImagesManager::upload($image, "News");
-            } catch (JsonException $e) {
-                Flash::send(Alert::ERROR, LangManager::translate("core.toaster.internalError"), $e);
-                return null;
-            }
 
             //Add the image to the var
             $var += ["imageName" => $imageName];
