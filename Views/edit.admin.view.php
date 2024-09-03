@@ -42,8 +42,11 @@ $description = LangManager::translate("news.dashboard.desc");
                            maxlength="255">
                 </div>
             </div>
-            <div>
-                <label><?= LangManager::translate("news.add.image") ?> :</label>
+            <label><?= LangManager::translate("news.add.image") ?> :</label>
+            <div class="grid-2">
+                <div>
+                    <img class="rounded-lg mx-auto" width="70%" src="<?= $news->getFullImageLink() ?>">
+                </div>
                 <div class="drop-img-area" data-input-name="image"></div>
             </div>
 

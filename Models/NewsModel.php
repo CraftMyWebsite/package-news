@@ -196,24 +196,11 @@ class NewsModel extends AbstractModel
             'likes' => $likes,
             'content' => $content,
             'slug' => $slug,
+            "imageName" => $imageName
         ];
 
         $sql = "UPDATE cmw_news SET news_title = :title, news_desc = :desc, news_comments_status = :comm, 
-                    news_likes_status = :likes, news_content = :content, news_slug = :slug WHERE news_id = :newsId";
-
-        //Detect if we update the image
-        if (!empty($image['name'])) {
-            //Delete the old image
-            ImagesManager::deleteImage($this->getNewsById($newsId)?->getImageName(), "News/");
-
-            //Add the image to the var
-            $var += ["imageName" => $imageName];
-
-            //Update SQL
-            $sql = "UPDATE cmw_news SET news_title = :title, news_desc = :desc, news_comments_status = :comm, 
                     news_likes_status = :likes, news_content = :content, news_slug = :slug, news_image_name = :imageName WHERE news_id = :newsId";
-        }
-
 
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
