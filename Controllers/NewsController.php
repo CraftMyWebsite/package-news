@@ -143,26 +143,29 @@ class NewsController extends AbstractController
 
         $slug = Utils::normalizeForSlug($title);
 
-        $image = $_FILES['image'];
+        $image = $_FILES['image'] ?? null;;
 
-        if (empty($image)) {
-            $image = NewsModel::getInstance()->getNewsById($id)?->getImageName();
+        if (empty($image['name']) || !isset($image) || $image['error'] !== UPLOAD_ERR_OK) {
+            $imageName = NewsModel::getInstance()->getNewsById($id)?->getImageName();
+            NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $imageName);
+        } else {
+            ImagesManager::deleteImage(NewsModel::getInstance()->getNewsById($id)?->getImageName(), "News/");
+            try {
+                $imageName = ImagesManager::upload($image, "News");
+            } catch (\JsonException $e) {
+                Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
+                    LangManager::translate("core.errors.upload.image"));
+                Redirect::redirectPreviousRoute();
+            }
+
+            Flash::send(Alert::SUCCESS, "d", $imageName);
+
+            NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $imageName);
         }
 
         if (!$image) {
             Redirect::errorPage(404);
         }
-
-        try {
-            //Upload image
-            $imageName = ImagesManager::upload($image, "News");
-        } catch (ImagesException $e) {
-            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
-                LangManager::translate("core.errors.upload.image"));
-            Redirect::redirectPreviousRoute();
-        }
-
-        NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $imageName);
 
         //Clear and add tags
         if (isset($_POST['tags']) && $_POST['tags'] !== []) {
