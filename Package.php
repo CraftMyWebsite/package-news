@@ -40,7 +40,7 @@ class Package implements IPackageConfig
                 lang: "fr",
                 icon: "fas fa-newspaper",
                 title: "Actualités",
-                url: 'news/manage',
+                url: 'news',
                 permission: 'news.manage',
                 subMenus: []
             ),
@@ -48,7 +48,7 @@ class Package implements IPackageConfig
                 lang: "en",
                 icon: "fas fa-newspaper",
                 title: "News",
-                url: 'news/manage',
+                url: 'news',
                 permission: 'news.manage',
                 subMenus: []
             ),

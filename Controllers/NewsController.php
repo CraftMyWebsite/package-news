@@ -18,6 +18,7 @@ use CMW\Model\News\NewsTagsModel;
 use CMW\Model\Users\UsersModel;
 use CMW\Utils\Redirect;
 use CMW\Utils\Utils;
+use JetBrains\PhpStorm\NoReturn;
 
 /**
  * Class: @NewsController
@@ -27,9 +28,8 @@ use CMW\Utils\Utils;
  */
 class NewsController extends AbstractController
 {
-    #[Link(path: "/", method: Link::GET, scope: "/cmw-admin/news")]
     #[Link("/add", Link::GET, [], "/cmw-admin/news")]
-    public function addNews(): void
+    private function addNews(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage.add");
 
@@ -43,7 +43,7 @@ class NewsController extends AbstractController
     }
 
     #[Link("/add", Link::POST, [], "/cmw-admin/news")]
-    public function addNewsPost(): void
+    private function addNewsPost(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage.add");
 
@@ -96,15 +96,15 @@ class NewsController extends AbstractController
         Redirect::redirectPreviousRoute();
     }
 
-    #[Link("/manage", Link::GET, [], "/cmw-admin/news")]
-    public function listNews(): void
+    #[Link("/", Link::GET, [], "/cmw-admin/news")]
+    private function listNews(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage");
 
         $newsList = NewsModel::getInstance()->getNews();
         $tags = NewsTagsModel::getInstance()->getTags();
 
-        View::createAdminView('News', 'manage')
+        View::createAdminView('News', 'main')
             ->addStyle("Admin/Resources/Assets/Css/simple-datatables.css")
             ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/simple-datatables.js",
                 "Admin/Resources/Vendors/Simple-datatables/config-datatables.js")
@@ -113,7 +113,7 @@ class NewsController extends AbstractController
     }
 
     #[Link("/edit/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    public function editNews(Request $request, int $id): void
+    private function editNews(Request $request, int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage.edit");
 
@@ -128,7 +128,7 @@ class NewsController extends AbstractController
     }
 
     #[Link("/edit/:id", Link::POST, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    public function editNewsPost(Request $request, int $id): void
+    private function editNewsPost(Request $request, int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage.edit");
 
@@ -181,8 +181,8 @@ class NewsController extends AbstractController
         Redirect::redirectPreviousRoute();
     }
 
-    #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    public function deleteNews(Request $request, int $id): void
+    #[NoReturn] #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
+    private function deleteNews(Request $request, int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage.delete");
 
@@ -194,8 +194,8 @@ class NewsController extends AbstractController
         Redirect::redirectPreviousRoute();
     }
 
-    #[Link("/tag", Link::POST, [], "/cmw-admin/news")]
-    public function addNewsTagPost(): void
+    #[NoReturn] #[Link("/tag", Link::POST, [], "/cmw-admin/news")]
+    private function addNewsTagPost(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage");
 
@@ -213,8 +213,8 @@ class NewsController extends AbstractController
         Redirect::redirectPreviousRoute();
     }
 
-    #[Link("/tag/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    public function deleteNewsTag(Request $request, int $id): void
+    #[NoReturn] #[Link("/tag/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
+    private function deleteNewsTag(Request $request, int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage");
 
@@ -251,8 +251,8 @@ class NewsController extends AbstractController
         Redirect::redirectPreviousRoute();
     }
 
-    #[Link("/tag/edit/:id", Link::POST, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    public function editNewsTagPost(Request $request, int $id): void
+    #[NoReturn] #[Link("/tag/edit/:id", Link::POST, ["id" => "[0-9]+"], "/cmw-admin/news")]
+    private function editNewsTagPost(Request $request, int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage");
 

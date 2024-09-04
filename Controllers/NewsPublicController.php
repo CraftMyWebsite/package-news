@@ -2,8 +2,6 @@
 
 namespace CMW\Controller\News;
 
-use CMW\Manager\Flash\Alert;
-use CMW\Manager\Flash\Flash;
 use CMW\Manager\Package\AbstractController;
 use CMW\Manager\Requests\Request;
 use CMW\Manager\Router\Link;
@@ -15,6 +13,7 @@ use CMW\Model\News\NewsModel;
 use CMW\Model\News\NewsTagsModel;
 use CMW\Model\Users\UsersModel;
 use CMW\Utils\Redirect;
+use JetBrains\PhpStorm\NoReturn;
 
 /**
  * Class: @NewsPublicController
@@ -26,7 +25,7 @@ class NewsPublicController extends AbstractController
 {
 
     #[Link("/news", Link::GET)]
-    public function publicListNews(): void
+    private function publicListNews(): void
     {
         $newsList = NewsModel::getInstance()->getNews();
         $newsModel = NewsModel::getInstance();
@@ -39,7 +38,7 @@ class NewsPublicController extends AbstractController
     }
 
     #[Link("/news/:tagSlug/:articleSlug", Link::GET, ["tagSlug" => ".*?", "articleSlug" => ".*?"])]
-    public function publicNewsTagIndividual(Request $request, string $tagSlug, string $articleSlug): void
+    private function publicNewsTagIndividual(Request $request, string $tagSlug, string $articleSlug): void
     {
         $news = NewsModel::getInstance()->getNewsBySlug($articleSlug);
         $tag = NewsTagsModel::getInstance()->isTagExistByName($tagSlug);
@@ -57,9 +56,8 @@ class NewsPublicController extends AbstractController
     }
 
     #[Link("/news/:slug", Link::GET, ["slug" => ".*?"])]
-    public function publicIndividualNews(Request $request, string $slug): void
+    private function publicIndividualNews(Request $request, string $slug): void
     {
-
         $isTag = NewsTagsModel::getInstance()->isTagExistByName($slug);
 
         if ($isTag) {
@@ -99,8 +97,8 @@ class NewsPublicController extends AbstractController
         $view->view();
     }
 
-    #[Link("/like/news/comments/:id", Link::GET, ["id" => "[0-9]+"])]
-    public function likeCommentsNews(Request $request, int $commentsId): void
+    #[NoReturn] #[Link("/like/news/comments/:id", Link::GET, ["id" => "[0-9]+"])]
+    private function likeCommentsNews(Request $request, int $commentsId): void
     {
         $user = usersModel::getInstance()::getCurrentUser();
 
@@ -112,8 +110,8 @@ class NewsPublicController extends AbstractController
         Redirect::redirectPreviousRoute();
     }
 
-    #[Link("/like/news/:id", Link::GET, ["id" => "[0-9]+"])]
-    public function likeNews(Request $request, int $id): void
+    #[NoReturn] #[Link("/like/news/:id", Link::GET, ["id" => "[0-9]+"])]
+    private function likeNews(Request $request, int $id): void
     {
         $user = usersModel::getInstance()::getCurrentUser();
         $news = NewsModel::getInstance()->getNewsById($id);
@@ -130,8 +128,8 @@ class NewsPublicController extends AbstractController
         Redirect::redirectPreviousRoute();
     }
 
-    #[Link("/news/comments/:id", Link::POST, ["id" => "[0-9]+"])]
-    public function commentsNews(Request $request, int $newsId): void
+    #[NoReturn] #[Link("/news/comments/:id", Link::POST, ["id" => "[0-9]+"])]
+    private function commentsNews(Request $request, int $newsId): void
     {
         $user = usersModel::getInstance()::getCurrentUser();
 
