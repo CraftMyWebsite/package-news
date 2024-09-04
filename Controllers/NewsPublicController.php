@@ -2,7 +2,6 @@
 
 namespace CMW\Controller\News;
 
-use CMW\Controller\Core\EditorController;
 use CMW\Manager\Flash\Alert;
 use CMW\Manager\Flash\Flash;
 use CMW\Manager\Package\AbstractController;
@@ -35,7 +34,6 @@ class NewsPublicController extends AbstractController
         //Include the Public view file ("Public/Themes/$themePath/Views/News/list.view.php")
         $view = new View('News', 'list');
         $view->addScriptBefore("Admin/Resources/Vendors/Prismjs/prism.js");
-        $view->addStyle("Admin/Resources/Vendors/Prismjs/Style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["newsList" => $newsList, "newsModel" => $newsModel]);
         $view->view();
     }
@@ -54,7 +52,6 @@ class NewsPublicController extends AbstractController
 
         $view = new View('News', 'individual');
         $view->addScriptBefore("Admin/Resources/Vendors/Prismjs/prism.js");
-        $view->addStyle("Admin/Resources/Vendors/Prismjs/Style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["news" => $news]);
         $view->view();
     }
@@ -81,7 +78,6 @@ class NewsPublicController extends AbstractController
         //Include the Public view file ("Public/Themes/$themePath/Views/News/individual.view.php")
         $view = new View('News', 'individual');
         $view->addScriptBefore("Admin/Resources/Vendors/Prismjs/prism.js");
-        $view->addStyle("Admin/Resources/Vendors/Prismjs/Style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["news" => $news]);
         $view->view();
     }
@@ -99,7 +95,6 @@ class NewsPublicController extends AbstractController
 
         $view = new View('News', 'list');
         $view->addScriptBefore("Admin/Resources/Vendors/Prismjs/prism.js");
-        $view->addStyle("Admin/Resources/Vendors/Prismjs/Style/" . EditorController::getCurrentStyle());
         $view->addVariableList(["newsList" => $newsList, "newsModel" => $newsModel]);
         $view->view();
     }
