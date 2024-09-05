@@ -8,7 +8,7 @@ use CMW\Manager\Flash\Alert;
 use CMW\Manager\Flash\Flash;
 use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\AbstractController;
-use CMW\Manager\Requests\Request;
+
 use CMW\Manager\Router\Link;
 use CMW\Manager\Uploads\ImagesException;
 use CMW\Manager\Uploads\ImagesManager;
@@ -113,7 +113,7 @@ class NewsController extends AbstractController
     }
 
     #[Link("/edit/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    private function editNews(Request $request, int $id): void
+    private function editNews(int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage.edit");
 
@@ -128,7 +128,7 @@ class NewsController extends AbstractController
     }
 
     #[Link("/edit/:id", Link::POST, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    private function editNewsPost(Request $request, int $id): void
+    private function editNewsPost(int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage.edit");
 
@@ -182,7 +182,7 @@ class NewsController extends AbstractController
     }
 
     #[NoReturn] #[Link("/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    private function deleteNews(Request $request, int $id): void
+    private function deleteNews(int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage.delete");
 
@@ -214,7 +214,7 @@ class NewsController extends AbstractController
     }
 
     #[NoReturn] #[Link("/tag/delete/:id", Link::GET, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    private function deleteNewsTag(Request $request, int $id): void
+    private function deleteNewsTag(int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage");
 
@@ -252,7 +252,7 @@ class NewsController extends AbstractController
     }
 
     #[NoReturn] #[Link("/tag/edit/:id", Link::POST, ["id" => "[0-9]+"], "/cmw-admin/news")]
-    private function editNewsTagPost(Request $request, int $id): void
+    private function editNewsTagPost(int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "news.manage");
 
