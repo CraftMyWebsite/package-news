@@ -7,7 +7,6 @@ use CMW\Manager\Database\DatabaseManager;
 use CMW\Manager\Package\AbstractModel;
 use CMW\Model\Users\UsersModel;
 
-
 /**
  * Class @NewsLikesModel
  * @package News
@@ -16,14 +15,13 @@ use CMW\Model\Users\UsersModel;
  */
 class NewsLikesModel extends AbstractModel
 {
-
     /**
      * @return int
      * @desc Get all the likes for all the news
      */
     public function getTotalLikes(): int
     {
-        $sql = "SELECT news_like_news_id FROM cmw_news_likes";
+        $sql = 'SELECT news_like_news_id FROM cmw_news_likes';
 
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
@@ -44,25 +42,24 @@ class NewsLikesModel extends AbstractModel
             return false;
         }
 
-        $sql = "SELECT news_like_id FROM `cmw_news_likes` WHERE news_like_news_id = :news_id AND news_like_user_id = :user_id";
+        $sql = 'SELECT news_like_id FROM `cmw_news_likes` WHERE news_like_news_id = :news_id AND news_like_user_id = :user_id';
 
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
-        $res->execute(["news_id" => $newsId, "user_id" => $userId]);
+        $res->execute(['news_id' => $newsId, 'user_id' => $userId]);
 
         return count($res->fetchAll()) === 0;
     }
 
     public function storeLike(int $newsId, int $userId): ?NewsLikesEntity
     {
-        $sql = "INSERT INTO cmw_news_likes (news_like_news_id, news_like_user_id) VALUES (:news_id, :user_id)";
+        $sql = 'INSERT INTO cmw_news_likes (news_like_news_id, news_like_user_id) VALUES (:news_id, :user_id)';
 
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
-
-        if ($res->execute(["news_id" => $newsId, "user_id" => $userId])) {
+        if ($res->execute(['news_id' => $newsId, 'user_id' => $userId])) {
             $id = $db->lastInsertId();
             return $this->getLikesForNews($id);
         }
@@ -77,24 +74,21 @@ class NewsLikesModel extends AbstractModel
      */
     public function getLikesForNews(int $newsId): ?NewsLikesEntity
     {
-        $sql = "SELECT * FROM cmw_news_likes WHERE news_like_news_id = :news_id";
+        $sql = 'SELECT * FROM cmw_news_likes WHERE news_like_news_id = :news_id';
 
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
-
-        if (!$res->execute(["news_id" => $newsId])) {
+        if (!$res->execute(['news_id' => $newsId])) {
             return null;
         }
 
-
         $res = $res->fetch();
-
 
         $totalLikes = $this->getTotalLikesForNews($newsId);
 
         if ($res) {
-            $user = (new UsersModel())->getUserById($res["news_like_user_id"]);
+            $user = (new UsersModel())->getUserById($res['news_like_user_id']);
         }
 
         return new NewsLikesEntity(
@@ -113,11 +107,11 @@ class NewsLikesModel extends AbstractModel
      */
     public function getTotalLikesForNews(int $newsId): int
     {
-        $sql = "SELECT news_like_news_id FROM cmw_news_likes WHERE news_like_news_id = :news_id";
+        $sql = 'SELECT news_like_news_id FROM cmw_news_likes WHERE news_like_news_id = :news_id';
 
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
-        $res = $req->execute(["news_id" => $newsId]);
+        $res = $req->execute(['news_id' => $newsId]);
 
         if ($res) {
             $lines = $req->fetchAll();
@@ -127,5 +121,4 @@ class NewsLikesModel extends AbstractModel
 
         return 0;
     }
-
 }

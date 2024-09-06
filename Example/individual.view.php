@@ -3,9 +3,9 @@
 -------------------------------------->
 <?php
 
+use CMW\Controller\Users\UsersController;
 use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Security\SecurityManager;
-use CMW\Controller\Users\UsersController;
 ?>
 
 <!------------------------------------
@@ -19,7 +19,7 @@ use CMW\Controller\Users\UsersController;
 
     <!--YOU CAN CHECK LIKE THIS FOR LIKES -->                        
     <?php if ($news->getLikes()->userCanLike()): ?>
-        <?php if(UsersController::isUserLogged()) {echo "You already love!";} else {echo "Log in to like!";} ?>
+        <?php if (UsersController::isUserLogged()) { echo 'You already love!'; } else { echo 'Log in to like!'; } ?>
         <?php else: ?> 
             <a href="<?= $news->getLikes()->getSendLike() ?>">You will like</a>
         <?php endif; ?>
@@ -37,7 +37,7 @@ use CMW\Controller\Users\UsersController;
 
     <!--YOU CAN CHECK LIKE THIS FOR LIKES -->
     <?php if ($comment->userCanLike()): ?>
-        <?php if(UsersController::isUserLogged()) {echo "You already love!";} else {echo "Log in to like!";} ?>
+        <?php if (UsersController::isUserLogged()) { echo 'You already love!'; } else { echo 'Log in to like!'; } ?>
         <?php else: ?> 
             <a href="<?= $comment->getSendLike() ?>">You will like</a>
         <?php endif; ?>
@@ -52,10 +52,10 @@ use CMW\Controller\Users\UsersController;
     <textarea name="comments" required></textarea>
 
     <!--YOU CAN CHECK IF USER IS LOGGED BEFORE USE COMMENT BUTTON -->
-    <?php if(UsersController::isUserLogged()): ?>
+    <?php if (UsersController::isUserLogged()): ?>
         <button type="submit">Comment</button>
     <?php else: ?> 
-        <a href="<?= EnvManager::getInstance()->getValue("PATH_SUBFOLDER") ?>login" >Login</a>
+        <a href="<?= EnvManager::getInstance()->getValue('PATH_SUBFOLDER') ?>login" >Login</a>
     <?php endif; ?>
     
 </form>

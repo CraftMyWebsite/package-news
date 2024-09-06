@@ -7,7 +7,6 @@ use CMW\Manager\Database\DatabaseManager;
 use CMW\Manager\Package\AbstractModel;
 use CMW\Model\Users\UsersModel;
 
-
 /**
  * Class @NewsCommentsLikesModel
  * @package News
@@ -16,14 +15,13 @@ use CMW\Model\Users\UsersModel;
  */
 class NewsCommentsLikesModel extends AbstractModel
 {
-
     /**
      * @return int
      * @desc Get all the likes for all the comments
      */
     public function getTotalLikes(): int
     {
-        $sql = "SELECT news_comments_likes_comments_id FROM cmw_news_comments_likes";
+        $sql = 'SELECT news_comments_likes_comments_id FROM cmw_news_comments_likes';
 
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
@@ -49,14 +47,14 @@ class NewsCommentsLikesModel extends AbstractModel
             return false;
         }
 
-        $sql = "SELECT news_comments_likes_comments_id FROM `cmw_news_comments_likes`
+        $sql = 'SELECT news_comments_likes_comments_id FROM `cmw_news_comments_likes`
                                        WHERE news_comments_likes_comments_id = :comments_id
-                                         AND news_comments_likes_user_id = :user_id";
+                                         AND news_comments_likes_user_id = :user_id';
 
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
-        $res->execute(["comments_id" => $commentsId, "user_id" => $userId]);
+        $res->execute(['comments_id' => $commentsId, 'user_id' => $userId]);
 
         return count($res->fetchAll()) === 0;
     }
@@ -68,14 +66,13 @@ class NewsCommentsLikesModel extends AbstractModel
      */
     public function storeLike(int $commentsId, int $userId): ?NewsCommentsLikesEntity
     {
-        $sql = "INSERT INTO cmw_news_comments_likes (news_comments_likes_comments_id, news_comments_likes_user_id) 
-                        VALUES (:comments_id, :user_id)";
+        $sql = 'INSERT INTO cmw_news_comments_likes (news_comments_likes_comments_id, news_comments_likes_user_id) 
+                        VALUES (:comments_id, :user_id)';
 
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
-
-        if ($res->execute(["comments_id" => $commentsId, "user_id" => $userId])) {
+        if ($res->execute(['comments_id' => $commentsId, 'user_id' => $userId])) {
             $id = $db->lastInsertId();
             return $this->getLikesById($id);
         }
@@ -85,20 +82,19 @@ class NewsCommentsLikesModel extends AbstractModel
 
     public function getLikesById(int $likeId): ?NewsCommentsLikesEntity
     {
-
-        $sql = "SELECT news_comments_likes_id, 	news_comments_likes_comments_id , news_comments_likes_user_id,
+        $sql = "SELECT news_comments_likes_id, \tnews_comments_likes_comments_id , news_comments_likes_user_id,
                 news_comments_likes_date FROM cmw_news_comments_likes WHERE news_comments_likes_id =:id";
 
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
-        if (!$res->execute(["id" => $likeId])) {
+        if (!$res->execute(['id' => $likeId])) {
             return null;
         }
 
         $res = $res->fetch();
 
-        $user = UsersModel::getInstance()->getUserById($res["news_comments_likes_user_id"]);
+        $user = UsersModel::getInstance()->getUserById($res['news_comments_likes_user_id']);
 
         return new NewsCommentsLikesEntity(
             $res['news_comments_likes_id'],
@@ -116,12 +112,12 @@ class NewsCommentsLikesModel extends AbstractModel
      */
     public function getTotalLikesForComments(int $commentsId): int
     {
-        $sql = "SELECT news_comments_likes_comments_id FROM cmw_news_comments_likes
-                                       WHERE news_comments_likes_comments_id = :comments_id";
+        $sql = 'SELECT news_comments_likes_comments_id FROM cmw_news_comments_likes
+                                       WHERE news_comments_likes_comments_id = :comments_id';
 
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
-        $res = $req->execute(["comments_id" => $commentsId]);
+        $res = $req->execute(['comments_id' => $commentsId]);
 
         if ($res) {
             $lines = $req->fetchAll();
@@ -138,12 +134,12 @@ class NewsCommentsLikesModel extends AbstractModel
      */
     public function getLikesForComments(int $commentsId): ?NewsCommentsLikesEntity
     {
-        $sql = "SELECT * FROM cmw_news_comments_likes WHERE news_comments_likes_comments_id = :comments_id";
+        $sql = 'SELECT * FROM cmw_news_comments_likes WHERE news_comments_likes_comments_id = :comments_id';
 
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
-        if (!$res->execute(["comments_id" => $commentsId])) {
+        if (!$res->execute(['comments_id' => $commentsId])) {
             return null;
         }
 
@@ -152,7 +148,7 @@ class NewsCommentsLikesModel extends AbstractModel
         $totalLikes = $this->getTotalLikesForComments($commentsId);
 
         if ($res) {
-            $user = UsersModel::getInstance()->getUserById($res["news_comments_likes_user_id"]);
+            $user = UsersModel::getInstance()->getUserById($res['news_comments_likes_user_id']);
         }
 
         return new NewsCommentsLikesEntity(

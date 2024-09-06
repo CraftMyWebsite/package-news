@@ -2,8 +2,8 @@
 
 namespace CMW\Entity\News;
 
-use CMW\Entity\Users\UserEntity;
 use CMW\Controller\Core\CoreController;
+use CMW\Entity\Users\UserEntity;
 use CMW\Manager\Env\EnvManager;
 
 class NewsCommentsLikesEntity
@@ -13,7 +13,7 @@ class NewsCommentsLikesEntity
     private ?UserEntity $user;
     private ?string $date;
 
-    //UTILS
+    // UTILS
     private int $total;
     private string $sendLike;
     private bool $isLike;
@@ -79,8 +79,6 @@ class NewsCommentsLikesEntity
      */
     public function getSendLike(): string
     {
-        return EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "like/news/comments/" . $this->commentsId;
+        return EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . 'like/news/comments/' . $this->commentsId;
     }
-
-
 }

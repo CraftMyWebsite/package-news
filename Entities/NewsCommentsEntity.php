@@ -2,23 +2,21 @@
 
 namespace CMW\Entity\News;
 
+use CMW\Controller\Core\CoreController;
 use CMW\Entity\Users\UserEntity;
 use CMW\Manager\Env\EnvManager;
 use CMW\Model\News\NewsCommentsLikesModel;
 use CMW\Model\News\NewsCommentsModel;
 use CMW\Model\Users\UsersModel;
-use CMW\Controller\Core\CoreController;
 
 class NewsCommentsEntity
 {
-
     private ?int $commentsId;
     private int $newsId;
     private ?UserEntity $user;
     private ?string $content;
     private ?string $date;
     private ?NewsCommentsLikesEntity $likes;
-
 
     /**
      * @param int|null $commentsId
@@ -54,7 +52,6 @@ class NewsCommentsEntity
         return $this->newsId;
     }
 
-
     /**
      * @return \CMW\Entity\Users\UserEntity|null
      */
@@ -79,7 +76,6 @@ class NewsCommentsEntity
         return CoreController::formatDate($this->date);
     }
 
-
     /**
      * @return ?\CMW\Entity\News\NewsCommentsLikesEntity
      */
@@ -88,15 +84,13 @@ class NewsCommentsEntity
         return $this->likes;
     }
 
-
     /**
      * @return string
      */
     public function getSendLike(): string
     {
-        return EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "like/news/comments/" . $this->commentsId;
+        return EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . 'like/news/comments/' . $this->commentsId;
     }
-
 
     /**
      * @return bool
@@ -113,5 +107,4 @@ class NewsCommentsEntity
     {
         return (new NewsCommentsModel())->userCanComment($this->newsId, (new UsersModel())::getCurrentUser()?->getId());
     }
-
 }

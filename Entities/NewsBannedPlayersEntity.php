@@ -57,5 +57,4 @@ class NewsBannedPlayersEntity
     {
         return CoreController::formatDate($this->date);
     }
-
 }

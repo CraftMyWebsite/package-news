@@ -3,7 +3,6 @@
 namespace CMW\Controller\News;
 
 use CMW\Manager\Package\AbstractController;
-
 use CMW\Manager\Router\Link;
 use CMW\Manager\Views\View;
 use CMW\Model\News\NewsCommentsLikesModel;
@@ -23,21 +22,20 @@ use JetBrains\PhpStorm\NoReturn;
  */
 class NewsPublicController extends AbstractController
 {
-
-    #[Link("/news", Link::GET)]
+    #[Link('/news', Link::GET)]
     private function publicListNews(): void
     {
         $newsList = NewsModel::getInstance()->getNews();
         $newsModel = NewsModel::getInstance();
 
-        //Include the Public view file ("Public/Themes/$themePath/Views/News/list.view.php")
+        // Include the Public view file ("Public/Themes/$themePath/Views/News/list.view.php")
         $view = new View('News', 'list');
-        $view->addScriptBefore("Admin/Resources/Vendors/Prismjs/prism.js");
-        $view->addVariableList(["newsList" => $newsList, "newsModel" => $newsModel]);
+        $view->addScriptBefore('Admin/Resources/Vendors/Prismjs/prism.js');
+        $view->addVariableList(['newsList' => $newsList, 'newsModel' => $newsModel]);
         $view->view();
     }
 
-    #[Link("/news/:tagSlug/:articleSlug", Link::GET, ["tagSlug" => ".*?", "articleSlug" => ".*?"])]
+    #[Link('/news/:tagSlug/:articleSlug', Link::GET, ['tagSlug' => '.*?', 'articleSlug' => '.*?'])]
     private function publicNewsTagIndividual(string $tagSlug, string $articleSlug): void
     {
         $news = NewsModel::getInstance()->getNewsBySlug($articleSlug);
@@ -50,12 +48,12 @@ class NewsPublicController extends AbstractController
         NewsModel::getInstance()->incrementViews($news->getNewsId());
 
         $view = new View('News', 'individual');
-        $view->addScriptBefore("Admin/Resources/Vendors/Prismjs/prism.js");
-        $view->addVariableList(["news" => $news]);
+        $view->addScriptBefore('Admin/Resources/Vendors/Prismjs/prism.js');
+        $view->addVariableList(['news' => $news]);
         $view->view();
     }
 
-    #[Link("/news/:slug", Link::GET, ["slug" => ".*?"])]
+    #[Link('/news/:slug', Link::GET, ['slug' => '.*?'])]
     private function publicIndividualNews(string $slug): void
     {
         $isTag = NewsTagsModel::getInstance()->isTagExistByName($slug);
@@ -73,10 +71,10 @@ class NewsPublicController extends AbstractController
 
         NewsModel::getInstance()->incrementViews($news->getNewsId());
 
-        //Include the Public view file ("Public/Themes/$themePath/Views/News/individual.view.php")
+        // Include the Public view file ("Public/Themes/$themePath/Views/News/individual.view.php")
         $view = new View('News', 'individual');
-        $view->addScriptBefore("Admin/Resources/Vendors/Prismjs/prism.js");
-        $view->addVariableList(["news" => $news]);
+        $view->addScriptBefore('Admin/Resources/Vendors/Prismjs/prism.js');
+        $view->addVariableList(['news' => $news]);
         $view->view();
     }
 
@@ -92,17 +90,18 @@ class NewsPublicController extends AbstractController
         $newsModel = NewsModel::getInstance();
 
         $view = new View('News', 'list');
-        $view->addScriptBefore("Admin/Resources/Vendors/Prismjs/prism.js");
-        $view->addVariableList(["newsList" => $newsList, "newsModel" => $newsModel]);
+        $view->addScriptBefore('Admin/Resources/Vendors/Prismjs/prism.js');
+        $view->addVariableList(['newsList' => $newsList, 'newsModel' => $newsModel]);
         $view->view();
     }
 
-    #[NoReturn] #[Link("/like/news/comments/:id", Link::GET, ["id" => "[0-9]+"])]
+    #[NoReturn]
+    #[Link('/like/news/comments/:id', Link::GET, ['id' => '[0-9]+'])]
     private function likeCommentsNews(int $commentsId): void
     {
         $user = usersModel::getInstance()::getCurrentUser();
 
-        //We check if the player has already like this comments, and we store the like
+        // We check if the player has already like this comments, and we store the like
         if (newsCommentsLikesModel::getInstance()->userCanLike($commentsId, $user?->getId())) {
             newsCommentsLikesModel::getInstance()->storeLike($commentsId, $user?->getId());
         }
@@ -110,13 +109,14 @@ class NewsPublicController extends AbstractController
         Redirect::redirectPreviousRoute();
     }
 
-    #[NoReturn] #[Link("/like/news/:id", Link::GET, ["id" => "[0-9]+"])]
+    #[NoReturn]
+    #[Link('/like/news/:id', Link::GET, ['id' => '[0-9]+'])]
     private function likeNews(int $id): void
     {
         $user = usersModel::getInstance()::getCurrentUser();
         $news = NewsModel::getInstance()->getNewsById($id);
 
-        //First check if the news is likeable
+        // First check if the news is likeable
         if (!$news?->isLikesStatus()) {
             Redirect::redirect('news');
         }
@@ -128,7 +128,8 @@ class NewsPublicController extends AbstractController
         Redirect::redirectPreviousRoute();
     }
 
-    #[NoReturn] #[Link("/news/comments/:id", Link::POST, ["id" => "[0-9]+"])]
+    #[NoReturn]
+    #[Link('/news/comments/:id', Link::POST, ['id' => '[0-9]+'])]
     private function commentsNews(int $newsId): void
     {
         $user = usersModel::getInstance()::getCurrentUser();

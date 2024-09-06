@@ -2,8 +2,8 @@
 
 namespace CMW\Entity\News;
 
-use CMW\Entity\Users\UserEntity;
 use CMW\Controller\Core\CoreController;
+use CMW\Entity\Users\UserEntity;
 use CMW\Manager\Env\EnvManager;
 
 class NewsEntity
@@ -223,7 +223,7 @@ class NewsEntity
      */
     public function getImageLink(): string
     {
-        return EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "Public/Uploads/News/" . $this->imageName;
+        return EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . 'Public/Uploads/News/' . $this->imageName;
     }
 
     /**
@@ -231,12 +231,12 @@ class NewsEntity
      */
     public function getFullImageLink(): string
     {
-        return EnvManager::getInstance()->getValue("PATH_URL") . $this->getImageLink();
+        return EnvManager::getInstance()->getValue('PATH_URL') . $this->getImageLink();
     }
 
     public function sendComments(): string
     {
-        return EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . "news/comments/" . $this->newsId;
+        return EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . 'news/comments/' . $this->newsId;
     }
 
     /**
@@ -246,12 +246,11 @@ class NewsEntity
     public function hasTag(int $tagId): bool
     {
         foreach ($this->tags as $tag) {
-            if ($tag->getId() === $tagId){
+            if ($tag->getId() === $tagId) {
                 return true;
             }
         }
 
         return false;
     }
-
 }

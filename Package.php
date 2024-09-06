@@ -10,17 +10,17 @@ class Package implements IPackageConfig
 {
     public function name(): string
     {
-        return "News";
+        return 'News';
     }
 
     public function version(): string
     {
-        return "0.0.1";
+        return '0.0.1';
     }
 
     public function authors(): array
     {
-        return ["Teyir"];
+        return ['Teyir'];
     }
 
     public function isGame(): bool
@@ -37,17 +37,17 @@ class Package implements IPackageConfig
     {
         return [
             new PackageMenuType(
-                lang: "fr",
-                icon: "fas fa-newspaper",
-                title: "Actualités",
+                lang: 'fr',
+                icon: 'fas fa-newspaper',
+                title: 'Actualités',
                 url: 'news',
                 permission: 'news.manage',
                 subMenus: []
             ),
             new PackageMenuType(
-                lang: "en",
-                icon: "fas fa-newspaper",
-                title: "News",
+                lang: 'en',
+                icon: 'fas fa-newspaper',
+                title: 'News',
                 url: 'news',
                 permission: 'news.manage',
                 subMenus: []
@@ -57,12 +57,12 @@ class Package implements IPackageConfig
 
     public function requiredPackages(): array
     {
-        return ["Core"];
+        return ['Core'];
     }
 
     public function uninstall(): bool
     {
-        //Return true, we don't need other operations for uninstall.
+        // Return true, we don't need other operations for uninstall.
         return true;
     }
 }
