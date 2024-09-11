@@ -142,7 +142,7 @@ class NewsController extends AbstractController
 
         $slug = Utils::normalizeForSlug($title);
 
-        $image = $_FILES['image'] ?? null;;
+        $image = $_FILES['image'] ?? null;
 
         if (empty($image['name']) || !isset($image) || $image['error'] !== UPLOAD_ERR_OK) {
             $imageName = NewsModel::getInstance()->getNewsById($id)?->getImageName();
@@ -156,9 +156,6 @@ class NewsController extends AbstractController
                     LangManager::translate('core.errors.upload.image'));
                 Redirect::redirectPreviousRoute();
             }
-
-            Flash::send(Alert::SUCCESS, 'd', $imageName);
-
             NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $imageName);
         }
 
