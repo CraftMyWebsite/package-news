@@ -37,17 +37,8 @@ class Package implements IPackageConfig
     {
         return [
             new PackageMenuType(
-                lang: 'fr',
                 icon: 'fas fa-newspaper',
                 title: 'Actualités',
-                url: 'news',
-                permission: 'news.manage',
-                subMenus: []
-            ),
-            new PackageMenuType(
-                lang: 'en',
-                icon: 'fas fa-newspaper',
-                title: 'News',
                 url: 'news',
                 permission: 'news.manage',
                 subMenus: []
