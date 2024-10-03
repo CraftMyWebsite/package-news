@@ -2,7 +2,7 @@
 
 namespace CMW\Entity\News;
 
-use CMW\Controller\Core\CoreController;
+use CMW\Utils\Date;
 use CMW\Entity\Users\UserEntity;
 use CMW\Manager\Env\EnvManager;
 
@@ -175,7 +175,7 @@ class NewsEntity
      */
     public function getDateCreatedFormatted(): string
     {
-        return CoreController::formatDate($this->dateCreated);
+        return Date::formatDate($this->dateCreated);
     }
 
     /**
@@ -191,7 +191,7 @@ class NewsEntity
      */
     public function getDateUpdatedFormatted(): string
     {
-        return CoreController::formatDate($this->dateUpdated);
+        return Date::formatDate($this->dateUpdated);
     }
 
     /**
