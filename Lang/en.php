@@ -95,4 +95,5 @@ return [
             'delete' => 'Delete',
         ],
     ],
+    'menu' => 'News',
 ];

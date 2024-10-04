@@ -2,6 +2,7 @@
 
 namespace CMW\Package\News;
 
+use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\IPackageConfig;
 use CMW\Manager\Package\PackageMenuType;
 use CMW\Manager\Package\PackageSubMenuType;
@@ -38,7 +39,7 @@ class Package implements IPackageConfig
         return [
             new PackageMenuType(
                 icon: 'fas fa-newspaper',
-                title: 'Actualités',
+                title: LangManager::translate('news.menu'),
                 url: 'news',
                 permission: 'news.manage',
                 subMenus: []
