@@ -23,7 +23,7 @@ use JetBrains\PhpStorm\NoReturn;
  * Class: @NewsController
  * @package News
  * @author Teyir
- * @version 1.0
+ * @version 0.0.1
  */
 class NewsController extends AbstractController
 {
