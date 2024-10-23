@@ -26,13 +26,11 @@ class NewsPublicController extends AbstractController
     private function publicListNews(): void
     {
         $newsList = NewsModel::getInstance()->getNews();
-        $newsModel = NewsModel::getInstance();
 
-        // Include the Public view file ("Public/Themes/$themePath/Views/News/list.view.php")
-        $view = new View('News', 'list');
-        $view->addScriptBefore('Admin/Resources/Vendors/Prismjs/prism.js');
-        $view->addVariableList(['newsList' => $newsList, 'newsModel' => $newsModel]);
-        $view->view();
+        View::createPublicView('News', 'list')
+            ->addScriptBefore('Admin/Resources/Vendors/Prismjs/prism.js')
+            ->addVariableList(['newsList' => $newsList])
+            ->view();
     }
 
     #[Link('/news/:tagSlug/:articleSlug', Link::GET, ['tagSlug' => '.*?', 'articleSlug' => '.*?'])]
@@ -47,10 +45,10 @@ class NewsPublicController extends AbstractController
 
         NewsModel::getInstance()->incrementViews($news->getNewsId());
 
-        $view = new View('News', 'individual');
-        $view->addScriptBefore('Admin/Resources/Vendors/Prismjs/prism.js');
-        $view->addVariableList(['news' => $news]);
-        $view->view();
+        View::createPublicView('News', 'individual')
+            ->addScriptBefore('Admin/Resources/Vendors/Prismjs/prism.js')
+            ->addVariableList(['news' => $news])
+            ->view();
     }
 
     #[Link('/news/:slug', Link::GET, ['slug' => '.*?'])]
@@ -71,11 +69,10 @@ class NewsPublicController extends AbstractController
 
         NewsModel::getInstance()->incrementViews($news->getNewsId());
 
-        // Include the Public view file ("Public/Themes/$themePath/Views/News/individual.view.php")
-        $view = new View('News', 'individual');
-        $view->addScriptBefore('Admin/Resources/Vendors/Prismjs/prism.js');
-        $view->addVariableList(['news' => $news]);
-        $view->view();
+        View::createPublicView('News', 'individual')
+            ->addScriptBefore('Admin/Resources/Vendors/Prismjs/prism.js')
+            ->addVariableList(['news' => $news])
+            ->view();
     }
 
     public function publicListNewsForTag(string $tagSlug): void
