@@ -64,7 +64,7 @@ class NewsController extends AbstractController
 
         try {
             // Upload image
-            $imageName = ImagesManager::upload($image, 'News');
+            $imageName = ImagesManager::convertAndUpload($image, 'News');
         } catch (ImagesException $e) {
             Flash::send(Alert::ERROR, LangManager::translate('core.toaster.error'),
                 LangManager::translate('core.errors.upload.image'));
@@ -150,7 +150,7 @@ class NewsController extends AbstractController
         } else {
             ImagesManager::deleteImage(NewsModel::getInstance()->getNewsById($id)?->getImageName(), 'News/');
             try {
-                $imageName = ImagesManager::upload($image, 'News');
+                $imageName = ImagesManager::convertAndUpload($image, 'News');
             } catch (\JsonException $e) {
                 Flash::send(Alert::ERROR, LangManager::translate('core.toaster.error'),
                     LangManager::translate('core.errors.upload.image'));
