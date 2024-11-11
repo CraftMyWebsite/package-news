@@ -2,13 +2,15 @@
 
 namespace CMW\Entity\News;
 
+use CMW\Controller\Users\UsersSessionsController;
+use CMW\Manager\Package\AbstractEntity;
 use CMW\Utils\Date;
 use CMW\Entity\Users\UserEntity;
 use CMW\Manager\Env\EnvManager;
 use CMW\Model\News\NewsLikesModel;
 use CMW\Model\Users\UsersModel;
 
-class NewsLikesEntity
+class NewsLikesEntity extends AbstractEntity
 {
     private ?int $likeId;
     private ?UserEntity $user;
@@ -22,7 +24,7 @@ class NewsLikesEntity
 
     /**
      * @param int|null $likeId
-     * @param \CMW\Entity\Users\UserEntity|null $user
+     * @param UserEntity|null $user
      * @param string|null $date
      * @param int $total
      * @param int $newsId
@@ -45,7 +47,7 @@ class NewsLikesEntity
     }
 
     /**
-     * @return \CMW\Entity\Users\UserEntity
+     * @return UserEntity
      */
     public function getUser(): UserEntity
     {
@@ -81,6 +83,8 @@ class NewsLikesEntity
      */
     public function userCanLike(): bool
     {
-        return !NewsLikesModel::getInstance()->userCanLike($this->newsId, UsersModel::getCurrentUser()?->getId());
+        return !NewsLikesModel::getInstance()->userCanLike(
+            $this->newsId, UsersSessionsController::getInstance()->getCurrentUser()?->getId(),
+        );
     }
 }

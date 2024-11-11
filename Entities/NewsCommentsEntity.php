@@ -2,14 +2,15 @@
 
 namespace CMW\Entity\News;
 
-use CMW\Utils\Date;
+use CMW\Controller\Users\UsersSessionsController;
 use CMW\Entity\Users\UserEntity;
 use CMW\Manager\Env\EnvManager;
+use CMW\Manager\Package\AbstractEntity;
 use CMW\Model\News\NewsCommentsLikesModel;
 use CMW\Model\News\NewsCommentsModel;
-use CMW\Model\Users\UsersModel;
+use CMW\Utils\Date;
 
-class NewsCommentsEntity
+class NewsCommentsEntity extends AbstractEntity
 {
     private ?int $commentsId;
     private int $newsId;
@@ -21,7 +22,7 @@ class NewsCommentsEntity
     /**
      * @param int|null $commentsId
      * @param int $newsId
-     * @param \CMW\Entity\Users\UserEntity|null $user
+     * @param UserEntity|null $user
      * @param string|null $content
      * @param string|null $date
      * @param NewsCommentsLikesEntity|null $likes
@@ -53,7 +54,7 @@ class NewsCommentsEntity
     }
 
     /**
-     * @return \CMW\Entity\Users\UserEntity|null
+     * @return UserEntity|null
      */
     public function getUser(): ?UserEntity
     {
@@ -77,7 +78,7 @@ class NewsCommentsEntity
     }
 
     /**
-     * @return ?\CMW\Entity\News\NewsCommentsLikesEntity
+     * @return ?NewsCommentsLikesEntity
      */
     public function getLikes(): ?NewsCommentsLikesEntity
     {
@@ -97,7 +98,10 @@ class NewsCommentsEntity
      */
     public function userCanLike(): bool
     {
-        return !(new NewsCommentsLikesModel())->userCanLike($this->commentsId, (new UsersModel())::getCurrentUser()?->getId());
+        return !NewsCommentsLikesModel::getInstance()->userCanLike(
+            $this->commentsId,
+            UsersSessionsController::getInstance()->getCurrentUser()?->getId(),
+        );
     }
 
     /**
@@ -105,6 +109,9 @@ class NewsCommentsEntity
      */
     public function userCanComment(): bool
     {
-        return (new NewsCommentsModel())->userCanComment($this->newsId, (new UsersModel())::getCurrentUser()?->getId());
+        return NewsCommentsModel::getInstance()->userCanComment(
+            $this->newsId,
+            UsersSessionsController::getInstance()->getCurrentUser()?->getId()
+        );
     }
 }
