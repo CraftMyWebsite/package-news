@@ -2,11 +2,12 @@
 
 namespace CMW\Entity\News;
 
-use CMW\Utils\Date;
 use CMW\Entity\Users\UserEntity;
 use CMW\Manager\Env\EnvManager;
+use CMW\Manager\Package\AbstractEntity;
+use CMW\Utils\Date;
 
-class NewsEntity
+class NewsEntity extends AbstractEntity
 {
     private int $newsId;
     private string $title;
@@ -23,9 +24,9 @@ class NewsEntity
     private string $dateCreated;
     private string $dateUpdated;
     private ?NewsLikesEntity $likes;
-    /** @var \CMW\Entity\News\NewsCommentsEntity|\CMW\Entity\News\NewsCommentsEntity[] $comments */
+    /** @var NewsCommentsEntity|NewsCommentsEntity[] $comments */
     private ?array $comments;
-    /** @var \CMW\Entity\News\NewsTagsEntity[] $tags */
+    /** @var NewsTagsEntity[] $tags */
     private array $tags;
 
     /**
@@ -37,14 +38,14 @@ class NewsEntity
      * @param string $content
      * @param string $contentNt
      * @param string $slug
-     * @param ?\CMW\Entity\Users\UserEntity $author
+     * @param ?UserEntity $author
      * @param int $views
      * @param string $imageName
      * @param string $dateCreated
      * @param string $dateUpdated
-     * @param ?\CMW\Entity\News\NewsLikesEntity $likes
-     * @param \CMW\Entity\News\NewsCommentsEntity[]|null $comments
-     * @param \CMW\Entity\News\NewsTagsEntity[] $tags
+     * @param ?NewsLikesEntity $likes
+     * @param NewsCommentsEntity[]|null $comments
+     * @param NewsTagsEntity[] $tags
      */
     public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $contentNt, string $slug, ?UserEntity $author, int $views, string $imageName, string $dateCreated, string $dateUpdated, ?NewsLikesEntity $likes, ?array $comments, array $tags)
     {
@@ -139,7 +140,7 @@ class NewsEntity
     }
 
     /**
-     * @return ?\CMW\Entity\Users\UserEntity
+     * @return ?UserEntity
      */
     public function getAuthor(): ?UserEntity
     {
@@ -195,7 +196,7 @@ class NewsEntity
     }
 
     /**
-     * @return ?\CMW\Entity\News\NewsLikesEntity
+     * @return ?NewsLikesEntity
      */
     public function getLikes(): ?NewsLikesEntity
     {
@@ -203,7 +204,7 @@ class NewsEntity
     }
 
     /**
-     * @return \CMW\Entity\News\NewsCommentsEntity[]|null
+     * @return NewsCommentsEntity[]|null
      */
     public function getComments(): ?array
     {

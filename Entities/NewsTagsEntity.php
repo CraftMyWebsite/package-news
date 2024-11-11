@@ -2,7 +2,9 @@
 
 namespace CMW\Entity\News;
 
-class NewsTagsEntity
+use CMW\Manager\Package\AbstractEntity;
+
+class NewsTagsEntity extends AbstractEntity
 {
     private int $id;
     private string $name;

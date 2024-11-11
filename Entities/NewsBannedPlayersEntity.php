@@ -2,10 +2,11 @@
 
 namespace CMW\Entity\News;
 
-use CMW\Utils\Date;
 use CMW\Entity\Users\UserEntity;
+use CMW\Manager\Package\AbstractEntity;
+use CMW\Utils\Date;
 
-class NewsBannedPlayersEntity
+class NewsBannedPlayersEntity extends AbstractEntity
 {
     private int $id;
     private UserEntity $player;
@@ -14,8 +15,8 @@ class NewsBannedPlayersEntity
 
     /**
      * @param int $id
-     * @param \CMW\Entity\Users\UserEntity $player
-     * @param \CMW\Entity\Users\UserEntity|null $author
+     * @param UserEntity $player
+     * @param UserEntity|null $author
      * @param string $date
      */
     public function __construct(int $id, UserEntity $player, ?UserEntity $author, string $date)
@@ -35,7 +36,7 @@ class NewsBannedPlayersEntity
     }
 
     /**
-     * @return \CMW\Entity\Users\UserEntity
+     * @return UserEntity
      */
     public function getPlayer(): UserEntity
     {
@@ -43,7 +44,7 @@ class NewsBannedPlayersEntity
     }
 
     /**
-     * @return \CMW\Entity\Users\UserEntity|null
+     * @return UserEntity|null
      */
     public function getAuthor(): ?UserEntity
     {

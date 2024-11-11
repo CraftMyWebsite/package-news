@@ -2,11 +2,12 @@
 
 namespace CMW\Entity\News;
 
-use CMW\Utils\Date;
 use CMW\Entity\Users\UserEntity;
 use CMW\Manager\Env\EnvManager;
+use CMW\Manager\Package\AbstractEntity;
+use CMW\Utils\Date;
 
-class NewsCommentsLikesEntity
+class NewsCommentsLikesEntity extends AbstractEntity
 {
     private ?int $likesId;
     private ?int $commentsId;
@@ -21,7 +22,7 @@ class NewsCommentsLikesEntity
     /**
      * @param int|null $likesId
      * @param int|null $commentsId
-     * @param \CMW\Entity\Users\UserEntity|null $user
+     * @param UserEntity|null $user
      * @param string|null $date
      * @param int $total
      */
@@ -51,7 +52,7 @@ class NewsCommentsLikesEntity
     }
 
     /**
-     * @return \CMW\Entity\Users\UserEntity|null
+     * @return UserEntity|null
      */
     public function getUser(): ?UserEntity
     {
