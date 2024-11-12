@@ -125,7 +125,7 @@ $description = LangManager::translate('news.dashboard.desc');
                                                 class="fa-solid fa-xmark"></i></button>
                                     </div>
                                     <form method="post" action="tag/edit/<?= $tag->getId() ?>">
-                                        <?php (new SecurityManager())->insertHiddenToken() ?>
+                                        <?php SecurityManager::getInstance()->insertHiddenToken() ?>
                                         <div class="modal-body">
                                             <div class="grid-2">
                                                 <div>
@@ -190,7 +190,7 @@ $description = LangManager::translate('news.dashboard.desc');
             <button type="button" data-modal-hide="modal-tag-add"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <form method="post" action="tag">
-            <?php (new SecurityManager())->insertHiddenToken() ?>
+            <?php SecurityManager::getInstance()->insertHiddenToken() ?>
             <div class="modal-body">
                 <div class="grid-2">
                     <div>

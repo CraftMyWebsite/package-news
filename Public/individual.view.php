@@ -91,7 +91,7 @@ Website::setDescription($news->getDescription());
 
 
     <form method="post" action="<?= $news->sendComments() ?>" style="margin-top: 20px">
-        <?php (new SecurityManager())->insertHiddenToken() ?>
+        <?php SecurityManager::getInstance()->insertHiddenToken() ?>
         <label for="message">Votre commentaire :</label>
         <textarea minlength="20" name="comments" id="message" style="display: block;width: 100%" placeholder="Bonjour," required></textarea>
         <div class="text-center mt-4">

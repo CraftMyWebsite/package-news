@@ -16,7 +16,7 @@ $description = LangManager::translate('news.dashboard.desc');
 </div>
 
 <form id="addNews" action="" method="post" enctype="multipart/form-data">
-    <?php (new SecurityManager())->insertHiddenToken() ?>
+    <?php SecurityManager::getInstance()->insertHiddenToken() ?>
 
     <div class="grid-3">
         <div class="col-span-2 card">
