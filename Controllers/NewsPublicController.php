@@ -2,6 +2,7 @@
 
 namespace CMW\Controller\News;
 
+use CMW\Controller\Users\UsersSessionsController;
 use CMW\Manager\Package\AbstractController;
 use CMW\Manager\Router\Link;
 use CMW\Manager\Views\View;
@@ -10,7 +11,6 @@ use CMW\Model\News\NewsCommentsModel;
 use CMW\Model\News\NewsLikesModel;
 use CMW\Model\News\NewsModel;
 use CMW\Model\News\NewsTagsModel;
-use CMW\Model\Users\UsersModel;
 use CMW\Utils\Redirect;
 use JetBrains\PhpStorm\NoReturn;
 
@@ -96,7 +96,7 @@ class NewsPublicController extends AbstractController
     #[Link('/like/news/comments/:id', Link::GET, ['id' => '[0-9]+'])]
     private function likeCommentsNews(int $commentsId): void
     {
-        $user = usersModel::getInstance()::getCurrentUser();
+        $user = UsersSessionsController::getInstance()->getCurrentUser();
 
         // We check if the player has already like this comments, and we store the like
         if (newsCommentsLikesModel::getInstance()->userCanLike($commentsId, $user?->getId())) {
@@ -110,7 +110,7 @@ class NewsPublicController extends AbstractController
     #[Link('/like/news/:id', Link::GET, ['id' => '[0-9]+'])]
     private function likeNews(int $id): void
     {
-        $user = usersModel::getInstance()::getCurrentUser();
+        $user = UsersSessionsController::getInstance()->getCurrentUser();
         $news = NewsModel::getInstance()->getNewsById($id);
 
         // First check if the news is likeable
@@ -129,7 +129,7 @@ class NewsPublicController extends AbstractController
     #[Link('/news/comments/:id', Link::POST, ['id' => '[0-9]+'])]
     private function commentsNews(int $newsId): void
     {
-        $user = usersModel::getInstance()::getCurrentUser();
+        $user = UsersSessionsController::getInstance()->getCurrentUser();
 
         $content = strip_tags(htmlentities(filter_input(INPUT_POST, 'comments')));
 

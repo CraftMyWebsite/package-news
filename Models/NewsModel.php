@@ -2,13 +2,13 @@
 
 namespace CMW\Model\News;
 
+use CMW\Controller\Users\UsersSessionsController;
 use CMW\Entity\News\NewsBannedPlayersEntity;
 use CMW\Entity\News\NewsEntity;
 use CMW\Manager\Database\DatabaseManager;
 use CMW\Manager\Editor\EditorManager;
 use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Package\AbstractModel;
-use CMW\Manager\Uploads\ImagesManager;
 use CMW\Model\Users\UsersModel;
 use JetBrains\PhpStorm\ExpectedValues;
 
@@ -271,7 +271,7 @@ class NewsModel extends AbstractModel
         if (!$this->isUserBanned($userId)) {
             $var = [
                 'userId' => $userId,
-                'authorId' => UsersModel::getCurrentUser()?->getId(),
+                'authorId' => UsersSessionsController::getInstance()->getCurrentUser()?->getId(),
             ];
 
             $sql = 'INSERT INTO cmw_news_banned_players (news_banned_players_player_id, news_banned_players_author_id) 

@@ -3,6 +3,7 @@
 namespace CMW\Controller\News;
 
 use CMW\Controller\Users\UsersController;
+use CMW\Controller\Users\UsersSessionsController;
 use CMW\Manager\Filter\FilterManager;
 use CMW\Manager\Flash\Alert;
 use CMW\Manager\Flash\Flash;
@@ -14,7 +15,6 @@ use CMW\Manager\Uploads\ImagesManager;
 use CMW\Manager\Views\View;
 use CMW\Model\News\NewsModel;
 use CMW\Model\News\NewsTagsModel;
-use CMW\Model\Users\UsersModel;
 use CMW\Utils\Redirect;
 use CMW\Utils\Utils;
 use JetBrains\PhpStorm\NoReturn;
@@ -59,7 +59,7 @@ class NewsController extends AbstractController
         }
 
         $slug = Utils::normalizeForSlug(FilterManager::filterInputStringPost('title'));
-        $userId = UsersModel::getCurrentUser()?->getId();
+        $userId = UsersSessionsController::getInstance()->getCurrentUser()?->getId();
         $image = $_FILES['image'];
 
         try {
