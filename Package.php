@@ -41,8 +41,7 @@ class Package implements IPackageConfig
                 icon: 'fas fa-newspaper',
                 title: LangManager::translate('news.menu'),
                 url: 'news',
-                permission: 'news.manage',
-                subMenus: []
+                permission: 'news.manage'
             ),
         ];
     }
