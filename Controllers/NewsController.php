@@ -13,11 +13,13 @@ use CMW\Manager\Router\Link;
 use CMW\Manager\Uploads\ImagesException;
 use CMW\Manager\Uploads\ImagesManager;
 use CMW\Manager\Views\View;
+use CMW\Manager\Xml\SitemapManager;
 use CMW\Model\News\NewsModel;
 use CMW\Model\News\NewsTagsModel;
 use CMW\Utils\Redirect;
 use CMW\Utils\Utils;
 use JetBrains\PhpStorm\NoReturn;
+use function is_null;
 
 /**
  * Class: @NewsController
@@ -86,6 +88,9 @@ class NewsController extends AbstractController
             }
         }
 
+        //Add news to sitemap
+        SitemapManager::getInstance()->add($news->getFullUrl(), 0.7);
+
         Flash::send(Alert::SUCCESS, LangManager::translate('core.toaster.success'),
             LangManager::translate('news.add.toasters.success'));
 
@@ -117,6 +122,11 @@ class NewsController extends AbstractController
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage.edit');
 
         $news = NewsModel::getInstance()->getNewsById($id);
+
+        if (is_null($news)) {
+            Redirect::errorPage(404);
+        }
+
         $tags = NewsTagsModel::getInstance()->getTags();
 
         View::createAdminView('News', 'edit')
@@ -130,6 +140,12 @@ class NewsController extends AbstractController
     private function editNewsPost(int $id): void
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage.edit');
+
+        $news = NewsModel::getInstance()->getNewsById($id);
+
+        if (is_null($news)) {
+            Redirect::errorPage(404);
+        }
 
         [$title, $desc, $content, $comm, $likes] = Utils::filterInput('title', 'desc', 'content', 'comm', 'likes');
 
@@ -145,18 +161,18 @@ class NewsController extends AbstractController
         $image = $_FILES['image'] ?? null;
 
         if (empty($image['name']) || !isset($image) || $image['error'] !== UPLOAD_ERR_OK) {
-            $imageName = NewsModel::getInstance()->getNewsById($id)?->getImageName();
-            NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $imageName);
+            $imageName = $news->getImageName();
         } else {
-            ImagesManager::deleteImage(NewsModel::getInstance()->getNewsById($id)?->getImageName(), 'News/');
-            try {
-                $imageName = ImagesManager::convertAndUpload($image, 'News');
-            } catch (\JsonException $e) {
-                Flash::send(Alert::ERROR, LangManager::translate('core.toaster.error'),
-                    LangManager::translate('core.errors.upload.image'));
-                Redirect::redirectPreviousRoute();
-            }
-            NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $imageName);
+            ImagesManager::deleteImage($news->getImageName(), 'News/');
+            $imageName = ImagesManager::convertAndUpload($image, 'News');
+        }
+
+        $updatedNews = NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $imageName);
+
+        if (is_null($updatedNews)) {
+            Flash::send(Alert::ERROR, LangManager::translate('core.toaster.error'),
+                LangManager::translate('core.toaster.internalError'));
+            Redirect::redirectPreviousRoute();
         }
 
         if (!$image) {
@@ -171,6 +187,14 @@ class NewsController extends AbstractController
             }
         }
 
+        //Update sitemap
+        if ($updatedNews->getSlug() === $news->getSlug()) {
+            SitemapManager::getInstance()->update($news->getFullUrl(), 0.7);
+        } else {
+            SitemapManager::getInstance()->delete($news->getFullUrl());
+            SitemapManager::getInstance()->add($updatedNews->getFullUrl(), 0.7);
+        }
+
         Flash::send(Alert::SUCCESS, LangManager::translate('core.toaster.success'),
             LangManager::translate('news.edit.toasters.success'));
 
@@ -183,7 +207,15 @@ class NewsController extends AbstractController
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage.delete');
 
+        $news = NewsModel::getInstance()->getNewsById($id);
+
+        if (is_null($news)) {
+            Redirect::errorPage(404);
+        }
+
         NewsModel::getInstance()->deleteNews($id);
+
+        SitemapManager::getInstance()->delete($news->getFullUrl());
 
         Flash::send(Alert::SUCCESS, LangManager::translate('core.toaster.success'),
             LangManager::translate('news.delete.toasters.success'));
@@ -268,6 +300,7 @@ class NewsController extends AbstractController
             Flash::send(Alert::ERROR, LangManager::translate('core.toaster.error'),
                 LangManager::translate('news.tags.toasters.edit.error'));
         }
-        Redirect::redirectToAdmin('news/manage');
+
+        Redirect::redirectPreviousRoute();
     }
 }

@@ -1,13 +1,15 @@
 <?php
 
+use CMW\Entity\News\NewsEntity;
+use CMW\Entity\News\NewsTagsEntity;
 use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Security\SecurityManager;
 use CMW\Model\News\NewsTagsModel;
 use CMW\Utils\Website;
 
-/* @var \CMW\Entity\News\NewsTagsEntity[] $tags */
-/** @var \CMW\Entity\News\NewsEntity[] $newsList */
+/* @var NewsTagsEntity[] $tags */
+/** @var NewsEntity[] $newsList */
 $title = LangManager::translate('news.dashboard.title');
 $description = LangManager::translate('news.dashboard.desc');
 ?>
@@ -47,7 +49,7 @@ $description = LangManager::translate('news.dashboard.desc');
                     <td><?= $news->getViews() ?></td>
                     <td><?= $news->getDateCreated() ?></td>
                     <td class="text-center space-x-2">
-                        <a class="me-3" href="../news/edit/<?= $news->getNewsId() ?>">
+                        <a class="me-3" href="news/edit/<?= $news->getNewsId() ?>">
                             <i class="text-info fa-solid fa-gears"></i>
                         </a>
                         <button data-modal-toggle="modal-delete-news-<?= $news->getNewsId() ?>" type="button"><i
@@ -124,7 +126,7 @@ $description = LangManager::translate('news.dashboard.desc');
                                         <button type="button" data-modal-hide="modal-edit-<?= $tag->getId() ?>"><i
                                                 class="fa-solid fa-xmark"></i></button>
                                     </div>
-                                    <form method="post" action="tag/edit/<?= $tag->getId() ?>">
+                                    <form method="post" action="news/tag/edit/<?= $tag->getId() ?>">
                                         <?php SecurityManager::getInstance()->insertHiddenToken() ?>
                                         <div class="modal-body">
                                             <div class="grid-2">
@@ -168,7 +170,7 @@ $description = LangManager::translate('news.dashboard.desc');
                                         <?= LangManager::translate('news.modal.deletealert') ?>
                                     </div>
                                     <div class="modal-footer">
-                                        <a href="tag/delete/<?= $tag->getId() ?>" class="btn-danger">
+                                        <a href="news/tag/delete/<?= $tag->getId() ?>" class="btn-danger">
                                             <?= LangManager::translate('core.btn.delete') ?>
                                         </a>
                                     </div>
@@ -189,7 +191,7 @@ $description = LangManager::translate('news.dashboard.desc');
             <h6><?= LangManager::translate('news.tags.add.title') ?></h6>
             <button type="button" data-modal-hide="modal-tag-add"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <form method="post" action="tag">
+        <form method="post" action="news/tag">
             <?php SecurityManager::getInstance()->insertHiddenToken() ?>
             <div class="modal-body">
                 <div class="grid-2">
