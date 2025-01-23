@@ -40,7 +40,7 @@ class NewsPublicController extends AbstractController
         $tag = NewsTagsModel::getInstance()->isTagExistByName($tagSlug);
 
         if (is_null($news) || !$tag) {
-            Redirect::redirectToHome();
+            Redirect::errorPage(404);
         }
 
         NewsModel::getInstance()->incrementViews($news->getNewsId());
@@ -64,7 +64,7 @@ class NewsPublicController extends AbstractController
         $news = NewsModel::getInstance()->getNewsBySlug($slug);
 
         if (is_null($news)) {
-            Redirect::redirectToHome();
+            Redirect::errorPage(404);
         }
 
         NewsModel::getInstance()->incrementViews($news->getNewsId());
