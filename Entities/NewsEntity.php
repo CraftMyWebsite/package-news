@@ -20,7 +20,6 @@ class NewsEntity extends AbstractEntity
     private ?UserEntity $author;
     private int $views;
     private string $imageName;
-    private string $imageLink;
     private string $dateCreated;
     private string $dateUpdated;
     private ?NewsLikesEntity $likes;
