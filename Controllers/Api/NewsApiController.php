@@ -21,7 +21,7 @@ class NewsApiController extends AbstractController
     #[NoReturn] #[Link("/news", Link::GET, scope: '/api')]
     private function getArticles(): void
     {
-        $limit = FilterManager::filterInputIntGet('limit', orElse: 9);
+        $limit = isset($_GET['limit']) ? FilterManager::filterInputIntGet('limit', orElse: 9) : 9;
         $order = isset($_GET['order']) ? FilterManager::filterInputStringGet('order', maxLength: 5) : 'DESC';
 
         if ($order !== 'ASC' && $order !== 'DESC') {

@@ -22,6 +22,7 @@ class FrontApiNewsEntity extends AbstractEntity
     private array $tags;
     private string $dateCreated;
     private string $articleLink;
+    private string $imageLink;
 
     /**
      * @param int $id
@@ -32,8 +33,9 @@ class FrontApiNewsEntity extends AbstractEntity
      * @param string[] $tags
      * @param string $dateCreated
      * @param string $articleLink
+     * @param string $imageLink
      */
-    public function __construct(int $id, string $title, string $description, string $authorPseudo, string $authorImageLink, array $tags, string $dateCreated, string $articleLink)
+    public function __construct(int $id, string $title, string $description, string $authorPseudo, string $authorImageLink, array $tags, string $dateCreated, string $articleLink, string $imageLink)
     {
         $this->id = $id;
         $this->title = $title;
@@ -43,6 +45,7 @@ class FrontApiNewsEntity extends AbstractEntity
         $this->tags = $tags;
         $this->dateCreated = $dateCreated;
         $this->articleLink = $articleLink;
+        $this->imageLink = $imageLink;
     }
 
     /**
@@ -107,5 +110,13 @@ class FrontApiNewsEntity extends AbstractEntity
     public function getArticleLink(): string
     {
         return $this->articleLink;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImageLink(): string
+    {
+        return $this->imageLink;
     }
 }
