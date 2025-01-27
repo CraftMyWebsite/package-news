@@ -7,6 +7,7 @@ use CMW\Entity\News\NewsTagsEntity;
 use CMW\Manager\Database\DatabaseManager;
 use CMW\Manager\Package\AbstractModel;
 use CMW\Model\Users\UsersModel;
+use JetBrains\PhpStorm\ExpectedValues;
 
 /**
  * Class @NewsTagsModel
@@ -201,17 +202,21 @@ class NewsTagsModel extends AbstractModel
 
     /**
      * @param int $tagId
+     * @param int $limit
+     * @param string $order
      * @return \CMW\Entity\News\NewsEntity[]
      */
-    public function getNewsForTagById(int $tagId): array
+    public function getNewsForTagById(int $tagId, int $limit, #[ExpectedValues(values: ['DESC', 'ASC'])] string $order = 'DESC'): array
     {
         $sql = 'SELECT * FROM cmw_news 
                     JOIN cmw_news_tags_list ON cmw_news.news_id = cmw_news_tags_list.news_id 
                     WHERE cmw_news_tags_list.news_tags_id = :id';
+        $sql.= " ORDER BY `cmw_news`.`news_id` $order LIMIT :limit";
+
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
 
-        if (!$req->execute(['id' => $tagId])) {
+        if (!$req->execute(['id' => $tagId, 'limit' => $limit])) {
             return [];
         }
 

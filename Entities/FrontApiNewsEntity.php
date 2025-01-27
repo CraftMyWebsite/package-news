@@ -17,7 +17,7 @@ class FrontApiNewsEntity extends AbstractEntity
     private string $authorPseudo;
     private string $authorImageLink;
     /**
-     * @var string[]
+     * @var NewsTagsEntity[]
      */
     private array $tags;
     private string $dateCreated;
@@ -30,7 +30,7 @@ class FrontApiNewsEntity extends AbstractEntity
      * @param string $description
      * @param string $authorPseudo
      * @param string $authorImageLink
-     * @param string[] $tags
+     * @param NewsTagsEntity[] $tags
      * @param string $dateCreated
      * @param string $articleLink
      * @param string $imageLink
