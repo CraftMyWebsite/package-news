@@ -43,10 +43,10 @@ class NewsApiController extends AbstractController
         OverApi::returnData(['news' => NewsFrontMapper::mapToFront($news)]);
     }
 
-    #[NoReturn] #[Link("/news/:page/", Link::GET, scope: '/api')]
+    #[NoReturn] #[Link("/news/page/:page", Link::GET, ['page' => '[0-9]+'], '/api')]
     private function getArticlesByPages(int $page): void
     {
-        $tag = isset($_GET['tag']) ? FilterManager::filterInputStringGet('tag') : null;
+        $tag = isset($_GET['tag']) ? FilterManager::filterInputIntGet('tag') : null;
         $limit = isset($_GET['limit']) ? FilterManager::filterInputIntGet('limit', orElse: 9) : 9;
         $order = isset($_GET['order']) ? FilterManager::filterInputStringGet('order', maxLength: 5) : 'DESC';
 
