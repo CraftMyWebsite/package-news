@@ -42,4 +42,32 @@ class NewsApiController extends AbstractController
 
         OverApi::returnData(['news' => NewsFrontMapper::mapToFront($news)]);
     }
+
+    #[NoReturn] #[Link("/news/:page/", Link::GET, scope: '/api')]
+    private function getArticlesByPages(int $page): void
+    {
+        $tag = isset($_GET['tag']) ? FilterManager::filterInputStringGet('tag') : null;
+        $limit = isset($_GET['limit']) ? FilterManager::filterInputIntGet('limit', orElse: 9) : 9;
+        $order = isset($_GET['order']) ? FilterManager::filterInputStringGet('order', maxLength: 5) : 'DESC';
+
+        if ($order !== 'ASC' && $order !== 'DESC') {
+            OverApi::returnError(RequestsErrorsTypes::WRONG_PARAMS, ['order' => 'Order must be ASC or DESC']);
+        }
+
+        if (!is_numeric($limit)) {
+            OverApi::returnError(RequestsErrorsTypes::WRONG_PARAMS, ['limit' => 'Limit must be a number']);
+        }
+
+        if (!is_numeric($page)) {
+            OverApi::returnError(RequestsErrorsTypes::WRONG_PARAMS, ['pages' => 'Page must be a number']);
+        }
+
+        if (!is_null($tag)) {
+            $news = NewsTagsModel::getInstance()->getNewsForTagByPages($tag, $limit, $page, $order);
+        } else {
+            $news = NewsModel::getInstance()->getSomeNewsByPage($limit, $page, $order);
+        }
+
+        OverApi::returnData(['news' => NewsFrontMapper::mapToFront($news)]);
+    }
 }
