@@ -202,6 +202,27 @@ class NewsModel extends AbstractModel
         return $toReturn;
     }
 
+
+    public function searchNewsByPrefix(string $prefix, int $limit, string $order): array
+    {
+        $sql = 'SELECT news_id FROM cmw_news WHERE news_title LIKE :prefix ORDER BY `cmw_news`.`news_id` ' . $order . ' LIMIT :limit';
+
+        $db = DatabaseManager::getInstance();
+        $res = $db->prepare($sql);
+
+        if (!$res->execute(['prefix' => $prefix . '%', 'limit' => $limit])) {
+            return [];
+        }
+
+        $toReturn = [];
+
+        while ($news = $res->fetch()) {
+            $toReturn[] = $this->getNewsById($news['news_id']);
+        }
+
+        return $toReturn;
+    }
+
     /**
      * @param int $limit
      * @param string $order

@@ -70,4 +70,20 @@ class NewsApiController extends AbstractController
 
         OverApi::returnData(['news' => NewsFrontMapper::mapToFront($news)]);
     }
+
+    #[NoReturn] #[Link("/news/search/:prefix", Link::GET, scope:'/api')]
+    private function SearchArticles(string $prefix): void
+    {
+        $decodedPrefix = base64_decode(urldecode($prefix));
+        $limit = isset($_GET['limit']) ? FilterManager::filterInputIntGet('limit', orElse: 9) : 9;
+        $order = isset($_GET['order']) ? FilterManager::filterInputStringGet('order', maxLength: 5) : 'DESC';
+
+        if ($order !== 'ASC' && $order !== 'DESC') {
+            OverApi::returnError(RequestsErrorsTypes::WRONG_PARAMS, ['order' => 'Order must be ASC or DESC']);
+        }
+
+        $news = NewsModel::getInstance()->searchNewsByPrefix($decodedPrefix, $limit, $order);
+
+        OverApi::returnData(['news' => NewsFrontMapper::mapToFront($news)]);
+    }
 }
