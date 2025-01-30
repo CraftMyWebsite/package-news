@@ -210,7 +210,7 @@ class NewsModel extends AbstractModel
         $db = DatabaseManager::getInstance();
         $res = $db->prepare($sql);
 
-        if (!$res->execute(['prefix' => $prefix . '%', 'limit' => $limit])) {
+        if (!$res->execute(['prefix' => '%' . $prefix . '%', 'limit' => $limit])) {
             return [];
         }
 
