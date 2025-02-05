@@ -153,6 +153,76 @@ class NewsModel extends AbstractModel
         return $toReturn;
     }
 
+    public function getSomeNewsByPage(int $limit, int $page, string $order = 'DESC'): array
+    {
+        $offset = ($page - 1) * $limit;
+        $sql = 'SELECT * FROM cmw_news ORDER BY news_id ' . $order . ' LIMIT :limit OFFSET :offset';
+        $db = DatabaseManager::getInstance();
+        $req = $db->prepare($sql);
+
+        $req->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $req->bindValue(':offset', $offset, \PDO::PARAM_INT);
+
+        if (!$req->execute()) {
+            return [];
+        }
+
+        $res = $req->fetchAll();
+
+        if (!$res) {
+            return [];
+        }
+
+        $toReturn = [];
+
+        foreach ($res as $article) {
+            $author = UsersModel::getInstance()->getUserById($article['news_author']);
+            $newsLikes = NewsLikesModel::getInstance()->getLikesForNews($article['news_id']);
+
+            $toReturn[] = new NewsEntity(
+                $article['news_id'],
+                $article['news_title'],
+                $article['news_desc'],
+                $article['news_comments_status'],
+                $article['news_likes_status'],
+                $article['news_content'],
+                $article['news_content'],
+                $article['news_slug'],
+                $author,
+                $article['news_views'],
+                $article['news_image_name'],
+                $article['news_date_created'],
+                $article['news_date_updated'],
+                $newsLikes,
+                NewsCommentsModel::getInstance()->getCommentsForNews($article['news_id']),
+                NewsTagsModel::getInstance()->getTagsForNewsById($article['news_id']),
+            );
+        }
+
+        return $toReturn;
+    }
+
+
+    public function searchNewsByPrefix(string $prefix, int $limit, string $order): array
+    {
+        $sql = 'SELECT news_id FROM cmw_news WHERE news_title LIKE :prefix ORDER BY `cmw_news`.`news_id` ' . $order . ' LIMIT :limit';
+
+        $db = DatabaseManager::getInstance();
+        $res = $db->prepare($sql);
+
+        if (!$res->execute(['prefix' => '%' . $prefix . '%', 'limit' => $limit])) {
+            return [];
+        }
+
+        $toReturn = [];
+
+        while ($news = $res->fetch()) {
+            $toReturn[] = $this->getNewsById($news['news_id']);
+        }
+
+        return $toReturn;
+    }
+
     /**
      * @param int $limit
      * @param string $order
@@ -180,6 +250,7 @@ class NewsModel extends AbstractModel
 
         return $toReturn;
     }
+
 
     public function updateNews(int $newsId, string $title, string $desc, int $comm, int $likes, string $content, string $slug, string|null $imageName): ?NewsEntity
     {

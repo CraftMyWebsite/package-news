@@ -7,6 +7,7 @@ use CMW\Entity\News\NewsTagsEntity;
 use CMW\Manager\Database\DatabaseManager;
 use CMW\Manager\Package\AbstractModel;
 use CMW\Model\Users\UsersModel;
+use JetBrains\PhpStorm\ExpectedValues;
 
 /**
  * Class @NewsTagsModel
@@ -201,17 +202,26 @@ class NewsTagsModel extends AbstractModel
 
     /**
      * @param int $tagId
+     * @param int $limit
+     * @param string $order
+     * @param int $offset
      * @return \CMW\Entity\News\NewsEntity[]
      */
-    public function getNewsForTagById(int $tagId): array
+    public function getNewsForTagByPages(int $tagId, int $limit, int $page, #[ExpectedValues(values: ['DESC', 'ASC'])] string $order = 'DESC'): array
     {
-        $sql = 'SELECT * FROM cmw_news 
-                    JOIN cmw_news_tags_list ON cmw_news.news_id = cmw_news_tags_list.news_id 
-                    WHERE cmw_news_tags_list.news_tags_id = :id';
+        $offset = ($page - 1) * $limit;
+        $sql = 'SELECT * FROM cmw_news
+        JOIN cmw_news_tags_list ON cmw_news.news_id = cmw_news_tags_list.news_id
+        WHERE cmw_news_tags_list.news_tags_id = :id';
+        $sql .= " ORDER BY `cmw_news`.`news_id` $order LIMIT :limit OFFSET :offset";
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
 
-        if (!$req->execute(['id' => $tagId])) {
+        $req->bindValue(':id', $tagId, \PDO::PARAM_INT);
+        $req->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $req->bindValue(':offset', $offset, \PDO::PARAM_INT);
+
+        if (!$req->execute()) {
             return [];
         }
 
@@ -249,6 +259,62 @@ class NewsTagsModel extends AbstractModel
 
         return $toReturn;
     }
+
+    /**
+     * @param int $tagId
+     * @param int $limit
+     * @param string $order
+     * @return \CMW\Entity\News\NewsEntity[]
+     */
+    public function getNewsForTagById(int $tagId, int $limit, #[ExpectedValues(values: ['DESC', 'ASC'])] string $order = 'DESC'): array
+    {
+        $sql = 'SELECT * FROM cmw_news 
+                    JOIN cmw_news_tags_list ON cmw_news.news_id = cmw_news_tags_list.news_id 
+                    WHERE cmw_news_tags_list.news_tags_id = :id';
+        $sql.= " ORDER BY `cmw_news`.`news_id` $order LIMIT :limit";
+
+        $db = DatabaseManager::getInstance();
+        $req = $db->prepare($sql);
+
+        if (!$req->execute(['id' => $tagId, 'limit' => $limit])) {
+            return [];
+        }
+
+        $res = $req->fetchAll();
+
+        if (!$res) {
+            return [];
+        }
+
+        $toReturn = [];
+
+        foreach ($res as $article) {
+            $author = UsersModel::getInstance()->getUserById($article['news_author']);
+            $newsLikes = NewsLikesModel::getInstance()->getLikesForNews($article['news_id']);
+
+            $toReturn[] = new NewsEntity(
+                $article['news_id'],
+                $article['news_title'],
+                $article['news_desc'],
+                $article['news_comments_status'],
+                $article['news_likes_status'],
+                $article['news_content'],
+                $article['news_content'],
+                $article['news_slug'],
+                $author,
+                $article['news_views'],
+                $article['news_image_name'],
+                $article['news_date_created'],
+                $article['news_date_updated'],
+                $newsLikes,
+                NewsCommentsModel::getInstance()->getCommentsForNews($article['news_id']),
+                self::getInstance()->getTagsForNewsById($article['news_id']),
+            );
+        }
+
+        return $toReturn;
+    }
+
 
     /**
      * @param string $tagName

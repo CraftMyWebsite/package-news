@@ -26,7 +26,7 @@ class NewsFrontMapper
             $data->getDescription(),
             $data->getAuthor()?->getPseudo() ?? 'Unknown',
             $data->getAuthor()?->getUserPicture()?->getImage() ?? '',
-            self::mapTags($data->getTags()),
+            $data->getTags(),
             $data->getDateCreatedFormatted(),
             $data->getFullUrl(),
             $data->getFullImageLink(),
