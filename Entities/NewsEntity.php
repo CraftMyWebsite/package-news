@@ -14,6 +14,7 @@ class NewsEntity extends AbstractEntity
     private string $description;
     private bool $commentsStatus;
     private bool $likesStatus;
+    private bool $status;
     private string $content;
     private string $contentNt;
     private string $slug;
@@ -40,13 +41,32 @@ class NewsEntity extends AbstractEntity
      * @param ?UserEntity $author
      * @param int $views
      * @param string $imageName
+     * @param bool $status
      * @param string $dateCreated
      * @param string $dateUpdated
      * @param ?NewsLikesEntity $likes
      * @param NewsCommentsEntity[]|null $comments
      * @param NewsTagsEntity[] $tags
      */
-    public function __construct(int $newsId, string $title, string $description, bool $commentsStatus, bool $likesStatus, string $content, string $contentNt, string $slug, ?UserEntity $author, int $views, string $imageName, string $dateCreated, string $dateUpdated, ?NewsLikesEntity $likes, ?array $comments, array $tags)
+    public function __construct(
+        int              $newsId,
+        string           $title,
+        string           $description,
+        bool             $commentsStatus,
+        bool             $likesStatus,
+        bool             $status,
+        string           $content,
+        string           $contentNt,
+        string           $slug,
+        ?UserEntity      $author,
+        int              $views,
+        string           $imageName,
+        string           $dateCreated,
+        string           $dateUpdated,
+        ?NewsLikesEntity $likes,
+        ?array           $comments,
+        array            $tags,
+    )
     {
         $this->newsId = $newsId;
         $this->title = $title;
@@ -59,6 +79,7 @@ class NewsEntity extends AbstractEntity
         $this->author = $author;
         $this->views = $views;
         $this->imageName = $imageName;
+        $this->status = $status;
         $this->dateCreated = $dateCreated;
         $this->dateUpdated = $dateUpdated;
         $this->likes = $likes;
@@ -104,6 +125,15 @@ class NewsEntity extends AbstractEntity
     public function isLikesStatus(): bool
     {
         return $this->likesStatus;
+    }
+
+    /**
+     * <p>Return if the news is published (news_status)</p>
+     * @return bool
+     */
+    public function isPublished(): bool
+    {
+        return $this->status;
     }
 
     /**

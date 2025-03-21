@@ -13,6 +13,7 @@ use CMW\Model\News\NewsModel;
 use CMW\Model\News\NewsTagsModel;
 use CMW\Utils\Redirect;
 use JetBrains\PhpStorm\NoReturn;
+use function is_null;
 
 /**
  * Class: @NewsPublicController
@@ -25,7 +26,7 @@ class NewsPublicController extends AbstractController
     #[Link('/news', Link::GET)]
     private function publicListNews(): void
     {
-        $newsList = NewsModel::getInstance()->getNews();
+        $newsList = NewsModel::getInstance()->getNews(true);
 
         View::createPublicView('News', 'list')
             ->addScriptBefore('Admin/Resources/Vendors/Prismjs/prism.js')
@@ -40,6 +41,10 @@ class NewsPublicController extends AbstractController
         $tag = NewsTagsModel::getInstance()->isTagExistByName($tagSlug);
 
         if (is_null($news) || !$tag) {
+            Redirect::errorPage(404);
+        }
+
+        if (!$news->isPublished()) {
             Redirect::errorPage(404);
         }
 
@@ -63,7 +68,7 @@ class NewsPublicController extends AbstractController
 
         $news = NewsModel::getInstance()->getNewsBySlug($slug);
 
-        if (is_null($news)) {
+        if (is_null($news) || !$news->isPublished()) {
             Redirect::errorPage(404);
         }
 
@@ -98,6 +103,10 @@ class NewsPublicController extends AbstractController
     {
         $user = UsersSessionsController::getInstance()->getCurrentUser();
 
+        if (is_null($user)) {
+            Redirect::redirect('login');
+        }
+
         // We check if the player has already like this comments, and we store the like
         if (newsCommentsLikesModel::getInstance()->userCanLike($commentsId, $user?->getId())) {
             newsCommentsLikesModel::getInstance()->storeLike($commentsId, $user?->getId());
@@ -111,10 +120,19 @@ class NewsPublicController extends AbstractController
     private function likeNews(int $id): void
     {
         $user = UsersSessionsController::getInstance()->getCurrentUser();
+
+        if (is_null($user)) {
+            Redirect::redirect('login');
+        }
+
         $news = NewsModel::getInstance()->getNewsById($id);
 
+        if (is_null($news)) {
+            Redirect::errorPage(404);
+        }
+
         // First check if the news is likeable
-        if (!$news?->isLikesStatus()) {
+        if (!$news->isLikesStatus()) {
             Redirect::redirect('news');
         }
 
@@ -130,6 +148,10 @@ class NewsPublicController extends AbstractController
     private function commentsNews(int $newsId): void
     {
         $user = UsersSessionsController::getInstance()->getCurrentUser();
+
+        if (is_null($user)) {
+            Redirect::redirect('login');
+        }
 
         $content = strip_tags(htmlentities(filter_input(INPUT_POST, 'comments')));
 

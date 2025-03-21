@@ -48,17 +48,15 @@ class NewsController extends AbstractController
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage.add');
 
-        [$title, $desc, $content, $comm, $likes] = Utils::filterInput('title', 'desc', 'content', 'comm', 'likes');
+        $title = FilterManager::filterInputStringPost('title');
+        $desc = FilterManager::filterInputStringPost('desc');
+        $content = FilterManager::filterInputStringPost('content', null);
+        $comm = isset($_POST['comm']);
+        $likes = isset($_POST['likes']);
+        $status = isset($_POST['status']);
 
         // We are storing $content for prevent error and not loose all data.
         $_SESSION['cmwNewsContent'] = $content;
-
-        if (is_null($comm)) {
-            $comm = 0;
-        }
-        if (is_null($likes)) {
-            $likes = 0;
-        }
 
         $slug = Utils::normalizeForSlug(FilterManager::filterInputStringPost('title'));
         $userId = UsersSessionsController::getInstance()->getCurrentUser()?->getId();
@@ -73,7 +71,7 @@ class NewsController extends AbstractController
             Redirect::redirectPreviousRoute();
         }
 
-        $news = NewsModel::getInstance()->createNews($title, $desc, $comm, $likes, $content, $slug, $userId, $imageName);
+        $news = NewsModel::getInstance()->createNews($title, $desc, $comm, $likes, $content, $slug, $userId, $imageName, $status);
 
         if (is_null($news)) {
             Flash::send(Alert::ERROR, LangManager::translate('core.toaster.error'),
@@ -88,8 +86,10 @@ class NewsController extends AbstractController
             }
         }
 
-        //Add news to sitemap
-        SitemapManager::getInstance()->add($news->getFullUrl(), 0.7);
+        //Add news to sitemap if status is true
+        if ($status) {
+            SitemapManager::getInstance()->add($news->getFullUrl(), 0.7);
+        }
 
         Flash::send(Alert::SUCCESS, LangManager::translate('core.toaster.success'),
             LangManager::translate('news.add.toasters.success'));
@@ -136,7 +136,7 @@ class NewsController extends AbstractController
             ->view();
     }
 
-    #[Link('/edit/:id', Link::POST, ['id' => '[0-9]+'], '/cmw-admin/news')]
+    #[NoReturn] #[Link('/edit/:id', Link::POST, ['id' => '[0-9]+'], '/cmw-admin/news')]
     private function editNewsPost(int $id): void
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage.edit');
@@ -147,14 +147,12 @@ class NewsController extends AbstractController
             Redirect::errorPage(404);
         }
 
-        [$title, $desc, $content, $comm, $likes] = Utils::filterInput('title', 'desc', 'content', 'comm', 'likes');
-
-        if (is_null($comm)) {
-            $comm = 0;
-        }
-        if (is_null($likes)) {
-            $likes = 0;
-        }
+        $title = FilterManager::filterInputStringPost('title');
+        $desc = FilterManager::filterInputStringPost('desc');
+        $content = FilterManager::filterInputStringPost('content', null);
+        $comm = isset($_POST['comm']);
+        $likes = isset($_POST['likes']);
+        $status = isset($_POST['status']);
 
         $slug = Utils::normalizeForSlug($title);
 
@@ -167,7 +165,7 @@ class NewsController extends AbstractController
             $imageName = ImagesManager::convertAndUpload($image, 'News');
         }
 
-        $updatedNews = NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $imageName);
+        $updatedNews = NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $imageName, $status);
 
         if (is_null($updatedNews)) {
             Flash::send(Alert::ERROR, LangManager::translate('core.toaster.error'),
@@ -188,11 +186,15 @@ class NewsController extends AbstractController
         }
 
         //Update sitemap
-        if ($updatedNews->getSlug() === $news->getSlug()) {
+        if (($news->isPublished() && $updatedNews->isPublished()) && $updatedNews->getSlug() === $news->getSlug()) {
             SitemapManager::getInstance()->update($news->getFullUrl(), 0.7);
-        } else {
+        } else if ($updatedNews->isPublished() && $news->isPublished()) {
             SitemapManager::getInstance()->delete($news->getFullUrl());
             SitemapManager::getInstance()->add($updatedNews->getFullUrl(), 0.7);
+        } else if ($updatedNews->isPublished() && !$news->isPublished()) {
+            SitemapManager::getInstance()->add($updatedNews->getFullUrl(), 0.7);
+        } else if (!$updatedNews->isPublished()) {
+            SitemapManager::getInstance()->delete($news->getFullUrl());
         }
 
         Flash::send(Alert::SUCCESS, LangManager::translate('core.toaster.success'),
@@ -215,7 +217,9 @@ class NewsController extends AbstractController
 
         NewsModel::getInstance()->deleteNews($id);
 
-        SitemapManager::getInstance()->delete($news->getFullUrl());
+        if ($news->isPublished()) {
+            SitemapManager::getInstance()->delete($news->getFullUrl());
+        }
 
         Flash::send(Alert::SUCCESS, LangManager::translate('core.toaster.success'),
             LangManager::translate('news.delete.toasters.success'));

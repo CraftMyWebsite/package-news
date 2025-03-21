@@ -2,7 +2,6 @@
 
 namespace CMW\Model\News;
 
-use CMW\Controller\Users\UsersSessionsController;
 use CMW\Entity\News\NewsBannedPlayersEntity;
 use CMW\Entity\News\NewsEntity;
 use CMW\Manager\Database\DatabaseManager;
@@ -10,6 +9,8 @@ use CMW\Manager\Editor\EditorManager;
 use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Package\AbstractModel;
 use CMW\Model\Users\UsersModel;
+use CMW\Utils\Log;
+use CMW\Utils\Utils;
 use JetBrains\PhpStorm\ExpectedValues;
 
 /**
@@ -20,7 +21,29 @@ use JetBrains\PhpStorm\ExpectedValues;
  */
 class NewsModel extends AbstractModel
 {
-    public function createNews(string $title, string $desc, int $comm, int $likes, string $content, string $slug, int $authorId, string $imageName): ?NewsEntity
+    /**
+     * @param string $title
+     * @param string $desc
+     * @param bool $comm
+     * @param bool $likes
+     * @param string $content
+     * @param string $slug
+     * @param int $authorId
+     * @param string $imageName
+     * @param int $status
+     * @return NewsEntity|null
+     */
+    public function createNews(
+        string $title,
+        string $desc,
+        bool   $comm,
+        bool   $likes,
+        string $content,
+        string $slug,
+        int    $authorId,
+        string $imageName,
+        int    $status,
+    ): ?NewsEntity
     {
         $var = [
             'title' => $title,
@@ -31,23 +54,28 @@ class NewsModel extends AbstractModel
             'slug' => $slug,
             'authorId' => $authorId,
             'imageName' => $imageName,
+            'status' => $status,
         ];
 
         $sql = 'INSERT INTO cmw_news (news_title, news_desc, news_comments_status, news_likes_status, news_content, 
-                news_slug, news_author, news_image_name) 
-                VALUES (:title, :desc, :comm, :likes, :content, :slug, :authorId, :imageName)';
+                news_slug, news_author, news_image_name, news_status) 
+                VALUES (:title, :desc, :comm, :likes, :content, :slug, :authorId, :imageName, :status)';
 
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
 
-        if ($req->execute($var)) {
-            $id = $db->lastInsertId();
-            return $this->getNewsById($id);
+        if (!$req->execute($var)) {
+            return null;
         }
 
-        return null;
+        $id = $db->lastInsertId();
+        return $this->getNewsById($id);
     }
 
+    /**
+     * @param int $newsId
+     * @return NewsEntity|null
+     */
     public function getNewsById(int $newsId): ?NewsEntity
     {
         $sql = 'SELECT * FROM cmw_news WHERE news_id=:news_id';
@@ -61,7 +89,7 @@ class NewsModel extends AbstractModel
 
         $res = $res->fetch();
 
-        if (empty($res)) {
+        if (!$res) {
             return null;
         }
 
@@ -74,6 +102,7 @@ class NewsModel extends AbstractModel
             $res['news_desc'],
             $res['news_comments_status'],
             $res['news_likes_status'],
+            $res['news_status'],
             $res['news_content'],
             $res['news_content'],
             $res['news_slug'],
@@ -115,6 +144,7 @@ class NewsModel extends AbstractModel
             $res['news_desc'],
             $res['news_comments_status'],
             $res['news_likes_status'],
+            $res['news_status'],
             $res['news_content'],
             $res['news_content'],
             $res['news_slug'],
@@ -130,17 +160,66 @@ class NewsModel extends AbstractModel
     }
 
     /**
+     * @param bool $status (default: null), if True return only published news, if False return only unpublished news, if null return all news
      * @return array
      * @desc return all news
      */
-    public function getNews(): array
+    public function getNews(?bool $status = null): array
     {
+        $data = [];
+
         $sql = 'SELECT news_id FROM cmw_news';
+
+        if (!is_null($status)) {
+            $sql .= ' WHERE news_status = :status';
+            $data['status'] = $status;
+        }
+
         $db = DatabaseManager::getInstance();
 
         $res = $db->prepare($sql);
 
-        if (!$res->execute()) {
+        if (!$res->execute($data)) {
+            return [];
+        }
+
+        $toReturn = [];
+
+        while ($news = $res->fetch()) {
+            Utils::addIfNotNull($toReturn, $this->getNewsById($news['news_id']));
+        }
+
+        return $toReturn;
+    }
+
+    /**
+     * @param bool $status (default: true), if True return only published news, if False return only unpublished news, if null return all news
+     * @param int $limit
+     * @param string $order
+     * @return NewsEntity[]
+     */
+    public function getSomeNews(int $limit, #[ExpectedValues(values: ['DESC', 'ASC'])] string $order = 'DESC', ?bool $status = true): array
+    {
+        $data = [
+            'limit' => $limit,
+        ];
+
+        $sql = "SELECT news_id FROM cmw_news";
+
+        if (!is_null($status)) {
+            $sql .= ' WHERE news_status = :status';
+            $data['status'] = $status;
+        }
+
+        $sql .= $order === 'ASC'
+            ? ' ORDER BY `cmw_news`.`news_id` LIMIT :limit'
+            : ' ORDER BY `cmw_news`.`news_id` DESC LIMIT :limit';
+
+        $db = DatabaseManager::getInstance();
+
+        $res = $db->prepare($sql);
+
+        if (!$res->execute($data)) {
             return [];
         }
 
@@ -154,34 +233,28 @@ class NewsModel extends AbstractModel
     }
 
     /**
-     * @param int $limit
-     * @param string $order
-     * @return NewsEntity[]
+     * @param int $newsId
+     * @param string $title
+     * @param string $desc
+     * @param bool $comm
+     * @param bool $likes
+     * @param string $content
+     * @param string $slug
+     * @param string|null $imageName
+     * @param bool $status
+     * @return NewsEntity|null
      */
-    public function getSomeNews(int $limit, #[ExpectedValues(values: ['DESC', 'ASC'])] string $order = 'DESC'): array
-    {
-        $order === 'ASC'
-            ? $sql = 'SELECT news_id FROM cmw_news ORDER BY `cmw_news`.`news_id` LIMIT :limit'
-            : $sql = 'SELECT news_id FROM cmw_news ORDER BY `cmw_news`.`news_id` DESC LIMIT :limit';
-
-        $db = DatabaseManager::getInstance();
-
-        $res = $db->prepare($sql);
-
-        if (!$res->execute(['limit' => $limit])) {
-            return [];
-        }
-
-        $toReturn = [];
-
-        while ($news = $res->fetch()) {
-            $toReturn[] = $this->getNewsById($news['news_id']);
-        }
-
-        return $toReturn;
-    }
-
-    public function updateNews(int $newsId, string $title, string $desc, int $comm, int $likes, string $content, string $slug, string|null $imageName): ?NewsEntity
+    public function updateNews(
+        int         $newsId,
+        string      $title,
+        string      $desc,
+        bool        $comm,
+        bool        $likes,
+        string      $content,
+        string      $slug,
+        string|null $imageName,
+        bool        $status,
+    ): ?NewsEntity
     {
         $var = [
             'newsId' => $newsId,
@@ -191,11 +264,14 @@ class NewsModel extends AbstractModel
             'likes' => $likes,
             'content' => $content,
             'slug' => $slug,
-            'imageName' => $imageName
+            'imageName' => $imageName,
+            'status' => $status,
         ];
 
         $sql = 'UPDATE cmw_news SET news_title = :title, news_desc = :desc, news_comments_status = :comm, 
-                    news_likes_status = :likes, news_content = :content, news_slug = :slug, news_image_name = :imageName WHERE news_id = :newsId';
+                    news_likes_status = :likes, news_content = :content, news_slug = :slug, 
+                    news_image_name = :imageName, news_status = :status
+                WHERE news_id = :newsId';
 
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
@@ -206,12 +282,16 @@ class NewsModel extends AbstractModel
         return null;
     }
 
+    /**
+     * @param int $newsId
+     * @return void
+     */
     public function deleteNews(int $newsId): void
     {
         // Delete the image file
         unlink(EnvManager::getInstance()->getValue('DIR') . 'Public/Uploads/News/' . $this->getNewsById($newsId)?->getImageName());
 
-        $newsContent = $this->getNewsById($newsId)->getContent();
+        $newsContent = $this->getNewsById($newsId)?->getContent();
         EditorManager::getInstance()->deleteEditorImageInContent($newsContent);
 
         $sql = 'DELETE FROM cmw_news WHERE news_id=:news_id';
@@ -221,6 +301,9 @@ class NewsModel extends AbstractModel
         $req->execute(['news_id' => $newsId]);
     }
 
+    /**
+     * @return NewsBannedPlayersEntity[]
+     */
     public function getBannedUsers(): array
     {
         $sql = 'SELECT news_banned_players_player_id FROM cmw_news_banned_players';
@@ -235,12 +318,16 @@ class NewsModel extends AbstractModel
         $toReturn = [];
 
         while ($player = $res->fetch()) {
-            $toReturn[] = $this->getBannedUser($player['news_banned_players_player_id']);
+            Utils::addIfNotNull($toReturn, $this->getBannedUser($player['news_banned_players_player_id']));
         }
 
         return $toReturn;
     }
 
+    /**
+     * @param int $userId
+     * @return NewsBannedPlayersEntity|null
+     */
     public function getBannedUser(int $userId): ?NewsBannedPlayersEntity
     {
         $sql = 'SELECT news_banned_players_id, news_banned_players_player_id, news_banned_players_author_id, news_banned_players_date
@@ -255,6 +342,10 @@ class NewsModel extends AbstractModel
 
         $res = $res->fetch();
 
+        if (!$res) {
+            return null;
+        }
+
         $player = UsersModel::getInstance()->getUserById($userId);
         $author = UsersModel::getInstance()->getUserById($res['news_banned_players_author_id']);
 
@@ -266,12 +357,17 @@ class NewsModel extends AbstractModel
         );
     }
 
-    public function banPlayer(int $userId): ?NewsBannedPlayersEntity
+    /**
+     * @param int $userId
+     * @param int $authorId
+     * @return NewsBannedPlayersEntity|null
+     */
+    public function banPlayer(int $userId, int $authorId): ?NewsBannedPlayersEntity
     {
         if (!$this->isUserBanned($userId)) {
             $var = [
                 'userId' => $userId,
-                'authorId' => UsersSessionsController::getInstance()->getCurrentUser()?->getId(),
+                'authorId' => $authorId,
             ];
 
             $sql = 'INSERT INTO cmw_news_banned_players (news_banned_players_player_id, news_banned_players_author_id) 
@@ -288,6 +384,10 @@ class NewsModel extends AbstractModel
         return null;
     }
 
+    /**
+     * @param int $userId
+     * @return bool
+     */
     public function isUserBanned(int $userId): bool
     {
         $sql = 'SELECT news_banned_players_id FROM `cmw_news_banned_players` 
@@ -301,6 +401,10 @@ class NewsModel extends AbstractModel
         return count($res->fetchAll()) !== 0;
     }
 
+    /**
+     * @param int $newsId
+     * @return void
+     */
     public function incrementViews(int $newsId): void
     {
         $sql = 'UPDATE cmw_news SET news_views = news_views + 1 WHERE news_id = :id';

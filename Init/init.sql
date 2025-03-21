@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `cmw_news`
     `news_desc`            VARCHAR(255) NOT NULL,
     `news_comments_status` BOOLEAN      NOT NULL DEFAULT TRUE,
     `news_likes_status`    BOOLEAN      NOT NULL DEFAULT TRUE,
+    `news_status`          TINYINT(1)   NOT NULL DEFAULT 0, -- 0 = Draft, 1 = Published
     `news_content`         LONGTEXT     NOT NULL,
     `news_slug`            VARCHAR(255) NOT NULL,
     `news_author`          INT          NULL,

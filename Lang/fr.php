@@ -38,6 +38,7 @@ return [
         'desc_placeholder' => 'Description',
         'enable_comm' => 'Activer les commentaires',
         'enable_likes' => 'Activer les likes',
+        'status_toggle' => 'Publier',
         'allow_files' => 'Fichiers autorisés : png, jpg, jpeg, webp, svg, gif',
         'image' => 'Image de couverture',
         'select_image' => 'Choisissez une image',

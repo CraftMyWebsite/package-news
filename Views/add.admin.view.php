@@ -61,10 +61,17 @@ $description = LangManager::translate('news.dashboard.desc');
                         <div class="toggle-slider"></div>
                     </label>
                 </div>
-                <div>
-                    <label class="toggle">
-                        <p class="toggle-label"><?= LangManager::translate('news.add.enable_likes') ?></p>
+                <div class='mb-4'>
+                    <label class='toggle'>
+                        <p class='toggle-label'><?= LangManager::translate('news.add.enable_likes') ?></p>
                         <input name="likes" type="checkbox" value="1" id="likes" checked class="toggle-input">
+                        <div class="toggle-slider"></div>
+                    </label>
+                </div>
+                <div>
+                    <label class='toggle'>
+                        <p class='toggle-label'><?= LangManager::translate('news.add.status_toggle') ?></p>
+                        <input name="status" type="checkbox" value="1" id="status" checked class="toggle-input">
                         <div class="toggle-slider"></div>
                     </label>
                 </div>

@@ -11,7 +11,9 @@ $description = LangManager::translate('news.dashboard.desc');
 ?>
 
 <div class="page-title">
-    <h3><i class="fa-solid fa-newspaper"></i> <?= LangManager::translate('news.dashboard.title') . ': ' . $news->getTitle() ?></h3>
+    <h3>
+        <i class="fa-solid fa-newspaper"></i> <?= LangManager::translate('news.dashboard.title') . ': ' . $news->getTitle() ?>
+    </h3>
     <button form="addNews" type="submit" class="btn-primary"> <?= LangManager::translate('core.btn.save') ?></button>
 </div>
 
@@ -21,7 +23,8 @@ $description = LangManager::translate('news.dashboard.desc');
     <div class="grid-3">
         <div class="col-span-2 card">
             <label for="content"><?= LangManager::translate('news.add.content') ?> :</label>
-            <textarea class="tinymce" id="content" name="content" data-tiny-height="600"><?= $news->getContentNotTranslate() ?></textarea>
+            <textarea class="tinymce" id="content" name="content"
+                      data-tiny-height="600"><?= $news->getContentNotTranslate() ?></textarea>
         </div>
         <div class="card space-y-4">
             <div>
@@ -63,14 +66,24 @@ $description = LangManager::translate('news.dashboard.desc');
                 <div class="mb-4">
                     <label class="toggle">
                         <p class="toggle-label"><?= LangManager::translate('news.add.enable_comm') ?></p>
-                        <input class="toggle-input" name="comm" type="checkbox" id="comm" <?= ($news->isCommentsStatus() ? 'checked' : '') ?> >
+                        <input class="toggle-input" name="comm" type="checkbox"
+                               id="comm" <?= ($news->isCommentsStatus() ? 'checked' : '') ?> >
                         <div class="toggle-slider"></div>
                     </label>
                 </div>
-                <div>
+                <div class="mb-4">
                     <label class="toggle">
                         <p class="toggle-label"><?= LangManager::translate('news.add.enable_likes') ?></p>
-                        <input name="likes" type="checkbox" value="1" id="likes" <?= ($news->isLikesStatus() ? 'checked' : '') ?> class="toggle-input">
+                        <input name="likes" type="checkbox" value="1"
+                               id="likes" <?= ($news->isLikesStatus() ? 'checked' : '') ?> class="toggle-input">
+                        <div class="toggle-slider"></div>
+                    </label>
+                </div>
+                <div class="mb-4">
+                    <label class="toggle">
+                        <p class="toggle-label"><?= LangManager::translate('news.add.status_toggle') ?></p>
+                        <input name="status" type="checkbox" value="1"
+                               id="status" <?= ($news->isPublished() ? 'checked' : '') ?> class="toggle-input">
                         <div class="toggle-slider"></div>
                     </label>
                 </div>

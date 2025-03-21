@@ -48,7 +48,7 @@ class Package implements IPackageConfig
 
     public function requiredPackages(): array
     {
-        return ['Core', 'OverApi'];
+        return ['Core'];
     }
 
     public function uninstall(): bool
