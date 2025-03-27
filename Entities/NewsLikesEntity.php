@@ -3,12 +3,11 @@
 namespace CMW\Entity\News;
 
 use CMW\Controller\Users\UsersSessionsController;
-use CMW\Manager\Package\AbstractEntity;
-use CMW\Utils\Date;
 use CMW\Entity\Users\UserEntity;
 use CMW\Manager\Env\EnvManager;
+use CMW\Manager\Package\AbstractEntity;
 use CMW\Model\News\NewsLikesModel;
-use CMW\Model\Users\UsersModel;
+use CMW\Utils\Date;
 
 class NewsLikesEntity extends AbstractEntity
 {
@@ -19,8 +18,6 @@ class NewsLikesEntity extends AbstractEntity
     // Utils
     private int $newsId;
     private int $total;
-    private string $sendLike;
-    private bool $isLike;
 
     /**
      * @param int|null $likeId

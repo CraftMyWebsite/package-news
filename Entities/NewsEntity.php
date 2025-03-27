@@ -5,7 +5,9 @@ namespace CMW\Entity\News;
 use CMW\Entity\Users\UserEntity;
 use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Package\AbstractEntity;
+use CMW\Manager\Package\EntityType;
 use CMW\Utils\Date;
+use function htmlspecialchars;
 
 class NewsEntity extends AbstractEntity
 {
@@ -49,23 +51,23 @@ class NewsEntity extends AbstractEntity
      * @param NewsTagsEntity[] $tags
      */
     public function __construct(
-        int              $newsId,
-        string           $title,
-        string           $description,
-        bool             $commentsStatus,
-        bool             $likesStatus,
-        bool             $status,
-        string           $content,
-        string           $contentNt,
-        string           $slug,
-        ?UserEntity      $author,
-        int              $views,
-        string           $imageName,
-        string           $dateCreated,
-        string           $dateUpdated,
-        ?NewsLikesEntity $likes,
-        ?array           $comments,
-        array            $tags,
+        int                                             $newsId,
+        string                                          $title,
+        string                                          $description,
+        bool                                            $commentsStatus,
+        bool                                            $likesStatus,
+        bool                                            $status,
+        string                                          $content,
+        string                                          $contentNt,
+        string                                          $slug,
+        ?UserEntity                                     $author,
+        int                                             $views,
+        string                                          $imageName,
+        string                                          $dateCreated,
+        string                                          $dateUpdated,
+        ?NewsLikesEntity                                $likes,
+        #[EntityType(NewsCommentsEntity::class)] ?array $comments,
+        #[EntityType(NewsTagsEntity::class)] array      $tags,
     )
     {
         $this->newsId = $newsId;

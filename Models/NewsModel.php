@@ -4,14 +4,19 @@ namespace CMW\Model\News;
 
 use CMW\Entity\News\NewsBannedPlayersEntity;
 use CMW\Entity\News\NewsEntity;
+use CMW\Manager\Cache\SimpleCacheManager;
 use CMW\Manager\Database\DatabaseManager;
 use CMW\Manager\Editor\EditorManager;
 use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Package\AbstractModel;
 use CMW\Model\Users\UsersModel;
-use CMW\Utils\Log;
 use CMW\Utils\Utils;
 use JetBrains\PhpStorm\ExpectedValues;
+use JsonException;
+use ReflectionException;
+use function count;
+use function is_null;
+use function unlink;
 
 /**
  * Class @NewsModel
@@ -69,15 +74,27 @@ class NewsModel extends AbstractModel
         }
 
         $id = $db->lastInsertId();
-        return $this->getNewsById($id);
+        return $this->getNewsById($id, true);
     }
 
     /**
      * @param int $newsId
+     * @param bool $ignoreCache
      * @return NewsEntity|null
      */
-    public function getNewsById(int $newsId): ?NewsEntity
+    public function getNewsById(int $newsId, bool $ignoreCache = false): ?NewsEntity
     {
+        if (!$ignoreCache) {
+            $cachedData = SimpleCacheManager::getCache('news_id_' . $newsId, 'News');
+
+            if (!is_null($cachedData)) {
+                try {
+                    return NewsEntity::toEntity($cachedData);
+                } catch (ReflectionException) {
+                }
+            }
+        }
+
         $sql = 'SELECT * FROM cmw_news WHERE news_id=:news_id';
 
         $db = DatabaseManager::getInstance();
@@ -96,7 +113,7 @@ class NewsModel extends AbstractModel
         $author = UsersModel::getInstance()->getUserById($res['news_author']);
         $newsLikes = NewsLikesModel::getInstance()->getLikesForNews($res['news_id']);
 
-        return new NewsEntity(
+        $toReturn = new NewsEntity(
             $res['news_id'],
             $res['news_title'],
             $res['news_desc'],
@@ -115,10 +132,30 @@ class NewsModel extends AbstractModel
             NewsCommentsModel::getInstance()->getCommentsForNews($res['news_id']),
             NewsTagsModel::getInstance()->getTagsForNewsById($res['news_id']),
         );
+
+        SimpleCacheManager::storeCache($toReturn->toArray(), 'news_id_' . $newsId, 'News');
+
+        return $toReturn;
     }
 
-    public function getNewsBySlug(string $newsSlug): ?NewsEntity
+    /**
+     * @param string $newsSlug
+     * @param bool $ignoreCache
+     * @return NewsEntity|null
+     */
+    public function getNewsBySlug(string $newsSlug, bool $ignoreCache = false): ?NewsEntity
     {
+        if (!$ignoreCache) {
+            $cachedData = SimpleCacheManager::getCache("news_slug_$newsSlug", 'News');
+
+            if (!is_null($cachedData)) {
+                try {
+                    return NewsEntity::toEntity($cachedData);
+                } catch (ReflectionException) {
+                }
+            }
+        }
+
         $sql = 'SELECT * FROM cmw_news WHERE news_slug=:news_slug';
 
         $db = DatabaseManager::getInstance();
@@ -138,7 +175,7 @@ class NewsModel extends AbstractModel
         $newsLikes = NewsLikesModel::getInstance()->getLikesForNews($res['news_id']);
         $newsComments = NewsCommentsModel::getInstance()->getCommentsForNews($res['news_id']);
 
-        return new NewsEntity(
+        $toReturn = new NewsEntity(
             $res['news_id'],
             $res['news_title'],
             $res['news_desc'],
@@ -157,15 +194,31 @@ class NewsModel extends AbstractModel
             $newsComments,
             NewsTagsModel::getInstance()->getTagsForNewsById($res['news_id']),
         );
+
+        SimpleCacheManager::storeCache($toReturn->toArray(), 'news_slug_' . $newsSlug, 'News');
+
+        return $toReturn;
     }
 
     /**
      * @param bool $status (default: null), if True return only published news, if False return only unpublished news, if null return all news
+     * @param bool $ignoreCache
      * @return array
      * @desc return all news
      */
-    public function getNews(?bool $status = null): array
+    public function getNews(?bool $status = null, bool $ignoreCache = false): array
     {
+
+        if (!$ignoreCache) {
+            $cachedData = SimpleCacheManager::getCache('news', 'News');
+            if (!is_null($cachedData)) {
+                try {
+                    return NewsEntity::fromJsonList($cachedData);
+                } catch (ReflectionException|JsonException) {
+                }
+            }
+        }
+
         $data = [];
 
         $sql = 'SELECT news_id FROM cmw_news';
@@ -186,7 +239,12 @@ class NewsModel extends AbstractModel
         $toReturn = [];
 
         while ($news = $res->fetch()) {
-            Utils::addIfNotNull($toReturn, $this->getNewsById($news['news_id']));
+            Utils::addIfNotNull($toReturn, $this->getNewsById($news['news_id'], $ignoreCache));
+        }
+
+        try {
+            SimpleCacheManager::storeCache(NewsEntity::toJsonList($toReturn), 'news', 'News');
+        } catch (JsonException) {
         }
 
         return $toReturn;
@@ -200,11 +258,19 @@ class NewsModel extends AbstractModel
      */
     public function getSomeNews(int $limit, #[ExpectedValues(values: ['DESC', 'ASC'])] string $order = 'DESC', ?bool $status = true): array
     {
+        $cachedData = SimpleCacheManager::getCache("news_order_{$order}_{$limit}_$status", 'News');
+        if (!is_null($cachedData)) {
+            try {
+                return NewsEntity::fromJsonList($cachedData);
+            } catch (ReflectionException|JsonException) {
+            }
+        }
+
         $data = [
             'limit' => $limit,
         ];
 
-        $sql = "SELECT news_id FROM cmw_news";
+        $sql = 'SELECT news_id FROM cmw_news';
 
         if (!is_null($status)) {
             $sql .= ' WHERE news_status = :status';
@@ -227,6 +293,11 @@ class NewsModel extends AbstractModel
 
         while ($news = $res->fetch()) {
             $toReturn[] = $this->getNewsById($news['news_id']);
+        }
+
+        try {
+            SimpleCacheManager::storeCache(NewsEntity::toJsonList($toReturn), "news_order_{$order}_{$limit}_$status", 'News');
+        } catch (JsonException) {
         }
 
         return $toReturn;
@@ -276,7 +347,7 @@ class NewsModel extends AbstractModel
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
         if ($req->execute($var)) {
-            return $this->getNewsById($newsId);
+            return $this->getNewsById($newsId, true);
         }
 
         return null;
