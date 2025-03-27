@@ -20,12 +20,13 @@ use CMW\Utils\Redirect;
 use CMW\Utils\Utils;
 use JetBrains\PhpStorm\NoReturn;
 use function is_null;
+use const FILTER_SANITIZE_NUMBER_INT;
+use const UPLOAD_ERR_OK;
 
 /**
  * Class: @NewsController
  * @package News
  * @author Teyir
- * @version 0.0.1
  */
 class NewsController extends AbstractController
 {
@@ -47,6 +48,12 @@ class NewsController extends AbstractController
     private function addNewsPost(): void
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage.add');
+
+        if (!isset($_FILES['image'])) {
+            Flash::send(Alert::ERROR, LangManager::translate('core.toaster.error'),
+                LangManager::translate('core.errors.upload.image'));
+            Redirect::redirectPreviousRoute();
+        }
 
         $title = FilterManager::filterInputStringPost('title');
         $desc = FilterManager::filterInputStringPost('desc');
