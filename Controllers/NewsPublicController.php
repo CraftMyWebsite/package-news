@@ -91,10 +91,10 @@ class NewsPublicController extends AbstractController
         $newsList = NewsTagsModel::getInstance()->getNewsForTagById($tag->getId());
         $newsModel = NewsModel::getInstance();
 
-        $view = new View('News', 'list');
-        $view->addScriptBefore('Admin/Resources/Vendors/Prismjs/prism.js');
-        $view->addVariableList(['newsList' => $newsList, 'newsModel' => $newsModel]);
-        $view->view();
+        View::createPublicView('News', 'list')
+            ->addScriptBefore('Admin/Resources/Vendors/Prismjs/prism.js')
+            ->addVariableList(['newsList' => $newsList, 'newsModel' => $newsModel])
+            ->view();
     }
 
     #[NoReturn]
