@@ -16,7 +16,7 @@ class Package implements IPackageConfig
 
     public function version(): string
     {
-        return '1.3.0';
+        return '1.4.0';
     }
 
     public function authors(): array
