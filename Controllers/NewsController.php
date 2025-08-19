@@ -61,9 +61,9 @@ class NewsController extends AbstractController
         $title = FilterManager::filterInputStringPost('title');
         $desc = FilterManager::filterInputStringPost('desc');
         $content = FilterManager::filterInputStringPost('content', null);
-        $comm = isset($_POST['comm']);
-        $likes = isset($_POST['likes']);
-        $status = isset($_POST['status']);
+        $comm = FilterManager::filterInputIntPost('comm');
+        $likes = FilterManager::filterInputIntPost('likes');
+        $status = FilterManager::filterInputIntPost('status');
 
         // We are storing $content for prevent error and not loose all data.
         $_SESSION['cmwNewsContent'] = $content;
@@ -162,9 +162,9 @@ class NewsController extends AbstractController
         $title = FilterManager::filterInputStringPost('title');
         $desc = FilterManager::filterInputStringPost('desc');
         $content = FilterManager::filterInputStringPost('content', null);
-        $comm = isset($_POST['comm']);
-        $likes = isset($_POST['likes']);
-        $status = isset($_POST['status']);
+        $comm = FilterManager::filterInputIntPost('comm');
+        $likes = FilterManager::filterInputIntPost('likes');
+        $status = FilterManager::filterInputIntPost('status');
 
         $slug = Utils::normalizeForSlug($title);
 

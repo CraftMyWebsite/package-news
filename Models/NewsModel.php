@@ -29,8 +29,8 @@ class NewsModel extends AbstractModel
     /**
      * @param string $title
      * @param string $desc
-     * @param bool $comm
-     * @param bool $likes
+     * @param int $comm
+     * @param int $likes
      * @param string $content
      * @param string $slug
      * @param int $authorId
@@ -41,8 +41,8 @@ class NewsModel extends AbstractModel
     public function createNews(
         string $title,
         string $desc,
-        bool   $comm,
-        bool   $likes,
+        int   $comm,
+        int   $likes,
         string $content,
         string $slug,
         int    $authorId,
@@ -307,24 +307,24 @@ class NewsModel extends AbstractModel
      * @param int $newsId
      * @param string $title
      * @param string $desc
-     * @param bool $comm
-     * @param bool $likes
+     * @param int $comm
+     * @param int $likes
      * @param string $content
      * @param string $slug
      * @param string|null $imageName
-     * @param bool $status
+     * @param int $status
      * @return NewsEntity|null
      */
     public function updateNews(
         int         $newsId,
         string      $title,
         string      $desc,
-        bool        $comm,
-        bool        $likes,
+        int        $comm,
+        int        $likes,
         string      $content,
         string      $slug,
         string|null $imageName,
-        bool        $status,
+        int        $status,
     ): ?NewsEntity
     {
         $var = [
