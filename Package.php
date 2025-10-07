@@ -4,10 +4,11 @@ namespace CMW\Package\News;
 
 use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\IPackageConfig;
+use CMW\Manager\Package\IPackageConfigV2;
 use CMW\Manager\Package\PackageMenuType;
 use CMW\Manager\Package\PackageSubMenuType;
 
-class Package implements IPackageConfig
+class Package implements IPackageConfigV2
 {
     public function name(): string
     {
@@ -16,7 +17,7 @@ class Package implements IPackageConfig
 
     public function version(): string
     {
-        return '1.5.0';
+        return '1.6.0';
     }
 
     public function authors(): array
@@ -55,5 +56,25 @@ class Package implements IPackageConfig
     {
         // Return true, we don't need other operations for uninstall.
         return true;
+    }
+
+    public function cmwVersion(): string
+    {
+        return "beta-01";
+    }
+
+    public function imageLink(): ?string
+    {
+        return null;
+    }
+
+    public function author(): ?string
+    {
+        return "Teyir";
+    }
+
+    public function compatiblesPackages(): array
+    {
+        return [];
     }
 }
