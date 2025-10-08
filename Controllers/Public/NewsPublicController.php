@@ -1,6 +1,6 @@
 <?php
 
-namespace CMW\Controller\News;
+namespace CMW\Controller\News\Public;
 
 use CMW\Controller\Users\UsersSessionsController;
 use CMW\Manager\Package\AbstractController;

@@ -19,7 +19,7 @@ $description = LangManager::translate('news.dashboard.desc');
 <div class="card">
     <div class="lg:flex justify-between">
         <h6><?= LangManager::translate('news.list.list') ?></h6>
-        <a href="news/add" class="btn-primary" type="button"><?= LangManager::translate('core.btn.add') ?></a>
+        <a href="manage/add" class="btn-primary" type="button"><?= LangManager::translate('core.btn.add') ?></a>
     </div>
     <div class="table-container">
         <table id="table2" data-load-per-page="10">
@@ -37,19 +37,19 @@ $description = LangManager::translate('news.dashboard.desc');
             <tbody>
             <?php foreach ($newsList as $news): ?>
                 <tr>
-                    <td><?= mb_strimwidth($news->getTitle(), 0, 20, '...') ?></td>
+                    <td><?= $news->isScheduled() ? '<i class="fas fa-clock"></i> ' : '' ?> <?= mb_strimwidth($news->getTitle(), 0, 20, '...') ?></td>
                     <td><?= mb_strimwidth($news->getDescription(), 0, 20, '...') ?></td>
                     <td><?= $news->getAuthor()->getPseudo() ?></td>
                     <td>
                         <a target="_blank" class="link"
-                           href="<?= Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . 'news/' . $news->getSlug() ?>">
-                            <?= mb_strimwidth(Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . 'news/' . $news->getSlug(), 0, 35, '...') ?>
+                           href="<?= Website::getUrl() . 'news/' . $news->getSlug() ?>">
+                            <?= mb_strimwidth(Website::getUrl() . 'news/' . $news->getSlug(), 0, 35, '...') ?>
                         </a>
                     </td>
                     <td><?= $news->getViews() ?></td>
                     <td><?= $news->getDateCreated() ?></td>
                     <td class="text-center space-x-2">
-                        <a class="me-3" href="news/edit/<?= $news->getNewsId() ?>">
+                        <a class="me-3" href="manage/edit/<?= $news->getNewsId() ?>">
                             <i class="text-info fa-solid fa-gears"></i>
                         </a>
                         <button data-modal-toggle="modal-delete-news-<?= $news->getNewsId() ?>" type="button"><i
@@ -67,7 +67,7 @@ $description = LangManager::translate('news.dashboard.desc');
                             <?= LangManager::translate('news.modal.deletealert') ?>
                         </div>
                         <div class="modal-footer">
-                            <a href="news/delete/<?= $news->getNewsId() ?>" class="btn-danger">
+                            <a href="manage/delete/<?= $news->getNewsId() ?>" class="btn-danger">
                                 <?= LangManager::translate('core.btn.delete') ?>
                             </a>
                         </div>
@@ -84,9 +84,10 @@ $description = LangManager::translate('news.dashboard.desc');
         <div class="lg:flex justify-between">
             <h6><?= LangManager::translate('news.tags.list.title') ?></h6>
             <div class="space-x-2">
-                <button type="submit" class="btn-danger btn-mass-delete loading-btn" data-loading-btn="Chargement"
+                <button type="submit" class="btn-danger btn-mass-delete loading-btn"
+                        data-loading-btn="<?= LangManager::translate('core.datatables.list.loadingrecords') ?>"
                         data-target-table="1">
-                    Supprimer la selection
+                    <?= LangManager::translate('news.list.table.delete_selected') ?>
                 </button>
                 <button data-modal-toggle="modal-tag-add" class="btn-primary"
                         type="button"><?= LangManager::translate('core.btn.add') ?></button>
@@ -94,7 +95,7 @@ $description = LangManager::translate('news.dashboard.desc');
 
         </div>
         <div class="table-container">
-            <table class="table-checkeable" data-form-action="tag/deleteSelected" id="table1">
+            <table class="table-checkeable" data-form-action="manage/tag/deleteSelected" id="table1">
                 <thead>
                 <tr>
                     <th class="mass-selector"></th>
@@ -126,7 +127,7 @@ $description = LangManager::translate('news.dashboard.desc');
                                         <button type="button" data-modal-hide="modal-edit-<?= $tag->getId() ?>"><i
                                                 class="fa-solid fa-xmark"></i></button>
                                     </div>
-                                    <form method="post" action="news/tag/edit/<?= $tag->getId() ?>">
+                                    <form method="post" action="manage/tag/edit/<?= $tag->getId() ?>">
                                         <?php SecurityManager::getInstance()->insertHiddenToken() ?>
                                         <div class="modal-body">
                                             <div class="grid-2">
@@ -170,7 +171,7 @@ $description = LangManager::translate('news.dashboard.desc');
                                         <?= LangManager::translate('news.modal.deletealert') ?>
                                     </div>
                                     <div class="modal-footer">
-                                        <a href="news/tag/delete/<?= $tag->getId() ?>" class="btn-danger">
+                                        <a href="manage/tag/delete/<?= $tag->getId() ?>" class="btn-danger">
                                             <?= LangManager::translate('core.btn.delete') ?>
                                         </a>
                                     </div>
@@ -191,7 +192,7 @@ $description = LangManager::translate('news.dashboard.desc');
             <h6><?= LangManager::translate('news.tags.add.title') ?></h6>
             <button type="button" data-modal-hide="modal-tag-add"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <form method="post" action="news/tag">
+        <form method="post" action="manage/tag">
             <?php SecurityManager::getInstance()->insertHiddenToken() ?>
             <div class="modal-body">
                 <div class="grid-2">

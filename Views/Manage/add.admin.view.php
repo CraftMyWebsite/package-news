@@ -1,9 +1,10 @@
 <?php
 
+use CMW\Entity\News\NewsTagsEntity;
 use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Security\SecurityManager;
 
-/* @var \CMW\Entity\News\NewsTagsEntity[] $tags */
+/* @var NewsTagsEntity[] $tags */
 
 $title = LangManager::translate('news.dashboard.title');
 $description = LangManager::translate('news.dashboard.desc');
@@ -75,7 +76,37 @@ $description = LangManager::translate('news.dashboard.desc');
                         <div class="toggle-slider"></div>
                     </label>
                 </div>
+                <div>
+                    <label for="scheduled_date"><?= LangManager::translate('news.add.scheduled_date') ?>
+                        <button data-tooltip-target="tooltip-top" type="button" data-tooltip-placement="top"><i
+                                class="fas fa-circle-info"></i></button>
+                        <div id="tooltip-top" role="tooltip" class="tooltip-content">
+                            <?= LangManager::translate('news.add.scheduled_date_help') ?>
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                        :</label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <input type="datetime-local" name="scheduled_date" id="scheduled_date"
+                               placeholder="<?= LangManager::translate('news.add.scheduled_date_placeholder') ?>">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </form>
+
+<!-- Handle Scheduled date and status -->
+<!-- If scheduled date is set, disable status checkbox and uncheck it -->
+<script>
+    document.getElementById('scheduled_date').addEventListener('change', function () {
+        const statusCheckbox = document.getElementById('status');
+        if (this.value) {
+            statusCheckbox.checked = false
+            statusCheckbox.disabled = true
+        } else {
+            statusCheckbox.disabled = false
+            statusCheckbox.checked = true
+        }
+    })
+</script>

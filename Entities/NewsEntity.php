@@ -17,6 +17,7 @@ class NewsEntity extends AbstractEntity
     private bool $commentsStatus;
     private bool $likesStatus;
     private bool $status;
+    private ?string $dateScheduled;
     private string $content;
     private string $contentNt;
     private string $slug;
@@ -37,13 +38,14 @@ class NewsEntity extends AbstractEntity
      * @param string $description
      * @param bool $commentsStatus
      * @param bool $likesStatus
+     * @param bool $status
+     * @param string|null $dateScheduled
      * @param string $content
      * @param string $contentNt
      * @param string $slug
      * @param ?UserEntity $author
      * @param int $views
      * @param string $imageName
-     * @param bool $status
      * @param string $dateCreated
      * @param string $dateUpdated
      * @param ?NewsLikesEntity $likes
@@ -57,6 +59,7 @@ class NewsEntity extends AbstractEntity
         bool                                            $commentsStatus,
         bool                                            $likesStatus,
         bool                                            $status,
+        ?string                                         $dateScheduled,
         string                                          $content,
         string                                          $contentNt,
         string                                          $slug,
@@ -82,6 +85,7 @@ class NewsEntity extends AbstractEntity
         $this->views = $views;
         $this->imageName = $imageName;
         $this->status = $status;
+        $this->dateScheduled = $dateScheduled;
         $this->dateCreated = $dateCreated;
         $this->dateUpdated = $dateUpdated;
         $this->likes = $likes;
@@ -136,6 +140,34 @@ class NewsEntity extends AbstractEntity
     public function isPublished(): bool
     {
         return $this->status;
+    }
+
+    /**
+     * @return ?string
+     */
+    public function getDateScheduled(): ?string
+    {
+        return $this->dateScheduled;
+    }
+
+    /**
+     * @return ?string
+     */
+    public function getDateScheduledFormatted(): ?string
+    {
+        if ($this->dateScheduled === null) {
+            return null;
+        }
+
+        return Date::formatDate($this->dateScheduled);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isScheduled(): bool
+    {
+        return $this->dateScheduled !== null;
     }
 
     /**

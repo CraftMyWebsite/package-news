@@ -68,7 +68,7 @@ class NewsTagsModel extends AbstractModel
     }
 
     /**
-     * @return \CMW\Entity\News\NewsTagsEntity[]
+     * @return NewsTagsEntity[]
      */
     public function getTags(): array
     {
@@ -201,7 +201,7 @@ class NewsTagsModel extends AbstractModel
 
     /**
      * @param int $tagId
-     * @return \CMW\Entity\News\NewsEntity[]
+     * @return NewsEntity[]
      */
     public function getNewsForTagById(int $tagId): array
     {
@@ -233,6 +233,8 @@ class NewsTagsModel extends AbstractModel
                 $article['news_desc'],
                 $article['news_comments_status'],
                 $article['news_likes_status'],
+                $article['news_status'],
+                $article['news_date_scheduled'] ?? null,
                 $article['news_content'],
                 $article['news_content'],
                 $article['news_slug'],
@@ -271,6 +273,6 @@ class NewsTagsModel extends AbstractModel
             return false;
         }
 
-        return count($res) >= 1;
+        return \count($res) >= 1;
     }
 }

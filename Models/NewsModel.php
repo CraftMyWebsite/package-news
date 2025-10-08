@@ -36,18 +36,20 @@ class NewsModel extends AbstractModel
      * @param int $authorId
      * @param string $imageName
      * @param int $status
+     * @param string|null $scheduledDate
      * @return NewsEntity|null
      */
     public function createNews(
-        string $title,
-        string $desc,
-        int   $comm,
-        int   $likes,
-        string $content,
-        string $slug,
-        int    $authorId,
-        string $imageName,
-        int    $status,
+        string  $title,
+        string  $desc,
+        int     $comm,
+        int     $likes,
+        string  $content,
+        string  $slug,
+        int     $authorId,
+        string  $imageName,
+        int     $status,
+        ?string $scheduledDate = null,
     ): ?NewsEntity
     {
         $var = [
@@ -60,11 +62,12 @@ class NewsModel extends AbstractModel
             'authorId' => $authorId,
             'imageName' => $imageName,
             'status' => $status,
+            'scheduledDate' => $scheduledDate,
         ];
 
         $sql = 'INSERT INTO cmw_news (news_title, news_desc, news_comments_status, news_likes_status, news_content, 
-                news_slug, news_author, news_image_name, news_status) 
-                VALUES (:title, :desc, :comm, :likes, :content, :slug, :authorId, :imageName, :status)';
+                news_slug, news_author, news_image_name, news_status, news_date_scheduled) 
+                VALUES (:title, :desc, :comm, :likes, :content, :slug, :authorId, :imageName, :status, :scheduledDate)';
 
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
@@ -120,6 +123,7 @@ class NewsModel extends AbstractModel
             $res['news_comments_status'],
             $res['news_likes_status'],
             $res['news_status'],
+            $res['news_date_scheduled'] ?? null,
             $res['news_content'],
             $res['news_content'],
             $res['news_slug'],
@@ -182,6 +186,7 @@ class NewsModel extends AbstractModel
             $res['news_comments_status'],
             $res['news_likes_status'],
             $res['news_status'],
+            $res['news_date_scheduled'] ?? null,
             $res['news_content'],
             $res['news_content'],
             $res['news_slug'],
@@ -192,7 +197,7 @@ class NewsModel extends AbstractModel
             $res['news_date_updated'],
             $newsLikes,
             $newsComments,
-            NewsTagsModel::getInstance()->getTagsForNewsById($res['news_id']),
+            NewsTagsModel::getInstance()->getTagsForNewsById($res['news_id'])
         );
 
         SimpleCacheManager::storeCache($toReturn->toArray(), 'news_slug_' . $newsSlug, 'News');
@@ -313,18 +318,20 @@ class NewsModel extends AbstractModel
      * @param string $slug
      * @param string|null $imageName
      * @param int $status
+     * @param string|null $scheduledDate
      * @return NewsEntity|null
      */
     public function updateNews(
         int         $newsId,
         string      $title,
         string      $desc,
-        int        $comm,
-        int        $likes,
+        int         $comm,
+        int         $likes,
         string      $content,
         string      $slug,
         string|null $imageName,
-        int        $status,
+        int         $status,
+        ?string    $scheduledDate = null,
     ): ?NewsEntity
     {
         $var = [
@@ -337,11 +344,12 @@ class NewsModel extends AbstractModel
             'slug' => $slug,
             'imageName' => $imageName,
             'status' => $status,
+            'scheduledDate' => $scheduledDate,
         ];
 
         $sql = 'UPDATE cmw_news SET news_title = :title, news_desc = :desc, news_comments_status = :comm, 
                     news_likes_status = :likes, news_content = :content, news_slug = :slug, 
-                    news_image_name = :imageName, news_status = :status
+                    news_image_name = :imageName, news_status = :status, news_date_scheduled = :scheduledDate
                 WHERE news_id = :newsId';
 
         $db = DatabaseManager::getInstance();

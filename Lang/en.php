@@ -29,6 +29,7 @@ return [
             'creation_date' => 'creation date',
             'edit' => 'Edit',
             'link' => 'Link',
+            'delete_selected' => 'Delete selected',
         ],
     ],
     'add' => [
@@ -47,6 +48,9 @@ return [
             'success' => 'News added with success !',
             'error' => 'Unable to add this news !',
         ],
+        'scheduled_date' => 'Scheduled publishing date',
+        'scheduled_date_placeholder' => 'Leave empty for immediate publishing',
+        'scheduled_date_help' => "The news will be automatically published at that time <br> if cron jobs are enabled in the news settings.<br>Scheduled articles remain in draft until published." ,
     ],
     'edit' => [
         'toasters' => [
@@ -96,5 +100,18 @@ return [
             'delete' => 'Delete',
         ],
     ],
-    'menu' => 'News',
+    'menu' => [
+        'title' => 'News',
+        'settings' => 'Settings',
+        'news' => 'News',
+    ],
+    'settings' => [
+        'cron_info' => 'If this option is enabled, scheduled publications will be published automatically via a cron job. Make sure your server runs cron jobs regularly for this feature to work properly.',
+        'documentation_link' => 'Documentation link:',
+        'scheduled_publications' => 'Scheduled publications',
+        'enable_cron_toggle' => 'Enable cron jobs for scheduled publications',
+        'cron_url_label' => 'Cron URL for scheduled publications',
+        'copy_url' => 'Copy URL',
+        'cron_url_help' => 'Copy this URL and configure it in your cron job manager to execute scheduled publications.',
+    ],
 ];

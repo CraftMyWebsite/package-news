@@ -1,6 +1,6 @@
 <?php
 
-namespace CMW\Controller\News;
+namespace CMW\Controller\News\Admin;
 
 use CMW\Controller\Users\UsersController;
 use CMW\Controller\Users\UsersSessionsController;
@@ -26,28 +26,27 @@ use const FILTER_SANITIZE_NUMBER_INT;
 use const UPLOAD_ERR_OK;
 
 /**
- * Class: @NewsController
+ * Class: @NewsManageAdminController
  * @package News
  * @author Teyir
- * @version 0.0.1
  */
-class NewsController extends AbstractController
+class NewsManageAdminController extends AbstractController
 {
-    #[Link('/add', Link::GET, [], '/cmw-admin/news')]
+    #[Link('/manage/add', Link::GET, [], '/cmw-admin/news')]
     private function addNews(): void
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage.add');
 
         $tags = NewsTagsModel::getInstance()->getTags();
 
-        View::createAdminView('News', 'add')
+        View::createAdminView('News', 'Manage/add')
             ->addScriptBefore('Admin/Resources/Vendors/Tinymce/tinymce.min.js',
                 'Admin/Resources/Vendors/Tinymce/Config/full.js')
             ->addVariableList(['tags' => $tags])
             ->view();
     }
 
-    #[Link('/add', Link::POST, [], '/cmw-admin/news')]
+    #[Link('/manage/add', Link::POST, [], '/cmw-admin/news')]
     private function addNewsPost(): void
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage.add');
@@ -65,6 +64,11 @@ class NewsController extends AbstractController
         $likes = FilterManager::filterInputIntPost('likes');
         $status = FilterManager::filterInputIntPost('status');
 
+        $scheduledDate = FilterManager::filterInputStringPost('scheduled_date', orElse: null);
+        if (empty($scheduledDate)) {
+            $scheduledDate = null;
+        }
+
         // We are storing $content for prevent error and not loose all data.
         $_SESSION['cmwNewsContent'] = $content;
 
@@ -81,7 +85,23 @@ class NewsController extends AbstractController
             Redirect::redirectPreviousRoute();
         }
 
-        $news = NewsModel::getInstance()->createNews($title, $desc, $comm, $likes, $content, $slug, $userId, $imageName, $status);
+        //Force draft if scheduled date
+        if (!is_null($scheduledDate)) {
+            $status = 0; // Set status to draft if scheduled
+        }
+
+        $news = NewsModel::getInstance()->createNews(
+            $title,
+            $desc,
+            $comm,
+            $likes,
+            $content,
+            $slug,
+            $userId,
+            $imageName,
+            $status,
+            $scheduledDate
+        );
 
         if (is_null($news)) {
             Flash::send(Alert::ERROR, LangManager::translate('core.toaster.error'),
@@ -96,7 +116,7 @@ class NewsController extends AbstractController
             }
         }
 
-        //Add news to sitemap if status is true
+        //Add news to sitemap if status is true and published
         if ($status) {
             SitemapManager::getInstance()->add($news->getFullUrl(), 0.7);
         }
@@ -112,7 +132,7 @@ class NewsController extends AbstractController
         Redirect::redirectPreviousRoute();
     }
 
-    #[Link('/', Link::GET, [], '/cmw-admin/news')]
+    #[Link('/manage', Link::GET, [], '/cmw-admin/news')]
     private function listNews(): void
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage');
@@ -120,7 +140,7 @@ class NewsController extends AbstractController
         $newsList = NewsModel::getInstance()->getNews();
         $tags = NewsTagsModel::getInstance()->getTags();
 
-        View::createAdminView('News', 'main')
+        View::createAdminView('News', 'Manage/main')
             ->addStyle('Admin/Resources/Assets/Css/simple-datatables.css')
             ->addScriptAfter('Admin/Resources/Vendors/Simple-datatables/simple-datatables.js',
                 'Admin/Resources/Vendors/Simple-datatables/config-datatables.js')
@@ -128,7 +148,7 @@ class NewsController extends AbstractController
             ->view();
     }
 
-    #[Link('/edit/:id', Link::GET, ['id' => '[0-9]+'], '/cmw-admin/news')]
+    #[Link('/manage/edit/:id', Link::GET, ['id' => '[0-9]+'], '/cmw-admin/news')]
     private function editNews(int $id): void
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage.edit');
@@ -141,14 +161,14 @@ class NewsController extends AbstractController
 
         $tags = NewsTagsModel::getInstance()->getTags();
 
-        View::createAdminView('News', 'edit')
+        View::createAdminView('News', 'Manage/edit')
             ->addScriptBefore('Admin/Resources/Vendors/Tinymce/tinymce.min.js',
                 'Admin/Resources/Vendors/Tinymce/Config/full.js')
             ->addVariableList(['news' => $news, 'tags' => $tags])
             ->view();
     }
 
-    #[NoReturn] #[Link('/edit/:id', Link::POST, ['id' => '[0-9]+'], '/cmw-admin/news')]
+    #[NoReturn] #[Link('/manage/edit/:id', Link::POST, ['id' => '[0-9]+'], '/cmw-admin/news')]
     private function editNewsPost(int $id): void
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage.edit');
@@ -166,6 +186,11 @@ class NewsController extends AbstractController
         $likes = FilterManager::filterInputIntPost('likes');
         $status = FilterManager::filterInputIntPost('status');
 
+        $scheduledDate = FilterManager::filterInputStringPost('scheduled_date', orElse: null);
+        if (empty($scheduledDate)) {
+            $scheduledDate = null;
+        }
+
         $slug = Utils::normalizeForSlug($title);
 
         $image = $_FILES['image'] ?? null;
@@ -177,7 +202,23 @@ class NewsController extends AbstractController
             $imageName = ImagesManager::convertAndUpload($image, 'News');
         }
 
-        $updatedNews = NewsModel::getInstance()->updateNews($id, $title, $desc, $comm, $likes, $content, $slug, $imageName, $status);
+        //Force draft if scheduled date
+        if (!is_null($scheduledDate)) {
+            $status = 0; // Set status to draft if scheduled
+        }
+
+        $updatedNews = NewsModel::getInstance()->updateNews(
+            $id,
+            $title,
+            $desc,
+            $comm,
+            $likes,
+            $content,
+            $slug,
+            $imageName,
+            $status,
+            $scheduledDate,
+        );
 
         if (is_null($updatedNews)) {
             Flash::send(Alert::ERROR, LangManager::translate('core.toaster.error'),
@@ -218,7 +259,7 @@ class NewsController extends AbstractController
     }
 
     #[NoReturn]
-    #[Link('/delete/:id', Link::GET, ['id' => '[0-9]+'], '/cmw-admin/news')]
+    #[Link('/manage/delete/:id', Link::GET, ['id' => '[0-9]+'], '/cmw-admin/news')]
     private function deleteNews(int $id): void
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage.delete');
@@ -244,7 +285,7 @@ class NewsController extends AbstractController
     }
 
     #[NoReturn]
-    #[Link('/tag', Link::POST, [], '/cmw-admin/news')]
+    #[Link('/manage/tag', Link::POST, [], '/cmw-admin/news')]
     private function addNewsTagPost(): void
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage');
@@ -267,7 +308,7 @@ class NewsController extends AbstractController
     }
 
     #[NoReturn]
-    #[Link('/tag/delete/:id', Link::GET, ['id' => '[0-9]+'], '/cmw-admin/news')]
+    #[Link('/manage/tag/delete/:id', Link::GET, ['id' => '[0-9]+'], '/cmw-admin/news')]
     private function deleteNewsTag(int $id): void
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage');
@@ -286,7 +327,7 @@ class NewsController extends AbstractController
     }
 
     #[NoReturn]
-    #[Link('/tag/deleteSelected', Link::POST, [], '/cmw-admin/news', secure: false)]
+    #[Link('/manage/tag/deleteSelected', Link::POST, [], '/cmw-admin/news', secure: false)]
     private function adminDeleteSelectedPost(): void
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage');
@@ -313,7 +354,7 @@ class NewsController extends AbstractController
     }
 
     #[NoReturn]
-    #[Link('/tag/edit/:id', Link::POST, ['id' => '[0-9]+'], '/cmw-admin/news')]
+    #[Link('/manage/tag/edit/:id', Link::POST, ['id' => '[0-9]+'], '/cmw-admin/news')]
     private function editNewsTagPost(int $id): void
     {
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage');
@@ -339,7 +380,7 @@ class NewsController extends AbstractController
      * <p>Clear all news cache files (App/Storage/Cache/News)</p>
      * @return void
      */
-    private function clearNewsCache(): void
+    public function clearNewsCache(): void
     {
         $dir = EnvManager::getInstance()->getValue('DIR') . 'App/Storage/Cache/News/';
         SimpleCacheManager::deleteAllFiles($dir);

@@ -40,9 +40,21 @@ class Package implements IPackageConfigV2
         return [
             new PackageMenuType(
                 icon: 'fas fa-newspaper',
-                title: LangManager::translate('news.menu'),
-                url: 'news',
-                permission: 'news.manage'
+                title: LangManager::translate('news.menu.title'),
+                url: null,
+                permission: null,
+                subMenus: [
+                  new PackageSubMenuType(
+                      title: LangManager::translate('news.menu.settings'),
+                      permission: 'news.manage',
+                      url: 'news/settings',
+                  ) ,
+                  new PackageSubMenuType(
+                        title: LangManager::translate('news.menu.news'),
+                        permission: 'news.manage',
+                        url: 'news/manage',
+                  )
+                ],
             ),
         ];
     }
@@ -75,6 +87,6 @@ class Package implements IPackageConfigV2
 
     public function compatiblesPackages(): array
     {
-        return [];
+        return ['OverApi'];
     }
 }

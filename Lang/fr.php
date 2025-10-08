@@ -29,6 +29,7 @@ return [
             'creation_date' => 'Date de création',
             'edit' => 'Modifications',
             'link' => 'Lien',
+            'delete_selected' => 'Supprimer la sélection',
         ],
     ],
     'add' => [
@@ -47,6 +48,9 @@ return [
             'success' => 'Actualité ajoutée avec succès !',
             'error' => "Impossible d'ajouter cette news !",
         ],
+        'scheduled_date' => 'Date de publication programmée',
+        'scheduled_date_placeholder' => 'Laissez vide pour une publication immédiate',
+        'scheduled_date_help' => "L'actualité sera automatiquement publiée à ce moment-là <br> si les tâches cron sont activées dans les paramètres des actualités.<br>Les articles programmés restent en brouillon jusqu'à leur publication.",
     ],
     'edit' => [
         'toasters' => [
@@ -96,5 +100,18 @@ return [
             'delete' => 'Supprimer',
         ],
     ],
-    'menu' => 'Actualités',
+    'menu' => [
+        'title' => 'Actualités',
+        'settings' => 'Paramètres',
+        'news' => 'Actualités',
+    ],
+    'settings' => [
+        'cron_info' => 'Si cette option est activée, les publications programmées seront publiées automatiquement via une tâche cron. Assurez-vous que votre serveur exécute régulièrement les tâches cron pour que cette fonctionnalité fonctionne correctement.',
+        'documentation_link' => 'Lien de documentation :',
+        'scheduled_publications' => 'Publications programmées',
+        'enable_cron_toggle' => 'Activer les tâches cron pour les publications programmées',
+        'cron_url_label' => 'URL du cron pour les publications programmées',
+        'copy_url' => 'Copier l\'URL',
+        'cron_url_help' => 'Copiez cette URL et configurez-la dans votre gestionnaire de tâches cron pour exécuter les publications programmées.',
+    ],
 ];
