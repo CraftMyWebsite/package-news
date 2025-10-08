@@ -2,6 +2,7 @@
 
 namespace CMW\Controller\News\Public;
 
+use CMW\Controller\Users\UsersController;
 use CMW\Controller\Users\UsersSessionsController;
 use CMW\Manager\Package\AbstractController;
 use CMW\Manager\Router\Link;
@@ -44,7 +45,7 @@ class NewsPublicController extends AbstractController
             Redirect::errorPage(404);
         }
 
-        if (!$news->isPublished()) {
+        if (!$news->isPublished() && !UsersController::isAdminLogged()) {
             Redirect::errorPage(404);
         }
 
@@ -68,7 +69,7 @@ class NewsPublicController extends AbstractController
 
         $news = NewsModel::getInstance()->getNewsBySlug($slug);
 
-        if (is_null($news) || !$news->isPublished()) {
+        if (is_null($news) || (!$news->isPublished() && !UsersController::isAdminLogged())) {
             Redirect::errorPage(404);
         }
 
