@@ -215,7 +215,7 @@ class NewsModel extends AbstractModel
     {
 
         if (!$ignoreCache) {
-            $cachedData = SimpleCacheManager::getCache('news', 'News');
+            $cachedData = SimpleCacheManager::getCache("news_status_$status", 'News');
             if (!is_null($cachedData)) {
                 try {
                     return NewsEntity::fromJsonList($cachedData);
@@ -248,7 +248,7 @@ class NewsModel extends AbstractModel
         }
 
         try {
-            SimpleCacheManager::storeCache(NewsEntity::toJsonList($toReturn), 'news', 'News');
+            SimpleCacheManager::storeCache(NewsEntity::toJsonList($toReturn), "news_status_$status", 'News');
         } catch (JsonException) {
         }
 
