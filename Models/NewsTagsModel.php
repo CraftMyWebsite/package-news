@@ -213,7 +213,7 @@ class NewsTagsModel extends AbstractModel
                     WHERE cmw_news_tags_list.news_tags_id = :id';
 
         if (!\is_null($status)) {
-            $sql .= ' WHERE news_status = :status';
+            $sql .= ' AND news_status = :status';
             $data['status'] = $status;
         }
 
