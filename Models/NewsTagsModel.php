@@ -201,17 +201,27 @@ class NewsTagsModel extends AbstractModel
 
     /**
      * @param int $tagId
+     * @param bool|null $status
      * @return NewsEntity[]
      */
-    public function getNewsForTagById(int $tagId): array
+    public function getNewsForTagById(int $tagId, ?bool $status = null): array
     {
+        $data = ['id' => $tagId];
+
         $sql = 'SELECT * FROM cmw_news 
                     JOIN cmw_news_tags_list ON cmw_news.news_id = cmw_news_tags_list.news_id 
                     WHERE cmw_news_tags_list.news_tags_id = :id';
+
+        if (!\is_null($status)) {
+            $sql .= ' WHERE news_status = :status';
+            $data['status'] = $status;
+        }
+
+
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
 
-        if (!$req->execute(['id' => $tagId])) {
+        if (!$req->execute($data)) {
             return [];
         }
 

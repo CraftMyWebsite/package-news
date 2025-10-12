@@ -89,7 +89,7 @@ class NewsPublicController extends AbstractController
             Redirect::redirectToHome();
         }
 
-        $newsList = NewsTagsModel::getInstance()->getNewsForTagById($tag->getId());
+        $newsList = NewsTagsModel::getInstance()->getNewsForTagById($tag->getId(), true);
         $newsModel = NewsModel::getInstance();
 
         View::createPublicView('News', 'list')
