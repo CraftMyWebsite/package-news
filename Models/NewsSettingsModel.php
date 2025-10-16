@@ -2,6 +2,7 @@
 
 namespace CMW\Model\News;
 
+use CMW\Controller\News\Admin\NewsSettingsAdminController;
 use CMW\Entity\News\NewsSettingsEntity;
 use CMW\Manager\Package\AbstractModel;
 use CMW\Mapper\News\NewsSettingsMapper;
@@ -54,6 +55,6 @@ class NewsSettingsModel extends AbstractModel
     public static function getNewsSlugPrefix(): string
     {
         $slugPrefix = CoreModel::getInstance()->fetchOption(self::KEY_SLUG_PREFIX);
-        return $slugPrefix ?: 'news';
+        return $slugPrefix ?: NewsSettingsAdminController::getInstance()->defaultPrefixSlug;
     }
 }

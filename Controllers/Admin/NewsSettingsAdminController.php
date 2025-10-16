@@ -52,7 +52,7 @@ class NewsSettingsAdminController extends AbstractController
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage');
 
         $enableScheduledPublishing = FilterManager::filterInputIntPost('scheduled_publications', 1, 0);
-        $slugPrefix = filter_input(INPUT_POST, 'slug_prefix', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'news';
+        $slugPrefix = FilterManager::filterInputStringPost('slug_prefix');
 
         if (!\in_array($slugPrefix, $this->allowedPrefixSlug, true)) {
             $slugPrefix = $this->defaultPrefixSlug;

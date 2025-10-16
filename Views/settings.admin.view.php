@@ -77,7 +77,7 @@ Website::setDescription(LangManager::translate('news.dashboard.desc'));
                         </label>
                         <select name="slug_prefix" id="slug_prefix" class="form-select">
                             <?php foreach (NewsSettingsAdminController::getInstance()->allowedPrefixSlug as $slug): ?>
-                                <option value="news" <?= $settings?->getSlugPrefix() === $slug ? 'selected' : '' ?>>
+                                <option value="<?= $slug ?>" <?= $settings?->getSlugPrefix() === $slug ? 'selected' : '' ?>>
                                     /<?= $slug ?>/
                                 </option>
                             <?php endforeach; ?>
