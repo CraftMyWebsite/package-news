@@ -6,8 +6,12 @@ use CMW\Entity\Users\UserEntity;
 use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Package\AbstractEntity;
 use CMW\Manager\Package\EntityType;
+use CMW\Model\News\NewsSettingsModel;
 use CMW\Utils\Date;
+use CMW\Utils\Website;
 use function htmlspecialchars;
+use function strlen;
+use function substr;
 
 class NewsEntity extends AbstractEntity
 {
@@ -199,7 +203,8 @@ class NewsEntity extends AbstractEntity
      */
     public function getFullUrl(): string
     {
-        return EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . 'news/' . $this->slug;
+        $slugPrefix = NewsSettingsModel::getNewsSlugPrefix();
+        return EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . $slugPrefix . '/' . $this->slug;
     }
 
     /**
@@ -300,7 +305,8 @@ class NewsEntity extends AbstractEntity
 
     public function sendComments(): string
     {
-        return EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . 'news/comments/' . $this->newsId;
+        $slugPrefix = NewsSettingsModel::getNewsSlugPrefix();
+        return EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . $slugPrefix . '/comments/' . $this->newsId;
     }
 
     /**
@@ -316,5 +322,44 @@ class NewsEntity extends AbstractEntity
         }
 
         return false;
+    }
+
+    /**
+     * <p>Generate the alt attribute for the news image.</p>
+     * @return string
+     */
+    public function getImageAlt(): string
+    {
+        $alt = strlen($this->title) > 30 ? substr($this->title, 0, 27) . '...' : $this->title;
+        return htmlspecialchars($alt . " - " . Website::getWebsiteName());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isScheduledDelayed(): bool
+    {
+        if ($this->dateScheduled === null) {
+            return false;
+        }
+
+        $now = Date::getCurrentTimestamp();
+        $scheduledDate = Date::dateToTimestamp($this->dateScheduled);
+        return $scheduledDate < $now;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScheduledDelayedIcon(): string
+    {
+        $color = $this->isScheduledDelayed() ? 'text-danger' : '';
+
+        return $this->isScheduled() ? '<button data-tooltip-target="tooltip-top" type="button" data-tooltip-placement="top"><i
+                                class="fas fa-clock ' . $color . '"></i></button>
+                        <div id="tooltip-top" role="tooltip" class="tooltip-content">
+                            ' . $this->getDateScheduledFormatted() . '
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div> ' : '';
     }
 }

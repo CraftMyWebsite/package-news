@@ -19,6 +19,7 @@ class NewsSettingsMapper
         return new NewsSettingsEntity(
             (bool)$data['enable_scheduled_publishing'],
             $data['cron_key'],
+            $data['slug_prefix'] ?? 'news'
         );
     }
 }

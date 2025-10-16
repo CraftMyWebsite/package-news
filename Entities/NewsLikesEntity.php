@@ -7,6 +7,7 @@ use CMW\Entity\Users\UserEntity;
 use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Package\AbstractEntity;
 use CMW\Model\News\NewsLikesModel;
+use CMW\Model\News\NewsSettingsModel;
 use CMW\Utils\Date;
 
 class NewsLikesEntity extends AbstractEntity
@@ -72,7 +73,8 @@ class NewsLikesEntity extends AbstractEntity
      */
     public function getSendLike(): string
     {
-        return EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . 'like/news/' . $this->newsId;
+        $slugPrefix = NewsSettingsModel::getNewsSlugPrefix();
+        return EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . 'like/' . $slugPrefix . '/' . $this->newsId;
     }
 
     /**

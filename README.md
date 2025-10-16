@@ -10,7 +10,7 @@ Ajoutez facilement des news sur votre site avec ce package !
 - Commentez les news, likez les news et les commentaires
 - Affichage des news en liste (système de tri + limite)
 - Tags (rangez vos articles dans des catégories avec des tags.)
-
+- Prefix pour les url personnalisable
 
 ## Exemple affichage des news
 
@@ -31,7 +31,7 @@ $description = "Affichage de toutes vos news";
         <hr>
         <div style="text-align: center">
             <h4><?= $news->getTitle() ?></h4>
-            <img src="<?= $news->getImageLink() ?>" height="250" width="250">
+            <img src="<?= $news->getImageLink() ?>" height="250" width="250" alt="<?= $news->getImageAlt() ?>">
             <br>
             <p><?= $news->getContent() ?></p>
             <p>- <?= $news->getAuthor()->getPseudo() ?></p>

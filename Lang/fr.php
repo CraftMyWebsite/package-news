@@ -113,5 +113,16 @@ return [
         'cron_url_label' => 'URL du cron pour les publications programmées',
         'copy_url' => 'Copier l\'URL',
         'cron_url_help' => 'Copiez cette URL et configurez-la dans votre gestionnaire de tâches cron pour exécuter les publications programmées.',
+        'slug_prefix_label' => 'Préfixe de l\'URL des actualités',
+        'slug_prefix_help' => 'Choisissez le préfixe utilisé dans l\'URL pour accéder à vos actualités (ex : /news/, /blog/, /actu/)',
+        'toasters' => [
+            'save' => [
+                'success' => 'Paramètres enregistrés avec succès.',
+                'error' => 'Une erreur est survenue lors de l\'enregistrement des paramètres.',
+            ],
+            'cron_token' => [
+                'error' => 'Une erreur est survenue lors de la génération du token cron.',
+            ],
+        ],
     ],
 ];

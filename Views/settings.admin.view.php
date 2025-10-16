@@ -1,5 +1,6 @@
 <?php
 
+use CMW\Controller\News\Admin\NewsSettingsAdminController;
 use CMW\Entity\News\NewsSettingsEntity;
 use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Security\SecurityManager;
@@ -22,12 +23,15 @@ Website::setDescription(LangManager::translate('news.dashboard.desc'));
                 <?php SecurityManager::getInstance()->insertHiddenToken() ?>
                 <div class="space-y-4">
                     <div class="alert">
-                        <p><i class="fa-solid fa-circle-info"></i> <?= LangManager::translate('news.settings.cron_info') ?></p>
+                        <p>
+                            <i class="fa-solid fa-circle-info"></i> <?= LangManager::translate('news.settings.cron_info') ?>
+                        </p>
 
                         <p>
                             <?= LangManager::translate('news.settings.documentation_link') ?> <a
                                 href="https://github.com/CraftMyWebsite/package-news/wiki/Publications-programm%C3%A9es"
-                                target="_blank" class="text-blue-600 hover:underline"><?= LangManager::translate('news.settings.scheduled_publications') ?></a>
+                                target="_blank"
+                                class="text-blue-600 hover:underline"><?= LangManager::translate('news.settings.scheduled_publications') ?></a>
                         </p>
                     </div>
 
@@ -66,6 +70,22 @@ Website::setDescription(LangManager::translate('news.dashboard.desc'));
                             </p>
                         </div>
                     <?php endif; ?>
+
+                    <div class="space-y-2">
+                        <label for="slug_prefix" class="block text-sm font-medium text-gray-700">
+                            <?= LangManager::translate('news.settings.slug_prefix_label') ?>
+                        </label>
+                        <select name="slug_prefix" id="slug_prefix" class="form-select">
+                            <?php foreach (NewsSettingsAdminController::getInstance()->allowedPrefixSlug as $slug): ?>
+                                <option value="news" <?= $settings?->getSlugPrefix() === $slug ? 'selected' : '' ?>>
+                                    /<?= $slug ?>/
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <p class="text-xs text-gray-500">
+                            <?= LangManager::translate('news.settings.slug_prefix_help') ?>
+                        </p>
+                    </div>
 
                     <div>
                         <button type="submit" class="btn-center btn-primary">

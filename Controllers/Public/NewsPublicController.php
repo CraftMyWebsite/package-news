@@ -11,6 +11,7 @@ use CMW\Model\News\NewsCommentsLikesModel;
 use CMW\Model\News\NewsCommentsModel;
 use CMW\Model\News\NewsLikesModel;
 use CMW\Model\News\NewsModel;
+use CMW\Model\News\NewsSettingsModel;
 use CMW\Model\News\NewsTagsModel;
 use CMW\Utils\Redirect;
 use JetBrains\PhpStorm\NoReturn;
@@ -25,8 +26,14 @@ use function is_null;
 class NewsPublicController extends AbstractController
 {
     #[Link('/news', Link::GET)]
+    #[Link('/blog', Link::GET, weight: 2)]
+    #[Link('/actu', Link::GET, weight: 2)]
+    #[Link('/articles', Link::GET, weight: 2)]
+    #[Link('/actualites', Link::GET, weight: 2)]
     private function publicListNews(): void
     {
+        $this->handleSlugPrefix();
+        
         $newsList = NewsModel::getInstance()->getNews(true);
 
         View::createPublicView('News', 'list')
@@ -36,8 +43,14 @@ class NewsPublicController extends AbstractController
     }
 
     #[Link('/news/:tagSlug/:articleSlug', Link::GET, ['tagSlug' => '.*?', 'articleSlug' => '.*?'])]
+    #[Link('/blog/:tagSlug/:articleSlug', Link::GET, ['tagSlug' => '.*?', 'articleSlug' => '.*?'], weight: 2)]
+    #[Link('/actu/:tagSlug/:articleSlug', Link::GET, ['tagSlug' => '.*?', 'articleSlug' => '.*?'], weight: 2)]
+    #[Link('/articles/:tagSlug/:articleSlug', Link::GET, ['tagSlug' => '.*?', 'articleSlug' => '.*?'], weight: 2)]
+    #[Link('/actualites/:tagSlug/:articleSlug', Link::GET, ['tagSlug' => '.*?', 'articleSlug' => '.*?'], weight: 2)]
     private function publicNewsTagIndividual(string $tagSlug, string $articleSlug): void
     {
+        $this->handleSlugPrefix();
+
         $news = NewsModel::getInstance()->getNewsBySlug($articleSlug);
         $tag = NewsTagsModel::getInstance()->isTagExistByName($tagSlug);
 
@@ -58,8 +71,14 @@ class NewsPublicController extends AbstractController
     }
 
     #[Link('/news/:slug', Link::GET, ['slug' => '.*?'])]
+    #[Link('/blog/:slug', Link::GET, ['slug' => '.*?'], weight: 2)]
+    #[Link('/actu/:slug', Link::GET, ['slug' => '.*?'], weight: 2)]
+    #[Link('/articles/:slug', Link::GET, ['slug' => '.*?'], weight: 2)]
+    #[Link('/actualites/:slug', Link::GET, ['slug' => '.*?'], weight: 2)]
     private function publicIndividualNews(string $slug): void
     {
+        $this->handleSlugPrefix();
+
         $isTag = NewsTagsModel::getInstance()->isTagExistByName($slug);
 
         if ($isTag) {
@@ -100,8 +119,14 @@ class NewsPublicController extends AbstractController
 
     #[NoReturn]
     #[Link('/like/news/comments/:id', Link::GET, ['id' => '[0-9]+'])]
+    #[Link('/like/blog/comments/:id', Link::GET, ['id' => '[0-9]+'], weight: 2)]
+    #[Link('/like/actu/comments/:id', Link::GET, ['id' => '[0-9]+'], weight: 2)]
+    #[Link('/like/articles/comments/:id', Link::GET, ['id' => '[0-9]+'], weight: 2)]
+    #[Link('/like/actualites/comments/:id', Link::GET, ['id' => '[0-9]+'], weight: 2)]
     private function likeCommentsNews(int $commentsId): void
     {
+        $this->handleSlugPrefix();
+
         $user = UsersSessionsController::getInstance()->getCurrentUser();
 
         if (is_null($user)) {
@@ -118,8 +143,14 @@ class NewsPublicController extends AbstractController
 
     #[NoReturn]
     #[Link('/like/news/:id', Link::GET, ['id' => '[0-9]+'])]
+    #[Link('/like/blog/:id', Link::GET, ['id' => '[0-9]+'], weight: 2)]
+    #[Link('/like/actu/:id', Link::GET, ['id' => '[0-9]+'], weight: 2)]
+    #[Link('/like/articles/:id', Link::GET, ['id' => '[0-9]+'], weight: 2)]
+    #[Link('/like/actualites/:id', Link::GET, ['id' => '[0-9]+'], weight: 2)]
     private function likeNews(int $id): void
     {
+        $this->handleSlugPrefix();
+
         $user = UsersSessionsController::getInstance()->getCurrentUser();
 
         if (is_null($user)) {
@@ -146,8 +177,14 @@ class NewsPublicController extends AbstractController
 
     #[NoReturn]
     #[Link('/news/comments/:id', Link::POST, ['id' => '[0-9]+'])]
+    #[Link('/blog/comments/:id', Link::POST, ['id' => '[0-9]+'], weight: 2)]
+    #[Link('/actu/comments/:id', Link::POST, ['id' => '[0-9]+'], weight: 2)]
+    #[Link('/articles/comments/:id', Link::POST, ['id' => '[0-9]+'], weight: 2)]
+    #[Link('/actualites/comments/:id', Link::POST, ['id' => '[0-9]+'], weight: 2)]
     private function commentsNews(int $newsId): void
     {
+        $this->handleSlugPrefix();
+
         $user = UsersSessionsController::getInstance()->getCurrentUser();
 
         if (is_null($user)) {
@@ -161,5 +198,26 @@ class NewsPublicController extends AbstractController
         }
 
         Redirect::redirectPreviousRoute();
+    }
+
+    /**
+     * <p>Handle the slug prefix redirection if needed.</p>
+     * @return void
+     */
+    private function handleSlugPrefix(): void
+    {
+        $slugPrefix = NewsSettingsModel::getInstance()->getNewsSlugPrefix();
+        if (empty($slugPrefix)) {
+            return;
+        }
+
+        $currentPath = trim($_SERVER['REQUEST_URI'], '/');
+        $expectedPrefix = trim($slugPrefix, '/');
+
+        if (str_starts_with($currentPath, $expectedPrefix)) {
+            return;
+        }
+
+        Redirect::errorPage(404);
     }
 }

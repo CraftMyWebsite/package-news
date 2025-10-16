@@ -14,15 +14,18 @@ class NewsSettingsEntity extends AbstractEntity
 {
     private bool $enableScheduledPublishing;
     private string $cronKey;
+    private string $slugPrefix;
 
     /**
      * @param bool $enableScheduledPublishing
      * @param string $cronKey
+     * @param string $slugPrefix
      */
-    public function __construct(bool $enableScheduledPublishing, string $cronKey)
+    public function __construct(bool $enableScheduledPublishing, string $cronKey, string $slugPrefix = 'news')
     {
         $this->enableScheduledPublishing = $enableScheduledPublishing;
         $this->cronKey = $cronKey;
+        $this->slugPrefix = $slugPrefix;
     }
 
     public function isEnableScheduledPublishing(): bool
@@ -38,5 +41,10 @@ class NewsSettingsEntity extends AbstractEntity
     public function getFullCronUrl(): string
     {
         return Website::getUrl() . "news/cron/scheduled/publishing?key=" . $this->getCronKey();
+    }
+
+    public function getSlugPrefix(): string
+    {
+        return $this->slugPrefix;
     }
 }

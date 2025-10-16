@@ -113,5 +113,16 @@ return [
         'cron_url_label' => 'Cron URL for scheduled publications',
         'copy_url' => 'Copy URL',
         'cron_url_help' => 'Copy this URL and configure it in your cron job manager to execute scheduled publications.',
+        'slug_prefix_label' => 'News URL prefix',
+        'slug_prefix_help' => 'Choose the prefix used in the URL to access your news (e.g., /news/, /blog/, /actu/)',
+        'toasters' => [
+            'save' => [
+                'success' => 'Settings saved successfully.',
+                'error' => 'An error occurred while saving the settings.',
+            ],
+            'cron_token' => [
+                'error' => 'An error occurred while generating the cron token.',
+            ],
+        ],
     ],
 ];

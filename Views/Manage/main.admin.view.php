@@ -36,12 +36,7 @@ $description = LangManager::translate('news.dashboard.desc');
             <tbody>
             <?php foreach ($newsList as $news): ?>
                 <tr>
-                    <td><?= $news->isScheduled() ? '<button data-tooltip-target="tooltip-top" type="button" data-tooltip-placement="top"><i
-                                class="fas fa-clock"></i></button>
-                        <div id="tooltip-top" role="tooltip" class="tooltip-content">
-                            ' . $news->getDateScheduledFormatted() . '
-                            <div class="tooltip-arrow" data-popper-arrow></div>
-                        </div> ' : '' ?> <?= mb_strimwidth($news->getTitle(), 0, 20, '...') ?></td>
+                    <td><?= $news->getScheduledDelayedIcon() ?> <?= mb_strimwidth($news->getTitle(), 0, 20, '...') ?></td>
                     <td><?= mb_strimwidth($news->getDescription(), 0, 20, '...') ?></td>
                     <td><?= $news->getAuthor()->getPseudo() ?></td>
                     <td>

@@ -11,6 +11,8 @@ use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\AbstractController;
 use CMW\Manager\Router\Link;
 use CMW\Manager\Views\View;
+use CMW\Manager\Xml\SitemapManager;
+use CMW\Model\News\NewsModel;
 use CMW\Model\News\NewsSettingsModel;
 use CMW\Utils\Redirect;
 use CMW\Utils\Utils;
@@ -23,6 +25,9 @@ use JetBrains\PhpStorm\NoReturn;
  */
 class NewsSettingsAdminController extends AbstractController
 {
+    public array $allowedPrefixSlug = ['news', 'blog', 'actu', 'articles', 'actualites'];
+    public string $defaultPrefixSlug = 'news';
+
     #[Link('/settings', Link::GET, [], '/cmw-admin/news')]
     private function listNews(): void
     {
@@ -47,19 +52,38 @@ class NewsSettingsAdminController extends AbstractController
         UsersController::redirectIfNotHavePermissions('core.dashboard', 'news.manage');
 
         $enableScheduledPublishing = FilterManager::filterInputIntPost('scheduled_publications', 1, 0);
+        $slugPrefix = filter_input(INPUT_POST, 'slug_prefix', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? 'news';
+
+        if (!\in_array($slugPrefix, $this->allowedPrefixSlug, true)) {
+            $slugPrefix = $this->defaultPrefixSlug;
+        }
 
         $storedSettings = NewsSettingsModel::getInstance()->getSettings();
+        $oldSlugPrefix = $storedSettings?->getSlugPrefix() ?? $this->defaultPrefixSlug;
 
         if ($storedSettings === null) {
-            $settings = new NewsSettingsEntity($enableScheduledPublishing, $this->generateCronToken());
+            $settings = new NewsSettingsEntity($enableScheduledPublishing, $this->generateCronToken(), $slugPrefix);
         } else {
-            $settings = new NewsSettingsEntity($enableScheduledPublishing, $storedSettings->getCronKey());
+            $settings = new NewsSettingsEntity($enableScheduledPublishing, $storedSettings->getCronKey(), $slugPrefix);
         }
 
         if (NewsSettingsModel::getInstance()->setSettings($settings)) {
-            Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"), "Paramètres enregistrés avec succès.");
+            // Update sitemap URLs if slug prefix changed
+            if ($oldSlugPrefix !== $slugPrefix) {
+                $this->updateSitemapUrls($oldSlugPrefix, $slugPrefix);
+            }
+
+            Flash::send(
+                Alert::SUCCESS,
+                LangManager::translate("core.toaster.success"),
+                LangManager::translate("news.settings.toasters.save.success")
+            );
         } else {
-            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"), "Une erreur est survenue lors de l'enregistrement des paramètres.");
+            Flash::send(
+                Alert::ERROR,
+                LangManager::translate("core.toaster.error"),
+                LangManager::translate("news.settings.toasters.save.error")
+            );
         }
 
         Redirect::redirectPreviousRoute();
@@ -76,7 +100,11 @@ class NewsSettingsAdminController extends AbstractController
         if ($settings === null) {
             $token = $this->generateCronToken();
             if (!NewsSettingsModel::getInstance()->setCronToken($token)) {
-                Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"), "Une erreur est survenue lors de la génération du token cron.");
+                Flash::send(
+                    Alert::ERROR,
+                    LangManager::translate("core.toaster.error"),
+                    LangManager::translate("news.settings.toasters.cron_token.error")
+                );
             }
         }
     }
@@ -88,5 +116,30 @@ class NewsSettingsAdminController extends AbstractController
     private function generateCronToken(): string
     {
         return Utils::generateUUID();
+    }
+
+    /**
+     * <p>Update all news URLs in sitemap when slug prefix changes</p>
+     * @param string $oldSlugPrefix
+     * @param string $newSlugPrefix
+     * @return void
+     */
+    private function updateSitemapUrls(string $oldSlugPrefix, string $newSlugPrefix): void
+    {
+        $newsList = NewsModel::getInstance()->getNews(true);
+
+        if (empty($newsList)) {
+            return;
+        }
+
+        $sitemapManager = SitemapManager::getInstance();
+
+        foreach ($newsList as $news) {
+            $oldUrl = $oldSlugPrefix . '/' . $news->getSlug();
+            $sitemapManager->delete($oldUrl);
+
+            $newUrl = $newSlugPrefix . '/' . $news->getSlug();
+            $sitemapManager->add($newUrl, 0.7);
+        }
     }
 }
