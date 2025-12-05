@@ -3,7 +3,6 @@
 namespace CMW\Package\News;
 
 use CMW\Manager\Lang\LangManager;
-use CMW\Manager\Package\IPackageConfig;
 use CMW\Manager\Package\IPackageConfigV2;
 use CMW\Manager\Package\PackageMenuType;
 use CMW\Manager\Package\PackageSubMenuType;
