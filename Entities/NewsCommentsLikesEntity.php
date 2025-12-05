@@ -17,8 +17,6 @@ class NewsCommentsLikesEntity extends AbstractEntity
 
     // UTILS
     private int $total;
-    private string $sendLike;
-    private bool $isLike;
 
     /**
      * @param int|null $likesId

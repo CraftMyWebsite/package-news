@@ -4,6 +4,8 @@ namespace CMW\Controller\News\Public;
 
 use CMW\Controller\Users\UsersController;
 use CMW\Controller\Users\UsersSessionsController;
+use CMW\Manager\Cache\SimpleCacheManager;
+use CMW\Manager\Filter\FilterManager;
 use CMW\Manager\Package\AbstractController;
 use CMW\Manager\Router\Link;
 use CMW\Manager\Views\View;
@@ -135,6 +137,12 @@ class NewsPublicController extends AbstractController
 
         // We check if the player has already like this comments, and we store the like
         if (newsCommentsLikesModel::getInstance()->userCanLike($commentsId, $user?->getId())) {
+
+            $newsComment = NewsCommentsModel::getInstance()->getCommentsById($commentsId);
+            $news = NewsModel::getInstance()->getNewsById($newsComment->getNewsId());
+            SimpleCacheManager::deleteSpecificCacheFile('news_slug_' . $news->getSlug(), 'News');
+            SimpleCacheManager::deleteSpecificCacheFile('news_id_' . $newsId, 'News');
+
             newsCommentsLikesModel::getInstance()->storeLike($commentsId, $user?->getId());
         }
 
@@ -169,6 +177,10 @@ class NewsPublicController extends AbstractController
         }
 
         if (newsLikesModel::getInstance()->userCanLike($id, $user?->getId())) {
+
+            SimpleCacheManager::deleteSpecificCacheFile('news_slug_' . $news->getSlug(), 'News');
+            SimpleCacheManager::deleteSpecificCacheFile('news_id_' . $id, 'News');
+
             newsLikesModel::getInstance()->storeLike($id, $user?->getId());
         }
 
@@ -191,9 +203,14 @@ class NewsPublicController extends AbstractController
             Redirect::redirect('login');
         }
 
-        $content = strip_tags(htmlentities(filter_input(INPUT_POST, 'comments')));
+        $content = FilterManager::filterInputStringPost('comments');
 
         if (NewsCommentsModel::getInstance()->userCanComment($newsId, $user?->getId())) {
+
+            $news = NewsModel::getInstance()->getNewsById($newsId);
+            SimpleCacheManager::deleteSpecificCacheFile('news_slug_' . $news->getSlug(), 'News');
+            SimpleCacheManager::deleteSpecificCacheFile('news_id_' . $newsId, 'News');
+
             newsCommentsModel::getInstance()->storeComments($newsId, $user?->getId(), $content);
         }
 
@@ -206,6 +223,7 @@ class NewsPublicController extends AbstractController
      */
     private function handleSlugPrefix(): void
     {
+        //Pas bon si je commence par /like et pas par le slug custom : https://chatgpt.com/c/6931b09e-c730-8327-b19b-3cbf8fbd7848
         $slugPrefix = NewsSettingsModel::getInstance()->getNewsSlugPrefix();
         if (empty($slugPrefix)) {
             return;
@@ -214,7 +232,7 @@ class NewsPublicController extends AbstractController
         $currentPath = trim($_SERVER['REQUEST_URI'], '/');
         $expectedPrefix = trim($slugPrefix, '/');
 
-        if (str_starts_with($currentPath, $expectedPrefix)) {
+        if (str_starts_with($currentPath, $expectedPrefix) || str_starts_with($currentPath, 'like/' . $expectedPrefix)) {
             return;
         }
 
