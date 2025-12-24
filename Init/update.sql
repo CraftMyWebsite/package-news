@@ -1,4 +1,4 @@
--- Version: 1.6.0
+-------- Version: 1.6.0 (DONE) --------
 
 -- Add scheduled date column
 ALTER TABLE `cmw_news`
@@ -8,3 +8,5 @@ ALTER TABLE `cmw_news`
 INSERT INTO `cmw_core_options` (`option_name`, `option_value`)
 VALUES ('news_slug_prefix', 'news')
 ON DUPLICATE KEY UPDATE `option_value` = 'news';
+
+----------------------------------------------------------------------------------------
